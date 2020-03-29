@@ -20,7 +20,7 @@ class CreateUsers extends Migration
             $table->string('email', 200)->nullable(false);
             $table->string('phone', 11)->nullable(false);
             $table->string('password', 255)->nullable(true);
-            $table->unsignedTinyInteger('status', 3)->nullable(true);
+            $table->unsignedTinyInteger('status')->nullable(true);
             $table->string('temporary_code', 25)->nullable(false);
             $table->timestamps();
         });
