@@ -49,7 +49,7 @@ class CreateProducts extends Migration
 
             $table->string('photo', 255)->nullable(true);
 
-            $table->unsignedTinyInteger('status', 3)->nullable(false);
+            $table->unsignedTinyInteger('status')->nullable(false);
 
             $table->timestamps();
 
