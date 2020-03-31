@@ -13,13 +13,14 @@ class CompanyController extends Controller
 {
     public function index($category_id)
     {
+
     }
 
     public function showProducts($company_id)
     {
         $products = Product::select('menu_sessions.name as menu_session', 'products.name', 'products.description', 'products.price', 'products.promotional_price')
             ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
-            ->where('company_id', $company_id)
+            ->where('products.company_id', $company_id)
             ->get()
             ->groupBy('menu_session');
 
@@ -31,6 +32,7 @@ class CompanyController extends Controller
 
     public function showProduct($id)
     {
+
     }
 
     public function showCategories()
