@@ -84,7 +84,7 @@ class ProductController extends Controller
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
             'available_shift' => ['required', new AvailableShiftRule()],
-            'promotional_price' => 'numeric'
+            'promotional_price' => 'nullable|numeric'
         ]);
 
         if ($request->promotional_price) {

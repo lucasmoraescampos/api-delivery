@@ -16,6 +16,7 @@ class CreateCategories extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->tinyIncrements('id')->nullable(false);
             $table->string('name', 40)->nullable(false);
+            $table->string('icon', 100)->nullable(false);
         });
     }
 

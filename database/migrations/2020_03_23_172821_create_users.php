@@ -17,8 +17,8 @@ class CreateUsers extends Migration
             $table->bigIncrements('id');
             $table->string('name', 100)->nullable(false);
             $table->string('surname', 100)->nullable(false);
-            $table->string('email', 200)->nullable(false);
-            $table->string('phone', 11)->nullable(false);
+            $table->string('email', 200)->nullable(false)->unique();
+            $table->string('phone', 11)->nullable(false)->unique();
             $table->string('password', 255)->nullable(true);
             $table->unsignedTinyInteger('status')->nullable(true);
             $table->string('temporary_code', 25)->nullable(true);

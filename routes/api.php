@@ -29,9 +29,13 @@ Route::prefix('user')->group(function () {
 
     Route::group(['middleware' => 'assign.guard:users'], function () {
 
-
         Route::group(['middleware' => 'auth.jwt'], function () {
 
+            Route::prefix('company')->group(function () {
+
+                Route::get('', 'Company\ProductController@showPhoto')->name('productPhoto');
+
+            });            
 
         });
 
