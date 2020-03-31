@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use App\Complement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\MenuSession;
 use App\Product;
 use App\Rules\AvailableShiftRule;
 use App\Rules\MenuSessionRule;
@@ -16,7 +17,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::select('products.id', 'products.name', 'menu_sessions.name as session', 'products.price', 'products.status')
+        $products = Product::select('products.id', 'products.name', 'menu_sessions.name as menu_session', 'products.price', 'products.status')
             ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
             ->where('products.company_id', Auth::id())
             ->orderBy('name', 'asc')
@@ -131,6 +132,10 @@ class ProductController extends Controller
         if ($request->complements != null && $request->complements != []) {
             $product->insertComplements($request->complements);
         }
+
+        $menu_session = MenuSession::where('id', $product->menu_session_id)->first();
+
+        $product->menu_session = $menu_session->name;
 
         return response()->json([
             'success' => true,
