@@ -32,8 +32,25 @@ class HttpClient
     {
         $ch = curl_init($url);
 
+        if (count($this->data) > 0) {
+
+            $url .= '?';
+
+            $i = 1;
+
+            foreach ($this->data as $key => $data) {
+
+                $url .= "$key=$data";
+
+                if ($i < count($this->data)) {
+                    $url .= '&';
+                }
+
+                $i++;
+            }
+        }
+
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->data));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
 
