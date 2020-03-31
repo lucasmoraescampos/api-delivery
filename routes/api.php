@@ -103,3 +103,13 @@ Route::prefix('company')->group(function () {
     });
 
 });
+
+Route::prefix('api')->group(function () {
+
+    Route::prefix('sms')->group(function () {
+
+        Route::post('sendConfirmationCode', 'Api\SmsController@sendConfirmationCode');
+
+    });
+
+});
