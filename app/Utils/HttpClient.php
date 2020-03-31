@@ -30,8 +30,6 @@ class HttpClient
 
     public function get(String $url)
     {
-        $ch = curl_init($url);
-
         if (count($this->data) > 0) {
 
             $url .= '?';
@@ -49,10 +47,11 @@ class HttpClient
                 $i++;
             }
         }
+        
+        $ch = curl_init($url);
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
 
         $res = curl_exec($ch);
 
