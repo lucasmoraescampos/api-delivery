@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Category;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Subcategory;
 use App\MenuSession;

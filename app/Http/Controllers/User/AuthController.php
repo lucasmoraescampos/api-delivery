@@ -80,7 +80,9 @@ class AuthController extends Controller
             'phone' => 'required|string'
         ]);
 
-        $user = User::where('phone', preg_replace('/[^0-9]/', '', $request->phone))->first();
+        $phone = preg_replace('/[^0-9]/', '', $request->phone);
+
+        $user = User::where('phone', $phone)->first();
 
         if ($user == null) {
 
@@ -100,7 +102,7 @@ class AuthController extends Controller
         $http->setData([
             'key' => env('SMS_DEV_KEY'),
             'type' => 9,
-            'number' => $request->phone,
+            'number' => $phone,
             'msg' => urlencode('Seu codigo Meu Pedido: ' . $user->sms_code)
         ]);
 
