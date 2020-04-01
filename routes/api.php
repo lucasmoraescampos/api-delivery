@@ -17,7 +17,15 @@ Route::get('product/{photo}', 'Company\ProductController@showPhoto')->name('prod
 
 Route::prefix('user')->group(function () {
 
-    Route::post('register', 'User\AuthController@store');
+    Route::post('sendRegisterCodeConfirmation', 'User\AuthController@sendRegisterCodeConfirmation');
+
+    Route::post('registerWithPhone', 'User\AuthController@registerWithPhone');
+
+    Route::post('sendLoginCodeConfirmation', 'User\AuthController@sendLoginCodeConfirmation');
+
+    Route::post('loginWithConfirmationCode', 'User\AuthController@loginWithConfirmationCode');
+
+    Route::post('logout', 'User\AuthController@logout');
 
     Route::prefix('verify')->group(function () {
 
@@ -107,16 +115,6 @@ Route::prefix('company')->group(function () {
             Route::delete('subcomplement/{id}', 'Company\ProductController@deleteSubcomplement');
 
         });
-
-    });
-
-});
-
-Route::prefix('api')->group(function () {
-
-    Route::prefix('sms')->group(function () {
-
-        Route::post('sendConfirmationCode', 'Api\SmsController@sendConfirmationCode');
 
     });
 

@@ -21,7 +21,7 @@ class CreateUsers extends Migration
             $table->string('phone', 11)->nullable(false)->unique();
             $table->string('password', 255)->nullable(true);
             $table->unsignedTinyInteger('status')->nullable(true);
-            $table->string('temporary_code', 25)->nullable(true);
+            $table->char('sms_code', 4)->nullable(true);
             $table->timestamps();
         });
     }
