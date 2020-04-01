@@ -171,7 +171,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -236,8 +235,7 @@ return [
         'Location' => Stevebauman\Location\Facades\Location::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class
     ],
 
 ];
