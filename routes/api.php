@@ -29,15 +29,19 @@ Route::prefix('user')->group(function () {
 
     Route::group(['middleware' => 'assign.guard:users'], function () {
 
-        // Route::group(['middleware' => 'auth.jwt'], function () {
+        Route::group(['middleware' => 'auth.jwt'], function () {
 
             Route::prefix('company')->group(function () {
+
+                Route::get('categories', 'User\CompanyController@showCategories');
+
+                Route::get('subcategories', 'User\CompanyController@showSubcategories');
 
                 Route::get('products/{company_id}', 'User\CompanyController@showProducts');
 
             });            
 
-        // });
+        });
 
 
     });
