@@ -16,7 +16,7 @@ class AuthController extends Controller
     public function sendRegisterCodeConfirmation(Request $request)
     {
         $request->validate([
-            'phone' => 'required|numeric'
+            'phone' => 'required|string'
         ]);
 
         $code = generateCode();
@@ -26,7 +26,7 @@ class AuthController extends Controller
         $http->setData([
             'key' => env('SMS_DEV_KEY'),
             'type' => 9,
-            'number' => $request->phone,
+            'number' => preg_replace('/[^0-9]/', '', $request->phone),
             'msg' => urlencode('Seu codigo Meu Pedido: ' . $code)
         ]);
 
@@ -77,10 +77,19 @@ class AuthController extends Controller
     public function sendLoginCodeConfirmation(Request $request)
     {
         $request->validate([
-            'phone' => 'required|numeric'
+            'phone' => 'required|string'
         ]);
 
-        $user = User::find(Auth::id());
+        $user = User::where('phone', preg_replace('/[^0-9]/', '', $request->phone))->first();
+
+        if ($user == null) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Este número de celular não está cadastrado!'
+            ]);
+
+        }
 
         $user->sms_code = generateCode();
 
@@ -113,7 +122,7 @@ class AuthController extends Controller
             'sms_code' => 'required|string'
         ]);
 
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('phone', preg_replace('/[^0-9]/', '', $request->phone))->first();
 
         if ($user == null) {
 
