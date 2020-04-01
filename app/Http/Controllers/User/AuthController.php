@@ -156,11 +156,6 @@ class AuthController extends Controller
         }
     }
 
-    public function loginWithFacebook(Request $request)
-    {
-        
-    }
-
     public function logout(Request $request)
     {
         $this->validate($request, [
