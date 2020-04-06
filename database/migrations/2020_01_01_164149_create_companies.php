@@ -31,8 +31,9 @@ class CreateCompanies extends Migration
             $table->string('longitude', 40)->nullable(true);
             $table->string('photo', 255)->nullable(true);
             $table->unsignedDecimal('min_value', 15, 2)->nullable(true);
+            $table->unsignedDecimal('delivery_price', 15, 2)->nullable(true);
             $table->time('waiting_time')->nullable(true);
-            $table->boolean('is_open')->nullable(true);
+            $table->boolean('is_open')->nullable(false);
             $table->unsignedTinyInteger('status')->nullable(false);
             $table->timestamps();
             $table->foreign('category_id')

@@ -17,7 +17,8 @@ class Company extends Authenticatable implements JWTSubject
     ];
 
     protected $attributes = [
-        'status' => WAITING
+        'status' => WAITING,
+        'is_open' => 0
     ];
 
     public function getJWTIdentifier()

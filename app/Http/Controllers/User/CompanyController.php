@@ -3,16 +3,24 @@
 namespace App\Http\Controllers\User;
 
 use App\Category;
-use App\Http\Controllers\Controller;
+use App\Company;
 use App\Subcategory;
 use App\MenuSession;
 use App\Product;
+use App\Http\Controllers\Controller;
 
 class CompanyController extends Controller
 {
     public function index($category_id)
     {
+        $companies = Company::select('name', 'waiting_time', 'latitude', 'longitude', 'delivery_price')
+            ->where('category_id', $category_id)
+            ->get();
 
+        return response()->json([
+            'success' => true,
+            'data' => $companies
+        ]);
     }
 
     public function showCategories()
@@ -63,6 +71,5 @@ class CompanyController extends Controller
 
     public function showProduct($id)
     {
-
     }
 }
