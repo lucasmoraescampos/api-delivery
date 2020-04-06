@@ -43,11 +43,11 @@ Route::prefix('user')->group(function () {
 
                 Route::get('{category_id}', 'User\CompanyController@index');
 
-                Route::get('categories', 'User\CompanyController@showCategories');
+                Route::get('category', 'User\CompanyController@showCategories');
 
-                Route::get('subcategories/{category_id}', 'User\CompanyController@showSubcategories');
+                Route::get('subcategory/{category_id}', 'User\CompanyController@showSubcategories');
 
-                Route::get('products/{company_id}', 'User\CompanyController@showProducts');
+                Route::get('product/{company_id}', 'User\CompanyController@showProducts');
 
             });            
 
