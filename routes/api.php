@@ -32,30 +32,21 @@ Route::prefix('user')->group(function () {
         Route::post('email', 'User\VerifyController@storeEmail');
 
         Route::post('phone', 'User\VerifyController@storePhone');
-
     });
 
     Route::group(['middleware' => 'assign.guard:users'], function () {
 
         Route::group(['middleware' => 'auth.jwt'], function () {
 
-            Route::prefix('company')->group(function () {
+            Route::get('companies/{category_id}', 'User\CompanyController@index');
 
-                Route::get('{category_id}', 'User\CompanyController@index');
+            Route::get('categories', 'User\CompanyController@showCategories');
 
-                Route::get('category', 'User\CompanyController@showCategories');
+            Route::get('subcategories/{category_id}', 'User\CompanyController@showSubcategories');
 
-                Route::get('subcategory/{category_id}', 'User\CompanyController@showSubcategories');
-
-                Route::get('product/{company_id}', 'User\CompanyController@showProducts');
-
-            });            
-
+            Route::get('products/{company_id}', 'User\CompanyController@showProducts');
         });
-
-
     });
-
 });
 
 Route::prefix('company')->group(function () {
@@ -79,13 +70,11 @@ Route::prefix('company')->group(function () {
             Route::put('/{id}', 'Company\MenuSessionController@update');
 
             Route::delete('/{id}', 'Company\MenuSessionController@delete');
-
         });
 
         Route::prefix('subcategory')->group(function () {
 
             Route::get('/', 'Company\SubcategoryController@index');
-
         });
 
         Route::prefix('product')->group(function () {
@@ -115,9 +104,6 @@ Route::prefix('company')->group(function () {
             Route::delete('complement/{id}', 'Company\ProductController@deleteComplement');
 
             Route::delete('subcomplement/{id}', 'Company\ProductController@deleteSubcomplement');
-
         });
-
     });
-
 });
