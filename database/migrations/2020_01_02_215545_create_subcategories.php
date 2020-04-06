@@ -17,6 +17,7 @@ class CreateSubcategories extends Migration
             $table->increments('id')->nullable(false);
             $table->unsignedTinyInteger('category_id')->nullable(false);
             $table->string('name', 100)->nullable(false);
+            $table->string('icon', 100)->nullable(false);
         });
     }
 
