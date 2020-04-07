@@ -13,9 +13,8 @@ class CompanyController extends Controller
 {
     public function index($category_id)
     {
-        $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price')
+        $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
             ->where('category_id', $category_id)
-            ->where('is_open', OPEN)
             ->orderBy('created_at', 'asc')
             ->get();
 
