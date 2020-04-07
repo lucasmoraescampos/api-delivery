@@ -24,7 +24,7 @@ class CompanyController extends Controller
         
         else {
 
-            $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+            $companies = Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
                 ->whereIn('id', function ($query) use ($subcategory_id) {
 
                     $query->select('company_id')
