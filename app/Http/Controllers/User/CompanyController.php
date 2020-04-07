@@ -18,21 +18,23 @@ class CompanyController extends Controller
             $companies = Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
                 ->where('category_id', $category_id)
                 ->orderBy('created_at', 'asc')
+                ->orderBy('is_open', 'desc')
                 ->get();
 
-        }
-        
-        else {
+        } else {
 
             $companies = Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+                ->where('category_id', $category_id)
                 ->whereIn('id', function ($query) use ($subcategory_id) {
 
                     $query->select('company_id')
                         ->from(with(new Product)->getTable())
                         ->where('subcategory_id', $subcategory_id)
                         ->distinct();
-                        
-                })->get();
+                })
+                ->orderBy('created_at', 'asc')
+                ->orderBy('is_open', 'desc')
+                ->get();
         }
 
         return response()->json([
