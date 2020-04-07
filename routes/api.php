@@ -40,6 +40,8 @@ Route::prefix('user')->group(function () {
 
             Route::get('companies/{category_id}', 'User\CompanyController@index');
 
+            Route::get('companies/{category_id}/{subcategory_id}', 'User\CompanyController@index');
+
             Route::get('categories', 'User\CompanyController@showCategories');
 
             Route::get('subcategories/{category_id}', 'User\CompanyController@showSubcategories');

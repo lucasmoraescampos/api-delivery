@@ -11,12 +11,29 @@ use App\Http\Controllers\Controller;
 
 class CompanyController extends Controller
 {
-    public function index($category_id)
+    public function index($category_id, $subcategory_id = null)
     {
-        $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
-            ->where('category_id', $category_id)
-            ->orderBy('created_at', 'asc')
-            ->get();
+        if ($subcategory_id == null) {
+
+            $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+                ->where('category_id', $category_id)
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+        }
+        
+        else {
+
+            $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+                ->whereIn('id', function ($query) use ($subcategory_id) {
+
+                    $query->select('company_id')
+                        ->from(with(new Product)->getTable())
+                        ->where('subcategory_id', $subcategory_id)
+                        ->distinct();
+                        
+                })->get();
+        }
 
         return response()->json([
             'success' => true,
