@@ -15,7 +15,7 @@ class CompanyController extends Controller
     {
         if ($subcategory_id == null) {
 
-            $companies = Company::select('photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+            $companies = Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
                 ->where('category_id', $category_id)
                 ->orderBy('created_at', 'asc')
                 ->get();
