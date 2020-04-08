@@ -95,7 +95,7 @@ class CompanyController extends Controller
             ->where('companies.category_id', $category_id)
             ->where('products.subcategory_id', $subcategory_id)
             ->where('companies.is_open', OPEN)
-            ->where('companies.status', ACTIVE);
+            ->where('products.status', ACTIVE);
 
         switch (date('N')) {
 
