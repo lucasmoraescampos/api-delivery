@@ -52,6 +52,16 @@ class CompanyController extends Controller
         ]);
     }
 
+    public function showSubcategory($id)
+    {
+        $subcategory = Subcategory::find($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $subcategory
+        ]);
+    }
+
     public function showSubcategories($category_id)
     {
         $subcategories = Subcategory::where('category_id', $category_id)
