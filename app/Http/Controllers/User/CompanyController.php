@@ -93,7 +93,7 @@ class CompanyController extends Controller
         $products = Product::select('products.photo', 'products.name', 'products.description', 'products.price', 'products.promotional_price', 'companies.photo as company_photo', 'companies.waiting_time', 'companies.delivery_price', 'companies.latitude', 'companies.longitude')
             ->leftJoin('companies', 'companies.id', 'products.company_id')
             ->where('companies.category_id', $category_id)
-            ->where('companies.subcategory_id', $subcategory_id)
+            ->where('products.subcategory_id', $subcategory_id)
             ->where('companies.is_open', OPEN)
             ->where('companies.status', ACTIVE);
 
