@@ -1,5 +1,7 @@
 <?php
 
+defined('INACTIVE') OR define('INACTIVE', 0);
+
 defined('WAITING') OR define('WAITING', 0);
 
 defined('CLOSE') OR define('CLOSE', 0);

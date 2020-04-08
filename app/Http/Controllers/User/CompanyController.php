@@ -20,7 +20,6 @@ class CompanyController extends Controller
                 ->orderBy('created_at', 'asc')
                 ->orderBy('is_open', 'desc')
                 ->get();
-
         } else {
 
             $companies = Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
@@ -82,6 +81,54 @@ class CompanyController extends Controller
             ->where('products.company_id', $company_id)
             ->get()
             ->groupBy('menu_session');
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
+
+    public function showProductsBySubcategory($category_id, $subcategory_id)
+    {
+        $products = Product::select('products.photo', 'products.name', 'products.description', 'products.price', 'products.promotional_price', 'companies.photo as company_photo', 'companies.waiting_time', 'companies.delivery_price', 'companies.latitude', 'companies.longitude')
+            ->leftJoin('companies', 'companies.id', 'products.company_id')
+            ->where('companies.category_id', $category_id)
+            ->where('companies.subcategory_id', $subcategory_id)
+            ->where('companies.is_open', OPEN)
+            ->where('companies.status', ACTIVE);
+
+        switch (date('N')) {
+
+            case 7:
+                $products = $products->where('companies.is_available_sunday', ACTIVE);
+                break;
+
+            case 1:
+                $products = $products->where('companies.is_available_monday', ACTIVE);
+                break;
+
+            case 2:
+                $products = $products->where('companies.is_available_tuesday', ACTIVE);
+                break;
+
+            case 3:
+                $products = $products->where('companies.is_available_wednesday', ACTIVE);
+                break;
+
+            case 4:
+                $products = $products->where('companies.is_available_thursday', ACTIVE);
+                break;
+
+            case 5:
+                $products = $products->where('companies.is_available_friday', ACTIVE);
+                break;
+
+            case 6:
+                $products = $products->where('companies.is_available_saturday', ACTIVE);
+                break;
+        }
+
+        $products = $products->get();        
 
         return response()->json([
             'success' => true,
