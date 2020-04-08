@@ -100,31 +100,31 @@ class CompanyController extends Controller
         switch (date('N')) {
 
             case 7:
-                $products = $products->where('companies.is_available_sunday', ACTIVE);
+                $products = $products->where('products.is_available_sunday', ACTIVE);
                 break;
 
             case 1:
-                $products = $products->where('companies.is_available_monday', ACTIVE);
+                $products = $products->where('products.is_available_monday', ACTIVE);
                 break;
 
             case 2:
-                $products = $products->where('companies.is_available_tuesday', ACTIVE);
+                $products = $products->where('products.is_available_tuesday', ACTIVE);
                 break;
 
             case 3:
-                $products = $products->where('companies.is_available_wednesday', ACTIVE);
+                $products = $products->where('products.is_available_wednesday', ACTIVE);
                 break;
 
             case 4:
-                $products = $products->where('companies.is_available_thursday', ACTIVE);
+                $products = $products->where('products.is_available_thursday', ACTIVE);
                 break;
 
             case 5:
-                $products = $products->where('companies.is_available_friday', ACTIVE);
+                $products = $products->where('products.is_available_friday', ACTIVE);
                 break;
 
             case 6:
-                $products = $products->where('companies.is_available_saturday', ACTIVE);
+                $products = $products->where('products.is_available_saturday', ACTIVE);
                 break;
         }
 
