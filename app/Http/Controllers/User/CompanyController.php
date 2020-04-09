@@ -92,9 +92,21 @@ class CompanyController extends Controller
             ->get()
             ->groupBy('menu_session_name');
 
+        $data = [];
+
+        foreach ($products as $values) {
+
+            $data[] = [
+                'menu_session_id' => $values[0]->menu_session_id,
+                'menu_session_name' => $values[0]->menu_session_name,
+                'products' => $values
+            ];
+
+        } 
+
         return response()->json([
             'success' => true,
-            'data' => $products
+            'data' => $data
         ]);
     }
 
