@@ -90,7 +90,7 @@ class CompanyController extends Controller
             ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
             ->where('products.company_id', $company_id)
             ->get()
-            ->groupBy('menu_session_id');
+            ->groupBy('menu_session_name');
 
         return response()->json([
             'success' => true,
