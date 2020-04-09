@@ -94,7 +94,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => (array) $products
+            'data' => $products
         ]);
     }
 
