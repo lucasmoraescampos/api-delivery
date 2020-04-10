@@ -81,7 +81,7 @@ class CompanyController extends Controller
         $products = Product::from('products as p')
             ->select('m.name as menu_session_name', 'p.menu_session_id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price')
             ->leftJoin('menu_sessions as m', 'm.id', 'p.menu_session_id')
-            ->where('products.company_id', $company_id)
+            ->where('p.company_id', $company_id)
             ->get()
             ->groupBy('menu_session_id');
 
