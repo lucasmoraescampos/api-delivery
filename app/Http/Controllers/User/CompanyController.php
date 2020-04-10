@@ -86,7 +86,7 @@ class CompanyController extends Controller
 
     public function showProducts($company_id)
     {
-        $products = Product::select('menu_sessions.name as menu_session_name', 'products.menu_session_id', 'products.name', 'products.description', 'products.price', 'products.promotional_price')
+        $products = Product::select('menu_sessions.name as menu_session_name', 'products.menu_session_id', 'products.photo', 'products.name', 'products.description', 'products.price', 'products.promotional_price')
             ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
             ->where('products.company_id', $company_id)
             ->get()
