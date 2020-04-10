@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Company;
 use App\Rules\CategoryRule;
-use App\Rules\PasswordRule;
-use JWTAuth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -19,20 +18,14 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string',
-            'password' => ['required', new PasswordRule()],
-            'zipcode' => 'required',
-            'street_name' => 'required|string',
-            'street_number' => 'required',
-            'district' => 'required|string',
-            'city' => 'required|string',
-            'uf' => 'required|string',
+            'password' => 'required'
         ]);
 
         if (Company::where('email', $request->email)->count()) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'Esse email já está sendo usado por outra empresa!'
+                'message' => 'Esse e-mail já está sendo usado por outra empresa!'
             ]);
         }
 
@@ -41,14 +34,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => preg_replace('/[^0-9]/', '', $request->phone),
-            'password' => bcrypt($request->password),
-            'zipcode' => preg_replace('/[^0-9]/', '', $request->zipcode),
-            'street_name' => $request->street_name,
-            'street_number' => $request->street_number,
-            'complement' => $request->complement,
-            'district' => $request->district,
-            'city' => $request->city,
-            'uf' => $request->uf
+            'password' => bcrypt($request->password)
         ]);
 
         return response()->json([

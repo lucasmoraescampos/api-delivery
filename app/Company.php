@@ -13,7 +13,7 @@ class Company extends Authenticatable implements JWTSubject
     protected $table = 'companies';
 
     protected $fillable = [
-        'category_id', 'name', 'email', 'phone', 'password', 'zipcode', 'street_name', 'street_number', 'complement', 'district', 'city', 'uf', 'latitude', 'longitude',
+        'category_id', 'name', 'email', 'phone', 'password'
     ];
 
     protected $attributes = [
