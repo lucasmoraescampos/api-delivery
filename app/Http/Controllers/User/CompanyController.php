@@ -163,6 +163,8 @@ class CompanyController extends Controller
             ->where('c.product_id', $id)
             ->get();
 
+        $product->complements = [];
+
         foreach ($complements as $complement) {
 
             $product->complements[] = [
