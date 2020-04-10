@@ -78,21 +78,23 @@ class CompanyController extends Controller
 
     public function showProducts($company_id)
     {
-        $products = Product::select('menu_sessions.name as menu_session_name', 'products.menu_session_id', 'products.photo', 'products.name', 'products.description', 'products.price', 'products.promotional_price')
-            ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
+        $products = Product::from('products as p')
+            ->select('m.name as menu_session_name', 'p.menu_session_id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price')
+            ->leftJoin('menu_sessions as m', 'm.id', 'p.menu_session_id')
             ->where('products.company_id', $company_id)
-            ->get();
+            ->get()
+            ->groupBy('menu_session_id');
 
         $data = [];
 
-        foreach ($products as $product) {
+        foreach ($products as $values) {
 
             $data[] = [
-                'menu_session_id' => $product->menu_session_id,
-                'menu_session_name' => $product->menu_session_name,
-                'products' => $product
+                'menu_session_id' => $values[0]->menu_session_id,
+                'menu_session_name' => $values[0]->menu_session_name,
+                'products' => $values
             ];
-            
+
         }
 
         return response()->json([
@@ -161,7 +163,6 @@ class CompanyController extends Controller
             ->where('c.product_id', $id)
             ->get();
 
-
         foreach ($complements as $complement) {
 
             $product->complements[] = [
@@ -172,7 +173,7 @@ class CompanyController extends Controller
                     'price' => $complement->price
                 ]
             ];
-
+            
         }
 
         return response()->json([
