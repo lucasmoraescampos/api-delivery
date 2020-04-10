@@ -4,10 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Category;
 use App\Company;
+use App\Complement;
 use App\Subcategory;
 use App\MenuSession;
 use App\Product;
 use App\Http\Controllers\Controller;
+use App\Subcomplement;
 
 class CompanyController extends Controller
 {
@@ -74,35 +76,24 @@ class CompanyController extends Controller
         ]);
     }
 
-    public function showMenuSessions($company_id)
-    {
-        $menu_sessions = MenuSession::where('company_id', $company_id)->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $menu_sessions
-        ]);
-    }
-
     public function showProducts($company_id)
     {
         $products = Product::select('menu_sessions.name as menu_session_name', 'products.menu_session_id', 'products.photo', 'products.name', 'products.description', 'products.price', 'products.promotional_price')
             ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
             ->where('products.company_id', $company_id)
-            ->get()
-            ->groupBy('menu_session_name');
+            ->get();
 
         $data = [];
 
-        foreach ($products as $values) {
+        foreach ($products as $product) {
 
             $data[] = [
-                'menu_session_id' => $values[0]->menu_session_id,
-                'menu_session_name' => $values[0]->menu_session_name,
-                'products' => $values
+                'menu_session_id' => $product->menu_session_id,
+                'menu_session_name' => $product->menu_session_name,
+                'products' => $product
             ];
-
-        } 
+            
+        }
 
         return response()->json([
             'success' => true,
@@ -150,7 +141,7 @@ class CompanyController extends Controller
                 break;
         }
 
-        $products = $products->get();        
+        $products = $products->get();
 
         return response()->json([
             'success' => true,
@@ -160,5 +151,33 @@ class CompanyController extends Controller
 
     public function showProduct($id)
     {
+        $product = Product::select('photo', 'name', 'description', 'price', 'promotional_price')
+            ->where('id', $id)
+            ->first();
+
+        $complements = Subcomplement::from('subcomplements as s')
+            ->select('c.id', 'c.title', 'c.qty_min', 'c.qty_max', 's.description', 's.price')
+            ->leftJoin('complements as c', 'c.id', 's.complement_id')
+            ->where('c.product_id', $id)
+            ->get();
+
+
+        foreach ($complements as $complement) {
+
+            $product->complements[] = [
+                'id' => $complement->id,
+                'title' => $complement->title,
+                'subcomplements' => [
+                    'description' => $complement->description,
+                    'price' => $complement->price
+                ]
+            ];
+
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $product
+        ]);
     }
 }

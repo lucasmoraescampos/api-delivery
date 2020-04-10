@@ -52,6 +52,8 @@ Route::prefix('user')->group(function () {
 
             Route::get('products/{category_id}/{subcategory_id}', 'User\CompanyController@showProductsBySubcategory');
 
+            Route::get('product/{id}', 'User\CompanyController@showProduct');
+            
         });
     });
 });
