@@ -19,7 +19,6 @@ class ProductController extends Controller
     {
         $products = Product::select('id', 'menu_session_id', 'photo', 'name', 'description')
             ->where('company_id', Auth::id())
-            ->orderBy('created_at', 'asc')
             ->get();
 
         return response()->json([
