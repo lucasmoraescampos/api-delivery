@@ -74,10 +74,8 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'company' => $company,
-                    'token' => JWTAuth::fromUser($company)
-                ]
+                'data' => $company,
+                'token' => JWTAuth::fromUser($company)
             ]);
 
         }
