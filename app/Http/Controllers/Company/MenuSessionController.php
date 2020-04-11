@@ -14,7 +14,7 @@ class MenuSessionController extends Controller
     public function index()
     {
         $sessions = MenuSession::where('company_id', Auth::id())
-            ->orderBy('name', 'asc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return response()->json([
