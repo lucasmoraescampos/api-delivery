@@ -17,10 +17,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::select('products.id', 'products.name', 'menu_sessions.name as menu_session', 'products.price', 'products.status')
-            ->leftJoin('menu_sessions', 'menu_sessions.id', 'products.menu_session_id')
-            ->where('products.company_id', Auth::id())
-            ->orderBy('name', 'asc')
+        $products = Product::select('id', 'menu_session_id', 'name', 'description')
+            ->where('company_id', Auth::id())
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return response()->json([
