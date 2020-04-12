@@ -144,6 +144,8 @@ class MenuSessionController extends Controller
 
         foreach ($request->sessions as $session) {
 
+            dd($session);
+
             MenuSession::where('id', $session->id)
                 ->update([
                     'position' => $position
