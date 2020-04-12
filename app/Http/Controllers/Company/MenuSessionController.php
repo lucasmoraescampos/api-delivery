@@ -123,7 +123,7 @@ class MenuSessionController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Você precisa desvincular esta sessão de todos os seus produtos!'
+                'message' => 'Desvincule esta sessão de todos os produtos antes de remove-lá!'
             ]);
 
         }

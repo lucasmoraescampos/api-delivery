@@ -82,32 +82,9 @@ class ProductController extends Controller
             'is_available_thursday' => 'required|boolean',
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
-            'available_shift' => ['required', new AvailableShiftRule()],
-            'promotional_price' => 'nullable|numeric'
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i'
         ]);
-
-        if ($request->promotional_price) {
-
-            if ($request->promotional_price < 2) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Valor promocional não pode ser menor que R$ 2,00.'
-                ], 422);
-            }
-
-            if (percentValue($request->price, $request->promotional_price) < 10) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Valor promocional não pode ser abaixo de 10% do valor do produto.'
-                ], 422);
-            }
-
-            else {
-                $request->promotional_price = $request->price - $request->promotional_price;
-            }
-        }
 
         $product = Product::create([
             'name' => $request->name,
@@ -123,17 +100,9 @@ class ProductController extends Controller
             'is_available_thursday' => $request->is_available_thursday,
             'is_available_friday' => $request->is_available_friday,
             'is_available_saturday' => $request->is_available_saturday,
-            'available_shift' => $request->available_shift,
-            'promotional_price' => $request->promotional_price
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time
         ]);
-
-        if ($request->complements != null && $request->complements != []) {
-            $product->insertComplements($request->complements);
-        }
-
-        $menu_session = MenuSession::where('id', $product->menu_session_id)->first();
-
-        $product->menu_session = $menu_session->name;
 
         return response()->json([
             'success' => true,

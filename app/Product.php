@@ -21,8 +21,8 @@ class Product extends Model
         'is_available_thursday',
         'is_available_friday',
         'is_available_saturday',
-        'available_shift',
-        'promotional_price'
+        'start_time',
+        'end_time'
     ];
 
     protected $attributes = [
