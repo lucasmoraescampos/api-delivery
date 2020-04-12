@@ -17,6 +17,7 @@ class CreateMenuSessions extends Migration
             $table->bigIncrements('id')->nullable(false);
             $table->unsignedBigInteger('company_id')->nullable(false);
             $table->string('name', 40)->nullable(false);
+            $table->unsignedTinyInteger('position')->nullable(false);
         });
     }
 

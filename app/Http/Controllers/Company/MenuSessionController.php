@@ -58,10 +58,14 @@ class MenuSessionController extends Controller
 
         }
 
-        $menu_session = MenuSession::create([
+        $menu_session = new MenuSession([
             'company_id' => $company->id,
             'name' => $request->name
         ]);
+
+        $menu_session->createPosition();
+
+        $menu_session->save();
 
         return response()->json([
             'success' => true,
@@ -127,6 +131,31 @@ class MenuSessionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Sessão excluída com sucesso!'
+        ]);
+    }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'sessions' => 'required|array'
+        ]);
+
+        $position = 1;
+
+        foreach ($request->sessions as $session) {
+
+            MenuSession::where('id', $session->id)
+                ->update([
+                    'position' => $position
+                ]);
+
+            $position++;
+
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sessões reordenadas com sucesso!'
         ]);
     }
 }

@@ -78,6 +78,8 @@ Route::prefix('company')->group(function () {
 
             Route::put('/{id}', 'Company\MenuSessionController@update');
 
+            Route::put('/', 'Company\MenuSessionController@reorder');
+
             Route::delete('/{id}', 'Company\MenuSessionController@delete');
         });
 
