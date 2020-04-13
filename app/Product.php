@@ -42,7 +42,7 @@ class Product extends Model
 
         $photo = str_replace(' ', '+', $photo);
 
-        $this->photo = env('APP_URL') . "/storage/products/$full_name";
+        $this->photo = "https://api.meupedido.org/storage/products/$full_name";
 
         $this->save();
 
