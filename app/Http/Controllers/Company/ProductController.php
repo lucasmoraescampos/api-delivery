@@ -181,7 +181,7 @@ class ProductController extends Controller
     public function storePhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|file|mimes:png,jpg,jpeg',
+            'photo' => 'required|string',
             'product_id' => 'required'
         ]);
 
