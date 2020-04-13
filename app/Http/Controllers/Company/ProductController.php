@@ -195,9 +195,7 @@ class ProductController extends Controller
             ]);
         }
 
-        $product->upload($request->photo);
-
-        $product->save();
+        $product->uploadPhoto($request->photo);
 
         return response()->json([
             'success' => true,

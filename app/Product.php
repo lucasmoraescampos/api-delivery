@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -29,17 +30,23 @@ class Product extends Model
         'status' => 1
     ];
 
-    public function upload($file)
+    public function uploadPhoto($photo)
     {
         $name = uniqid(date('HisYmd'));
 
-        $ext = $file->extension();
+        $ext = substr($photo, 11, strpos($photo, ';') - 11);
 
         $full_name = "{$name}.{$ext}";
 
-        $file->storeAs('products', $full_name);
+        $photo = str_replace('data:image/png;base64,', '', $photo);
 
-        $this->photo = $full_name;
+        $photo = str_replace(' ', '+', $photo);
+
+        $this->photo = env('APP_URL') . "/storage/products/$full_name";
+
+        $this->save();
+
+        Storage::put("products/$full_name", $photo);
     }
 
     public function insertComplement($complement)
