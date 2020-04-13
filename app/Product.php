@@ -38,15 +38,15 @@ class Product extends Model
 
         $full_name = "{$name}.{$ext}";
 
-        $data = substr($photo, strpos($photo, ',') + 1);
+        $photo = str_replace('data:image/png;base64,', '', $photo);
 
-        $data = base64_decode($data);
+        $photo = str_replace(' ', '+', $photo);
 
         $this->photo = "https://api.meupedido.org/storage/products/$full_name";
 
         $this->save();
 
-        Storage::put("products/$full_name", $data);
+        Storage::put("products/$full_name", base64_decode($photo));
     }
 
     public function insertComplement($complement)
