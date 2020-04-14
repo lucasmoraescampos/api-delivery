@@ -180,6 +180,11 @@ class ProductController extends Controller
 
     public function storePhoto(Request $request)
     {
+        return response()->json([
+            'success' => false,
+            'data' => $request->photo
+        ]);
+
         $request->validate([
             'photo' => 'required|file',
             'product_id' => 'required'
