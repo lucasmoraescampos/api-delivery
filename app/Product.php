@@ -34,19 +34,21 @@ class Product extends Model
     {
         $name = uniqid(date('HisYmd'));
 
-        $ext = substr($photo, 11, strpos($photo, ';') - 11);
+        $image_parts = explode(";base64,", $photo);
 
-        $full_name = "{$name}.{$ext}";
+        $image_type_aux = explode("image/", $image_parts[0]);
 
-        // $photo = str_replace('data:image/png;base64,', '', $photo);
+        $type = $image_type_aux[1];
 
-        // $photo = str_replace(' ', '+', $photo);
+        $full_name = "{$name}.{$type}";
+
+        $image = base64_decode($image_parts[1]);
 
         $this->photo = "https://api.meupedido.org/storage/products/$full_name";
 
         $this->save();
 
-        // Storage::put("products/$full_name", base64_decode($photo));
+        Storage::put("products/$full_name", $image);
     }
 
     public function insertComplement($complement)
