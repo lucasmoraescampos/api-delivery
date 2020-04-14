@@ -44,11 +44,11 @@ class Product extends Model
 
         $image = base64_decode($image_parts[1]);
 
-        $this->photo = "https://api.meupedido.org/storage/products/$full_name";
-
-        $this->save();
-
         Storage::put("products/$full_name", $image);
+
+        $this->photo = env('APP_URL') . "storage/products/$full_name";
+
+        $this->save();        
     }
 
     public function insertComplement($complement)
