@@ -105,8 +105,8 @@ class ProductController extends Controller
             'end_time' => $request->end_time
         ]);
 
-        if ($product->photo != null) {
-            $product->uploadPhoto($product->photo);
+        if ($request->photo != null) {
+            $product->uploadPhoto($request->photo);
         }
 
         return response()->json([
