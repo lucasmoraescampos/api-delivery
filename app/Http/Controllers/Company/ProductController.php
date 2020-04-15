@@ -83,7 +83,8 @@ class ProductController extends Controller
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
             'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i'
+            'end_time' => 'required|date_format:H:i',
+            'photo' => 'nullable|file|mimes:png,jpg,jpeg|max:8192'
         ]);
 
         $product = Product::create([
@@ -103,6 +104,10 @@ class ProductController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time
         ]);
+
+        if ($product->photo != null) {
+            $product->uploadPhoto($product->photo);
+        }
 
         return response()->json([
             'success' => true,
@@ -181,7 +186,7 @@ class ProductController extends Controller
     public function storePhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|file|mimes:png,jpg,jpeg',
+            'photo' => 'required|file|mimes:png,jpg,jpeg|max:8192',
             'product_id' => 'required'
         ]);
 
