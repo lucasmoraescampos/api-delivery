@@ -41,9 +41,9 @@ class CreateProducts extends Migration
 
             $table->boolean('is_available_saturday')->nullable(false);
 
-            $table->time('start_time')->nullable(false);
+            $table->time('start_time')->nullable(true);
 
-            $table->time('end_time')->nullable(false);
+            $table->time('end_time')->nullable(true);
 
             $table->unsignedDecimal('price', 15, 2)->nullable(false);
 

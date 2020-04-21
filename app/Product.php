@@ -42,7 +42,7 @@ class Product extends Model
 
         $this->photo = 'https://api.meupedido.org/storage/products/' . $full_name;
 
-        $this->save();        
+        $this->save();
     }
 
     public function insertComplement($complement)
@@ -84,11 +84,6 @@ class Product extends Model
                 ]);
             }
         }
-    }
-
-    public function getPhotoPath()
-    {
-        return route('productPhoto', ['photo' => $this->photo]);
     }
 
     public function getComplements()

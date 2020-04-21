@@ -43,28 +43,10 @@ class ProductController extends Controller
 
         $product->complements = $product->getComplements();
 
-        $product->photo = $product->getPhotoPath();
-
         return response()->json([
             'success' => true,
             'data' => $product
         ]);
-    }
-
-    public function showPhoto($photo)
-    {
-        $path = storage_path("app/public/products/$photo");
-
-        if (file_exists($path)) {
-
-            $array = explode('.', $path);
-
-            $type = end($array);
-
-            return response()->file($path, ['Content-Type' => "image/$type"]);
-        }
-
-        abort(404);
     }
 
     public function store(Request $request)

@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('product/{photo}', 'Company\ProductController@showPhoto')->name('productPhoto');
-
 Route::prefix('user')->group(function () {
 
     Route::post('sendRegisterCodeConfirmation', 'User\AuthController@sendRegisterCodeConfirmation');
