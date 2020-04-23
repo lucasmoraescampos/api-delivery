@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Company;
 use App\Complement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\MenuSession;
 use App\Product;
 use App\Rules\AvailableShiftRule;
+use App\Rules\ComplementRule;
 use App\Rules\MenuSessionRule;
+use App\Rules\ProductRule;
 use App\Rules\SubcategoryRule;
 use App\Subcomplement;
 use Illuminate\Support\Facades\Auth;
@@ -101,59 +102,35 @@ class ProductController extends Controller
     public function storeComplement(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
+            'product_id' => ['required', new ProductRule()],
             'title' => 'required|string',
             'qty_min' => 'required',
             'qty_max' => 'required'
         ]);
 
-        $product = Product::where('id', $request->product_id)
-            ->where('company_id', Auth::id())
-            ->first();
-
-        if ($product == null) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Produto não encontrado!'
-            ]);
-        }
-
-        $product->insertComplement([
+        $complement = Complement::create([
+            'product_id' => $request->product_id,
             'title' => $request->title,
             'qty_min' => $request->qty_min,
-            'qty_max' => $request->qty_max,
-            'subcomplements' => $request->subcomplements
+            'qty_max' => $request->qty_max
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Complemento cadastrado com sucesso!'
+            'message' => 'Complemento cadastrado com sucesso!',
+            'data' => $complement
         ]);
     }
 
     public function storeSubcomplement(Request $request)
     {
         $request->validate([
-            'complement_id' => 'required',
+            'complement_id' => ['required', new ComplementRule()],
             'description' => 'required|string',
             'price' => 'required'
         ]);
 
-        $complement = Complement::where('complements.id', $request->complement_id)
-            ->leftJoin('products', 'products.id', 'complements.product_id')
-            ->where('products.company_id', Auth::id())
-            ->first();
-
-        if ($complement == null) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Complemento não encontrado!'
-            ]);
-        }
-
-        $complement->insertSubcomplement([
+        $subcomplement = Subcomplement::create([
             'complement_id' => $request->complement_id,
             'description' => $request->description,
             'price' => $request->price
@@ -161,7 +138,8 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Item cadastrado com sucesso!'
+            'message' => 'Item cadastrado com sucesso!',
+            'data' => $subcomplement
         ]);
     }
 

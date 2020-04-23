@@ -88,11 +88,11 @@ Route::prefix('company')->group(function () {
 
         Route::prefix('product')->group(function () {
 
-            Route::get('/', 'Company\ProductController@index');
+            Route::get('/', 'Company\ProductController@index'); //
 
-            Route::get('{id}', 'Company\ProductController@show');
+            Route::get('{id}', 'Company\ProductController@show'); //
 
-            Route::post('/', 'Company\ProductController@store');
+            Route::post('/', 'Company\ProductController@store'); //
 
             Route::post('complement', 'Company\ProductController@storeComplement');
 

@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use App\Complement;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ComplementRule implements Rule
 {
@@ -26,7 +27,11 @@ class ComplementRule implements Rule
      */
     public function passes($attribute, $id)
     {
-        return Complement::where('id', $id)->count() > 0;
+        return Complement::from('complements as c')
+            ->where('c.id', $id)
+            ->leftJoin('products as p', 'p.id', 'c.product_id')
+            ->where('p.company_id', Auth::id())
+            ->count() > 0;
     }
 
     /**
@@ -36,6 +41,6 @@ class ComplementRule implements Rule
      */
     public function message()
     {
-        return 'Complement ID not found.';
+        return 'Complement ID not authorized.';
     }
 }

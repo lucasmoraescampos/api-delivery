@@ -11,9 +11,4 @@ class Complement extends Model
     protected $fillable = [
         'product_id', 'title', 'qty_min', 'qty_max'
     ];
-
-    public function insertSubcomplement($subcomplement)
-    {
-        Subcomplement::create($subcomplement);
-    }
 }

@@ -45,47 +45,6 @@ class Product extends Model
         $this->save();
     }
 
-    public function insertComplement($complement)
-    {
-        $created = Complement::create([
-            'product_id' => $this->id,
-            'title' => $complement['title'],
-            'qty_min' => $complement['qty_min'],
-            'qty_max' => $complement['qty_max']
-        ]);
-
-        foreach ($complement['subcomplements'] as $subcomplement) {
-
-            Subcomplement::create([
-                'complement_id' => $created->id,
-                'description' => $subcomplement['description'],
-                'price' => $subcomplement['price']
-            ]);
-        }
-    }
-
-    public function insertComplements($complements)
-    {
-        foreach ($complements as $complement) {
-
-            $created = Complement::create([
-                'product_id' => $this->id,
-                'title' => $complement['title'],
-                'qty_min' => $complement['qty_min'],
-                'qty_max' => $complement['qty_max']
-            ]);
-
-            foreach ($complement['subcomplements'] as $subcomplement) {
-
-                Subcomplement::create([
-                    'complement_id' => $created->id,
-                    'description' => $subcomplement['description'],
-                    'price' => $subcomplement['price']
-                ]);
-            }
-        }
-    }
-
     public function getComplements()
     {
         $complements = Complement::where('product_id', $this->id)
@@ -96,22 +55,6 @@ class Product extends Model
             $complement->subcomplements = Subcomplement::where('complement_id', $complement->id)->get();
         }
 
-        unset($complement);
-
         return $complements;
-    }
-
-    public static function exist($id)
-    {
-        return Product::where('id', $id)->count() > 0;
-    }
-
-    public static function getComplementsByProduct($id)
-    {
-        return Complement::select('complements.*')
-            ->leftJoin('products', 'products.id', 'complements.product_id')
-            ->where('products.company_id', Auth::id())
-            ->where('products.id', $id)
-            ->get();
     }
 }
