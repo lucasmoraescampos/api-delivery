@@ -265,6 +265,7 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Complemento não encontrado!'
             ]);
+
         }
 
         $complement->update([
@@ -275,7 +276,8 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Complemento atualizado com sucesso!'
+            'message' => 'Complemento atualizado com sucesso!',
+            'data' => $complement
         ]);
     }
 

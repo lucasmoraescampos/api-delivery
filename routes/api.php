@@ -94,15 +94,15 @@ Route::prefix('company')->group(function () {
 
             Route::post('/', 'Company\ProductController@store'); //
 
-            Route::post('complement', 'Company\ProductController@storeComplement');
+            Route::post('complement', 'Company\ProductController@storeComplement'); //
 
-            Route::post('subcomplement', 'Company\ProductController@storeSubcomplement');
+            Route::post('subcomplement', 'Company\ProductController@storeSubcomplement'); //
 
             Route::post('photo', 'Company\ProductController@storePhoto');
 
             Route::put('{id}', 'Company\ProductController@update');
 
-            Route::put('complement/{id}', 'Company\ProductController@updateComplement');
+            Route::put('complement/{id}', 'Company\ProductController@updateComplement'); //
 
             Route::put('subcomplement/{id}', 'Company\ProductController@updateSubcomplement');
 
