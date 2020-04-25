@@ -322,7 +322,7 @@ class ProductController extends Controller
 
             }
 
-            if (percentValue($request->price, $request->value) < 10) {
+            if (percentValue($product->price, $request->value) < 10) {
 
                 return response()->json([
                     'success' => false,
