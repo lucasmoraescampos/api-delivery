@@ -110,7 +110,7 @@ Route::prefix('company')->group(function () {
 
             Route::delete('{id}', 'Company\ProductController@delete');
 
-            Route::delete('complement/{id}', 'Company\ProductController@deleteComplement');
+            Route::delete('complement/{id}', 'Company\ProductController@deleteComplement'); //
 
             Route::delete('subcomplement/{id}', 'Company\ProductController@deleteSubcomplement');
         });

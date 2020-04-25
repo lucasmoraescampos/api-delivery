@@ -311,7 +311,8 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Item atualizado com sucesso!'
+            'message' => 'Item atualizado com sucesso!',
+            'data' => $subcomplement
         ]);
     }
 
