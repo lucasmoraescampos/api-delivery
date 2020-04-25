@@ -183,7 +183,8 @@ class ProductController extends Controller
             'is_available_thursday' => 'required|boolean',
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
-            'available_shift' => ['required', new AvailableShiftRule()]
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i'
         ]);
 
         $product = Product::where('id', $id)
@@ -212,7 +213,8 @@ class ProductController extends Controller
             'is_available_thursday' => $request->is_available_thursday,
             'is_available_friday' => $request->is_available_friday,
             'is_available_saturday' => $request->is_available_saturday,
-            'available_shift' => $request->available_shift
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time
         ]);
 
         return response()->json([
