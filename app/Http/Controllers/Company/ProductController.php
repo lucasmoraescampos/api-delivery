@@ -183,32 +183,8 @@ class ProductController extends Controller
             'is_available_thursday' => 'required|boolean',
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
-            'available_shift' => ['required', new AvailableShiftRule()],
-            'promotional_price' => 'numeric'
+            'available_shift' => ['required', new AvailableShiftRule()]
         ]);
-
-        if ($request->promotional_price) {
-
-            if ($request->promotional_price < 2) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Valor promocional não pode ser menor que R$ 2,00.'
-                ], 422);
-            }
-
-            if (percentValue($request->price, $request->promotional_price) < 10) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Valor promocional não pode ser abaixo de 10% do valor do produto.'
-                ], 422);
-            }
-
-            else {
-                $request->promotional_price = $request->price - $request->promotional_price;
-            }
-        }
 
         $product = Product::where('id', $id)
             ->where('company_id', Auth::id())
@@ -220,6 +196,7 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Produto não encontrado!'
             ]);
+
         }
 
         $product->update([
@@ -235,8 +212,7 @@ class ProductController extends Controller
             'is_available_thursday' => $request->is_available_thursday,
             'is_available_friday' => $request->is_available_friday,
             'is_available_saturday' => $request->is_available_saturday,
-            'available_shift' => $request->available_shift,
-            'promotional_price' => $request->promotional_price
+            'available_shift' => $request->available_shift
         ]);
 
         return response()->json([
@@ -313,6 +289,53 @@ class ProductController extends Controller
             'success' => true,
             'message' => 'Item atualizado com sucesso!',
             'data' => $subcomplement
+        ]);
+    }
+
+    public function updatePromotion(Request $request, $product_id)
+    {
+        $request->validate([
+            'value' => 'required|numeric'
+        ]);
+
+        $product = Product::where('id', $product_id)
+            ->where('company_id', Auth::id())
+            ->first();
+
+        if ($product == null) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Produto não encontrado!'
+            ]);
+            
+        }
+
+        if ($request->value < 2) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'O desconto não pode ser menor que R$ 2,00.'
+            ]);
+
+        }
+
+        if (percentValue($request->price, $request->value) < 10) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
+            ]);
+
+        }
+
+        $product->promotional_price = $product->price - $request->value;
+
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Desconto aplicado com sucesso!'
         ]);
     }
 

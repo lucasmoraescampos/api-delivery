@@ -106,6 +106,8 @@ Route::prefix('company')->group(function () {
 
             Route::put('subcomplement/{id}', 'Company\ProductController@updateSubcomplement'); //
 
+            Route::put('promotion/{product_id}', 'Company\ProductController@updatePromotion');
+
             Route::put('status/{id}', 'Company\ProductController@updateStatus');
 
             Route::delete('{id}', 'Company\ProductController@delete');
