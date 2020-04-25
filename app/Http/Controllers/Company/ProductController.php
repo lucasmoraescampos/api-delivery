@@ -295,7 +295,7 @@ class ProductController extends Controller
     public function updatePromotion(Request $request, $product_id)
     {
         $request->validate([
-            'value' => 'required|numeric'
+            'value' => 'nullable|numeric'
         ]);
 
         $product = Product::where('id', $product_id)
@@ -311,25 +311,35 @@ class ProductController extends Controller
             
         }
 
-        if ($request->value < 2) {
+        if ($request->value != null) {
 
-            return response()->json([
-                'success' => false,
-                'message' => 'O desconto não pode ser menor que R$ 2,00.'
-            ]);
+            if ($request->value < 2) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'O desconto não pode ser menor que R$ 2,00.'
+                ]);
+
+            }
+
+            if (percentValue($request->price, $request->value) < 10) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
+                ]);
+
+            }
+
+            $product->promotional_price = $product->price - $request->value;
 
         }
 
-        if (percentValue($request->price, $request->value) < 10) {
+        else {
 
-            return response()->json([
-                'success' => false,
-                'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
-            ]);
+            $product->promotional_price = null;
 
         }
-
-        $product->promotional_price = $product->price - $request->value;
 
         $product->save();
 
@@ -339,7 +349,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus($id)
     {
         $product = Product::where('id', $id)
             ->where('company_id', Auth::id())
