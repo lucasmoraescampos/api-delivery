@@ -127,7 +127,7 @@ class ProductController extends Controller
         $request->validate([
             'complement_id' => ['required', new ComplementRule()],
             'description' => 'required|string',
-            'price' => 'required'
+            'price' => 'nullable|numeric'
         ]);
 
         $subcomplement = Subcomplement::create([
@@ -285,7 +285,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'description' => 'required|string',
-            'price' => 'required|numeric'
+            'price' => 'nullable|numeric'
         ]);
 
         $subcomplement = Subcomplement::select('subcomplements.*')
