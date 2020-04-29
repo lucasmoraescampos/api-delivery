@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -37,9 +36,7 @@ class Product extends Model
 
         $full_name = "{$name}.{$ext}";
 
-        // $file->storeAs('products', $full_name);
-
-        Storage::disk('public_uploads')->put($full_name, $file);
+        $file->storeAs('products', $full_name);
 
         $this->photo = 'https://api.meupedido.org/storage/products/' . $full_name;
 
