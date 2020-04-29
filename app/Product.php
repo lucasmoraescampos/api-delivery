@@ -39,7 +39,7 @@ class Product extends Model
 
         // $file->storeAs('products', $full_name);
 
-        Storage::disk('public')->put($full_name, $file);
+        Storage::disk('public_uploads')->put($full_name, $file);
 
         $this->photo = 'https://api.meupedido.org/storage/products/' . $full_name;
 
