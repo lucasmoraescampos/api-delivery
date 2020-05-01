@@ -46,7 +46,13 @@ class CompanyController extends Controller
 
     public function showCategories()
     {
-        $categories = Category::all();
+        $categories = Category::whereIn('id', function ($query) {
+
+            $query->select('category_id')
+                ->from(with(new Company())->getTable())
+                ->distinct();
+                
+        })->get();
 
         return response()->json([
             'success' => true,
