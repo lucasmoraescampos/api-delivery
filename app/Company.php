@@ -40,6 +40,13 @@ class Company extends Authenticatable implements JWTSubject
     {
         return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
             ->where('category_id', $category_id)
+            ->whereIn('id', function ($query) {
+
+                $query->select('company_id')
+                    ->from(with(new Product)->getTable())
+                    ->distinct();
+                    
+            })
             ->orderBy('created_at', 'asc')
             ->orderBy('is_open', 'desc')
             ->get();
