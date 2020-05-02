@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Product;
 use App\Rules\CategoryRule;
 use App\Rules\SubcategoryRule;
 use App\Subcategory;
@@ -18,7 +18,13 @@ class SubcategoryController extends Controller
         ]);
 
         $subcategories = Subcategory::where('category_id', $request->category_id)
-            ->orderBy('name', 'asc')
+            ->whereIn('id', function ($query) {
+
+                $query->select('subcategory_id')
+                ->from(with(new Product())->getTable())
+                ->distinct();
+
+            })
             ->get();
 
         return response()->json([
