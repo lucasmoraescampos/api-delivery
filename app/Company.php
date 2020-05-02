@@ -35,4 +35,29 @@ class Company extends Authenticatable implements JWTSubject
     {
         return MenuSession::where('company_id', $this->id)->count();
     }
+
+    public static function getByCategory($category_id)
+    {
+        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+            ->where('category_id', $category_id)
+            ->orderBy('created_at', 'asc')
+            ->orderBy('is_open', 'desc')
+            ->get();
+    }
+
+    public static function getBySubcategory($subcategory_id)
+    {
+        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+            ->whereIn('id', function ($query) use ($subcategory_id) {
+
+                $query->select('company_id')
+                    ->from(with(new Product)->getTable())
+                    ->where('subcategory_id', $subcategory_id)
+                    ->distinct();
+                    
+            })
+            ->orderBy('created_at', 'asc')
+            ->orderBy('is_open', 'desc')
+            ->get();
+    }
 }

@@ -36,22 +36,33 @@ Route::prefix('user')->group(function () {
 
         Route::group(['middleware' => 'auth.jwt'], function () {
 
-            Route::get('companies/{category_id}', 'User\CompanyController@index');
+            Route::prefix('company')->group(function () {
 
-            Route::get('companies/{category_id}/{subcategory_id}', 'User\CompanyController@index');
+                Route::get('/', 'User\CompanyController@index'); //
 
-            Route::get('categories', 'User\CompanyController@showCategories');
+            });
 
-            Route::get('subcategory/{id}', 'User\CompanyController@showSubcategory');
+            Route::prefix('category')->group(function () {
 
-            Route::get('subcategories/{category_id}', 'User\CompanyController@showSubcategories');
+                Route::get('/', 'User\CategoryController@index'); //
 
-            Route::get('products/{company_id}', 'User\CompanyController@showProducts');
+            });
 
-            Route::get('products/{category_id}/{subcategory_id}', 'User\CompanyController@showProductsBySubcategory');
+            Route::prefix('subcategory')->group(function () {
 
-            Route::get('product/{id}', 'User\CompanyController@showProduct');
-            
+                Route::get('/', 'User\SubcategoryController@index'); //
+
+                Route::get('{id}', 'User\SubcategoryController@show'); //
+
+            });
+
+            Route::prefix('product')->group(function () {
+
+                Route::get('/', 'User\ProductController@index'); //
+
+                Route::get('{id}', 'User\ProductController@show'); //
+
+            });            
         });
     });
 });

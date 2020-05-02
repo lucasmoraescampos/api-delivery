@@ -2,10 +2,10 @@
 
 namespace App\Rules;
 
-use App\Category;
+use App\Company;
 use Illuminate\Contracts\Validation\Rule;
 
-class CategoryRule implements Rule
+class CompanyRule implements Rule
 {
     /**
      * Create a new rule instance.
@@ -26,7 +26,7 @@ class CategoryRule implements Rule
      */
     public function passes($attribute, $id)
     {
-        return Category::where('id', $id)->count() > 0;
+        return Company::where('id', $id)->count() > 0;
     }
 
     /**
@@ -36,6 +36,6 @@ class CategoryRule implements Rule
      */
     public function message()
     {
-        return 'ID Categoria não encontrada.';
+        return 'Company ID not found.';
     }
 }

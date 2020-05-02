@@ -10,3 +10,5 @@ defined('OPEN') OR define('OPEN', 1);
 
 defined('ACTIVE') OR define('ACTIVE', 1);
 
+defined('AVAILABLE') OR define('AVAILABLE', 1);
+
