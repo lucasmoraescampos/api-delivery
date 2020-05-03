@@ -6,6 +6,7 @@ use App\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Rules\CategoryRule;
+use App\Rules\CompanyRule;
 use App\Rules\SubcategoryRule;
 
 class CompanyController extends Controller
@@ -30,6 +31,24 @@ class CompanyController extends Controller
         return response()->json([
             'success' => true,
             'data' => $companies
+        ]);
+    }
+
+    public function show($id)
+    {
+        $request = new Request();
+
+        $request->replace(['id' => $id]);
+
+        $request->validate(['id' => new CompanyRule()]);
+
+        $company = Company::select('name', 'waiting_time')
+            ->where('id', $id)
+            ->first();
+
+        return response()->json([
+            'success' => true,
+            'data' => $company
         ]);
     }
 }

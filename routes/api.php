@@ -40,6 +40,8 @@ Route::prefix('user')->group(function () {
 
                 Route::get('/', 'User\CompanyController@index'); //
 
+                Route::get('{id}', 'User\CompanyController@show'); //
+
             });
 
             Route::prefix('category')->group(function () {
