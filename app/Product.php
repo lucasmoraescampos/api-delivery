@@ -59,7 +59,7 @@ class Product extends Model
     public static function getAvailableByCompany($company_id)
     {
         $products = Product::from('products as p')
-            ->select('m.name as menu_session_name', 'p.menu_session_id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price')
+            ->select('m.name as menu_session_name', 'p.id', 'p.menu_session_id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price')
             ->leftJoin('menu_sessions as m', 'm.id', 'p.menu_session_id')
             ->where('p.company_id', $company_id)
             ->where(Product::today(), AVAILABLE)
@@ -84,7 +84,7 @@ class Product extends Model
     public static function getAvailableBySubcategory($subcategory_id)
     {
         return Product::from('products as p')
-            ->select('p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude')
+            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude')
             ->leftJoin('companies as c', 'c.id', 'p.company_id')
             ->where('p.subcategory_id', $subcategory_id)
             ->where('c.is_open', OPEN)
