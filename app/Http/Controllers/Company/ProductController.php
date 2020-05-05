@@ -104,15 +104,15 @@ class ProductController extends Controller
         $request->validate([
             'product_id' => ['required', new ProductRule()],
             'title' => 'required|string',
-            'qty_min' => 'required',
-            'qty_max' => 'required'
+            'limit' => 'required',
+            'is_required' => 'required'
         ]);
 
         $complement = Complement::create([
             'product_id' => $request->product_id,
             'title' => $request->title,
-            'qty_min' => $request->qty_min,
-            'qty_max' => $request->qty_max
+            'limit' => $request->limit,
+            'is_required' => $request->is_required
         ]);
 
         return response()->json([
@@ -228,8 +228,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'qty_min' => 'required',
-            'qty_max' => 'required'
+            'limit' => 'required',
+            'is_required' => 'required'
         ]);
 
         $complement = Complement::select('complements.*')
@@ -249,8 +249,8 @@ class ProductController extends Controller
 
         $complement->update([
             'title' => $request->title,
-            'qty_min' => $request->qty_min,
-            'qty_max' => $request->qty_max
+            'limit' => $request->limit,
+            'is_required' => $request->is_required
         ]);
 
         return response()->json([
