@@ -45,9 +45,7 @@ class Product extends Model
 
     public function getComplements()
     {
-        $complements = Complement::where('product_id', $this->id)
-            ->orderBy('title', 'asc')
-            ->get();
+        $complements = Complement::where('product_id', $this->id)->get();
 
         foreach ($complements as &$complement) {
             $complement->subcomplements = Subcomplement::where('complement_id', $complement->id)->get();
