@@ -64,7 +64,13 @@ Route::prefix('user')->group(function () {
 
                 Route::get('{id}', 'User\ProductController@show'); //
 
-            });            
+            });
+            
+            Route::prefix('order')->group(function () {
+
+                Route::post('/', 'User\OrderController@store'); //
+
+            });
         });
     });
 });

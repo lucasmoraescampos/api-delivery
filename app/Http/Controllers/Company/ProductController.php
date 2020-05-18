@@ -104,14 +104,16 @@ class ProductController extends Controller
         $request->validate([
             'product_id' => ['required', new ProductRule()],
             'title' => 'required|string',
-            'limit' => 'required',
+            'qty_min' => 'required_if:is_required,1',
+            'qty_max' => 'required',
             'is_required' => 'required'
         ]);
 
         $complement = Complement::create([
             'product_id' => $request->product_id,
             'title' => $request->title,
-            'limit' => $request->limit,
+            'qty_min' => $request->qty_min,
+            'qty_max' => $request->qty_max,
             'is_required' => $request->is_required
         ]);
 
@@ -228,7 +230,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'limit' => 'required',
+            'qty_min' => 'required_if:is_required,1',
+            'qty_max' => 'required',
             'is_required' => 'required'
         ]);
 
@@ -249,7 +252,8 @@ class ProductController extends Controller
 
         $complement->update([
             'title' => $request->title,
-            'limit' => $request->limit,
+            'qty_min' => $request->qty_min,
+            'qty_max' => $request->qty_max,
             'is_required' => $request->is_required
         ]);
 

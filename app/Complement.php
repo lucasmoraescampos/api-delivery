@@ -9,6 +9,6 @@ class Complement extends Model
     public $timestamps = false;
     
     protected $fillable = [
-        'product_id', 'title', 'limit', 'is_required'
+        'product_id', 'title', 'qty_min', 'qty_max', 'is_required'
     ];
 }

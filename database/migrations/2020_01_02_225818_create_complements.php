@@ -17,7 +17,8 @@ class CreateComplements extends Migration
             $table->bigIncrements('id')->nullable(false);
             $table->unsignedBigInteger('product_id')->nullable(false);
             $table->string('title', 100)->nullable(false);
-            $table->unsignedTinyInteger('limit')->nullable(false);
+            $table->unsignedTinyInteger('qty_min')->nullable();
+            $table->unsignedTinyInteger('qty_max')->nullable(false);
             $table->boolean('is_required')->nullable(false);
             $table->foreign('product_id')
                 ->references('id')
