@@ -10,5 +10,5 @@ class OrderSubcomplement extends Model
 
     protected $table = 'orders_subcomplements';
 
-    protected $fillable = ['order_id', 'subcomplement_id', 'amount'];
+    protected $fillable = ['order_id', 'subcomplement_id', 'qty', 'unit_price'];
 }

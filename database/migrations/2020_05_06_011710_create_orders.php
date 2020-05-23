@@ -14,21 +14,30 @@ class CreateOrders extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
+
             $table->bigIncrements('id');
+
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('product_id')->nullable();
+
+            $table->unsignedBigInteger('company_id')->nullable();
+
+            $table->unsignedDecimal('total_price', 15, 2)->nullable(false);
+
             $table->timestamp('created_at');
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('set null');
-            $table->foreign('product_id')
+
+            $table->foreign('company_id')
                 ->references('id')
-                ->on('products')
+                ->on('companies')
                 ->onUpdate('cascade')
                 ->onDelete('set null');
         });
+        
     }
 
     /**

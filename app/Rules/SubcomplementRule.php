@@ -2,19 +2,18 @@
 
 namespace App\Rules;
 
-use App\Product;
 use Illuminate\Contracts\Validation\Rule;
 
-class ProductRule implements Rule
+class SubcomplementRule implements Rule
 {
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($company_id = null)
+    public function __construct()
     {
-        $this->company_id = $company_id;
+        //
     }
 
     /**
@@ -24,17 +23,9 @@ class ProductRule implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $id)
+    public function passes($attribute, $value)
     {
-        if ($this->company_id === null) {
-
-            return Product::where('id', $id)->count() > 0;
-
-        }
-
-        return Product::where('id', $id)
-            ->where('company_id', $id)
-            ->count() > 0;
+        //
     }
 
     /**
@@ -44,6 +35,6 @@ class ProductRule implements Rule
      */
     public function message()
     {
-        return 'Produto não encontrado.';
+        return 'The validation error message.';
     }
 }

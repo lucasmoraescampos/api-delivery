@@ -63,6 +63,6 @@ class ProductSubcomplementsRule implements Rule
             return 'ID subcomplemento ' . $this->error_id . ' inválido';
         }
 
-        return 'Quantidade deve ser maio do que 0';
+        return 'Quantidade deve ser maior do que 0';
     }
 }
