@@ -43,7 +43,7 @@ class UserLocationController extends Controller
         $request->validate([
             'street_name' => 'required|string|max:255',
             'street_number' => 'required|max:20',
-            'complement' => 'required|string|max:255',
+            'complement' => 'nullable|string|max:255',
             'district' => 'required|string|max:100',
             'city' => 'required|string|max:100',
             'uf' => 'required|string|max:2',
@@ -82,7 +82,7 @@ class UserLocationController extends Controller
             'id' => new UserLocationRule(),
             'street_name' => 'required|string|max:255',
             'street_number' => 'required|max:20',
-            'complement' => 'required|string|max:255',
+            'complement' => 'nullable|string|max:255',
             'district' => 'required|string|max:100',
             'city' => 'required|string|max:100',
             'uf' => 'required|string|max:2',
