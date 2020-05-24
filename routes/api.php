@@ -71,6 +71,21 @@ Route::prefix('user')->group(function () {
                 Route::post('/', 'User\OrderController@store'); //
 
             });
+
+            Route::prefix('location')->group(function () {
+
+                Route::get('/', 'User\UserLocationController@index'); //
+
+                Route::get('{id}', 'User\UserLocationController@show'); //
+
+                Route::post('/', 'User\UserLocationController@store'); //
+
+                Route::put('{id}', 'User\UserLocationController@update');
+
+                Route::delete('{id}', 'User\UserLocationController@delete');
+
+            });
+
         });
     });
 });
