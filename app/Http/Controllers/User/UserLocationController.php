@@ -54,6 +54,7 @@ class UserLocationController extends Controller
         ]);
 
         $location = UserLocation::create([
+            'user_id' => Auth::id(),
             'street_name' => $request->street_name,
             'street_number' => $request->street_number,
             'complement' => $request->complement,
