@@ -94,20 +94,21 @@ class UserLocationController extends Controller
             'longitude' => 'required|max:40'
         ]);
 
-        $location = UserLocation::where('id', $id)
-            ->update([
-                'street_name' => $request->street_name,
-                'street_number' => $request->street_number,
-                'complement' => $request->complement,
-                'district' => $request->district,
-                'city' => $request->city,
-                'uf' => $request->uf,
-                'postal_code' => $request->postal_code,
-                'country' => $request->country,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'type' => $request->type
-            ]);
+        $location = UserLocation::where('id', $id)->first();
+
+        $location->update([
+            'street_name' => $request->street_name,
+            'street_number' => $request->street_number,
+            'complement' => $request->complement,
+            'district' => $request->district,
+            'city' => $request->city,
+            'uf' => $request->uf,
+            'postal_code' => $request->postal_code,
+            'country' => $request->country,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'type' => $request->type
+        ]);
 
         return response()->json([
             'success' => true,
