@@ -41,6 +41,7 @@ class UserLocationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'user_id' => 'required',
             'street_name' => 'required|string|max:255',
             'street_number' => 'required|max:20',
             'complement' => 'nullable|string|max:255',
@@ -93,7 +94,7 @@ class UserLocationController extends Controller
             'longitude' => 'required|max:40'
         ]);
 
-        UserLocation::where('id', $id)
+        $location = UserLocation::where('id', $id)
             ->update([
                 'street_name' => $request->street_name,
                 'street_number' => $request->street_number,
@@ -110,6 +111,7 @@ class UserLocationController extends Controller
 
         return response()->json([
             'success' => true,
+            'data' => $location,
             'message' => 'Localização atualizada com sucesso!'
         ]);
     }
