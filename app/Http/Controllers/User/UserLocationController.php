@@ -41,7 +41,6 @@ class UserLocationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required',
             'street_name' => 'required|string|max:255',
             'street_number' => 'required|max:20',
             'complement' => 'nullable|string|max:255',
