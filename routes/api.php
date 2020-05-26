@@ -152,3 +152,13 @@ Route::prefix('company')->group(function () {
         });
     });
 });
+
+Route::prefix('admin')->group(function () {
+
+    Route::prefix('payment_methods')->group(function () {
+
+        Route::post('/', 'Admin\PaymentMethodController@store');
+
+    });
+
+});

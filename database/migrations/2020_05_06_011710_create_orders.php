@@ -23,6 +23,12 @@ class CreateOrders extends Migration
 
             $table->unsignedDecimal('total_price', 15, 2)->nullable(false);
 
+            $table->text('address')->nullable(false);
+
+            $table->string('latitude', 40)->nullable(false);
+
+            $table->string('longitude', 40)->nullable(false);
+
             $table->timestamp('created_at');
 
             $table->foreign('user_id')

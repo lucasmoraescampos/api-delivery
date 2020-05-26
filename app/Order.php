@@ -9,7 +9,7 @@ class Order extends Model
 {
     const UPDATED_AT = null;
 
-    protected $fillable = ['user_id', 'company_id', 'total_price'];
+    protected $fillable = ['user_id', 'company_id', 'total_price', 'address', 'latitude', 'longitude'];
 
     public static function validate($data)
     {
