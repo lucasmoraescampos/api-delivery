@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\PaymentMethod;
 use App\Rules\CategoryRule;
 use App\Rules\CompanyRule;
 use App\Rules\SubcategoryRule;
@@ -45,6 +46,8 @@ class CompanyController extends Controller
         $company = Company::select('name', 'min_value', 'delivery_price', 'waiting_time')
             ->where('id', $id)
             ->first();
+
+        $company->payment_methods = PaymentMethod::all();
 
         return response()->json([
             'success' => true,
