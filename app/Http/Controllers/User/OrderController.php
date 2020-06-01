@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\Rules\CompanyRule;
 use App\Rules\PaymentTypeRule;
-use MercadoPago\SDK;
-use MercadoPago\Payment;
+use MercadoPago\SDK as MercadoPagoSDK;
+use MercadoPago\Payment as MercadoPagoPayment;
 
 class OrderController extends Controller
 {
@@ -50,9 +50,9 @@ class OrderController extends Controller
             'longitude' => $request->longitude
         ]);
 
-        SDK::setAccessToken('TEST-92940077841795-103102-7bb6a9a80fd1937790fdf595cb30226d-206536195');
+        MercadoPagoSDK::setAccessToken('TEST-92940077841795-103102-7bb6a9a80fd1937790fdf595cb30226d-206536195');
         
-        $payment = new Payment();
+        $payment = new MercadoPagoPayment();
         $payment->transaction_amount = 191;
         $payment->token = $request->card_token;
         $payment->description = 'Meu Pedido';
@@ -64,7 +64,7 @@ class OrderController extends Controller
         
         return response()->json([
             'success' => true,
-            'data' => $payment->status,
+            'data' => $payment,
             'message' => 'Pedido realizado com sucesso!'
         ]);
     }
