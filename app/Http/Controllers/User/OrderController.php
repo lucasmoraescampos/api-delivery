@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\Rules\CompanyRule;
 use App\Rules\PaymentTypeRule;
-use MercadoPago\SDK as MercadoPagoSDK;
-use MercadoPago\Payment as MercadoPagoPayment;
+use MercadoPago\SDK;
+use MercadoPago\Payment;
 
 class OrderController extends Controller
 {
@@ -36,23 +36,23 @@ class OrderController extends Controller
 
         }
 
-        // $order = Order::create([
-        //     'company_id' => $request->company_id,
-        //     'products' => $request->products,
-        //     'payment_type' => $request->payment_type,
-        //     'payment_method_id' => $request->payment_method_id,
-        //     'card_token' => $request->card_token,
-        //     'card_last_number' => $request->card_last_number,
-        //     'card_holder_name' => $request->card_holder_name,
-        //     'cashback' => $request->cashback,
-        //     'address' => $request->address,
-        //     'latitude' => $request->latitude,
-        //     'longitude' => $request->longitude
-        // ]);
+        $order = Order::create([
+            'company_id' => $request->company_id,
+            'products' => $request->products,
+            'payment_type' => $request->payment_type,
+            'payment_method_id' => $request->payment_method_id,
+            'card_token' => $request->card_token,
+            'card_last_number' => $request->card_last_number,
+            'card_holder_name' => $request->card_holder_name,
+            'cashback' => $request->cashback,
+            'address' => $request->address,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude
+        ]);
 
-        MercadoPagoSDK::setAccessToken('TEST-92940077841795-103102-7bb6a9a80fd1937790fdf595cb30226d-206536195');
+        SDK::setAccessToken('TEST-92940077841795-103102-7bb6a9a80fd1937790fdf595cb30226d-206536195');
         
-        $payment = new MercadoPagoPayment();
+        $payment = new Payment();
         $payment->transaction_amount = 191;
         $payment->token = $request->card_token;
         $payment->description = 'Meu Pedido';
