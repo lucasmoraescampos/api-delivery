@@ -12,3 +12,6 @@ defined('ACTIVE') OR define('ACTIVE', 1);
 
 defined('AVAILABLE') OR define('AVAILABLE', 1);
 
+defined('PAYMENT_APP') OR define('PAYMENT_APP', 1);
+
+defined('PAYMENT_DELIVERY') OR define('PAYMENT_DELIVERY', 2);

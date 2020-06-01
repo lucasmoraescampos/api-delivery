@@ -11,22 +11,9 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'company_id', 'total_price', 'address', 'latitude', 'longitude'];
 
-    public static function validate($data)
+    public static function validateProducts($data)
     {
-        if (!isset($data['company_id'])) {
-
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'company_id' => [
-                        'O campo company_id é obrigatório.'
-                    ]
-                ]
-            ], 422);
-
-        }
-
-        if (!isset($data['products']) || count($data['products']) == 0) {
+        if (count($data['products']) == 0) {
 
             return response()->json([
                 'message' => 'The given data was invalid.',
@@ -288,7 +275,7 @@ class Order extends Model
         return true;
     }
 
-    public static function create($products, $company_id)
+    public static function create($data)
     {
         $orders_products = [];
 
@@ -298,7 +285,7 @@ class Order extends Model
 
         $total_price = 0;
 
-        foreach ($products as $product) {
+        foreach ($data['products'] as $product) {
 
             $product_price = Product::find($product['id'])->price;
 
@@ -337,8 +324,17 @@ class Order extends Model
 
         $order_id = Order::insertGetId([
             'user_id' => Auth::id(),
-            'company_id' => $company_id,
-            'total_price' => $total_price
+            'company_id' => $data['company_id'],
+            'total_price' => $total_price,
+            'payment_type' => $data['payment_type'],
+            'payment_method_id' => $data['payment_method_id'],
+            'card_token' => $data['card_token'],
+            'card_last_number' => $data['card_last_number'],
+            'card_holder_name' => $data['card_holder_name'],
+            'cashback' => $data['cashback'],
+            'address' => $data['address'],
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude']
         ]);
 
         OrderProduct::insert($orders_products);
