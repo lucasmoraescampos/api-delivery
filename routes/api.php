@@ -86,6 +86,20 @@ Route::prefix('user')->group(function () {
 
             });
 
+            Route::prefix('card')->group(function () {
+
+                Route::get('/', 'User\CardController@index'); //
+
+                Route::get('{id}', 'User\CardController@show'); //
+
+                Route::post('/', 'User\CardController@store'); //
+
+                Route::put('{id}', 'User\CardController@update'); //
+
+                Route::delete('{id}', 'User\CardController@delete'); //
+
+            });
+
         });
     });
 });
