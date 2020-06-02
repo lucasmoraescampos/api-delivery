@@ -33,8 +33,6 @@ class CreateUsersCards extends Migration
 
             $table->string('holder_document_number', 20);
 
-            $table->string('last_four_digits', 5);
-
             $table->string('payment_method', 40);
 
             $table->foreign('user_id')

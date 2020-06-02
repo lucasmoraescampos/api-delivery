@@ -41,7 +41,7 @@ class CardController extends Controller
         $request->validate([
             'number' => 'required|string|max:20',
             'expiration_month' => 'required|string|min:2|max:2',
-            'expiration_year' => 'required|string|min:4|max:4',
+            'expiration_year' => 'required|string|min:2|max:2',
             'security_code' => 'required|string|max:5',
             'holder_name' => 'required|string|max:100',
             'holder_document_number' => 'required|string|max:20',
@@ -61,8 +61,6 @@ class CardController extends Controller
 
         $card->setHolderDocumentType();
 
-        $card->setLastFourDigits();
-
         $card->save();
 
         return response()->json([
@@ -79,7 +77,7 @@ class CardController extends Controller
         $request->validate([
             'id' => new UserCardRule(),
             'expiration_month' => 'required|string|min:2|max:2',
-            'expiration_year' => 'required|string|min:4|max:4',
+            'expiration_year' => 'required|string|min:2|max:2',
             'security_code' => 'required|string|max:5',
             'holder_name' => 'required|string|max:100',
             'holder_document_number' => 'required|string|max:20'

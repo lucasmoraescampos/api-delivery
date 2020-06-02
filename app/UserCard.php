@@ -17,13 +17,7 @@ class UserCard extends Model
         'holder_name',
         'holder_document_type',
         'holder_document_number',
-        'last_four_digits',
         'payment_method'
-    ];
-
-    protected $hidden = [
-        'number',
-        'security_code'
     ];
 
     public function setHolderDocumentType()
@@ -39,12 +33,5 @@ class UserCard extends Model
             $this->holder_document_type = 'CNPJ';
 
         }
-    }
-
-    public function setLastFourDigits()
-    {
-        $len = strlen($this->number);
-        
-        $this->last_four_digits = "{$this->number[$len-4]}{$this->number[$len-3]}{$this->number[$len-2]}{$this->number[$len-1]}";
     }
 }
