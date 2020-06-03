@@ -4,12 +4,29 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use MercadoPago;
 
 class Order extends Model
 {
     const UPDATED_AT = null;
 
-    protected $fillable = ['user_id', 'company_id', 'total_price', 'address', 'latitude', 'longitude'];
+    protected $fillable = [
+        'user_id',
+        'company_id', 
+        'payment_type',
+        'payment_method_id',
+        'card_number',
+        'card_holder_name',
+        'address',
+        'latitude',
+        'longitude',
+        'cashback',
+        'price',
+        'delivery_price',
+        'amount',
+        'fee_meu_pedido',
+        'fee_mercado_pago'
+    ];
 
     public static function validateProducts($data)
     {
@@ -285,6 +302,8 @@ class Order extends Model
 
         $total_price = 0;
 
+        $company = Company::find($data['company_id']);
+
         foreach ($data['products'] as $product) {
 
             $product_price = Product::find($product['id'])->price;
@@ -322,20 +341,87 @@ class Order extends Model
 
         }
 
-        $order_id = Order::insertGetId([
-            'user_id' => Auth::id(),
-            'company_id' => $data['company_id'],
-            'total_price' => $total_price,
-            'payment_type' => $data['payment_type'],
-            'payment_method_id' => $data['payment_method_id'],
-            'card_token' => $data['card_token'],
-            'card_last_number' => $data['card_last_number'],
-            'card_holder_name' => $data['card_holder_name'],
-            'cashback' => $data['cashback'],
-            'address' => $data['address'],
-            'latitude' => $data['latitude'],
-            'longitude' => $data['longitude']
-        ]);
+        $amount = $total_price + $company->delivery_price;
+
+        if ($data['payment_type'] == PAYMENT_APP) {
+
+            $user = Auth::user();
+
+            MercadoPago\SDK::setAccessToken(env('ACCESS_TOKEN'));
+
+            $payment = new MercadoPago\Payment();
+
+            $payment->transaction_amount = $amount;
+
+            $payment->token = $data['card_token'];
+
+            $payment->description = PAYMENT_DESCRIPTION;
+
+            $payment->statement_descriptor = PAYMENT_DESCRIPTION;
+
+            $payment->installments = 1;
+
+            $payment->payment_method_id = $data['payment_method_id'];
+
+            $payment->payer = [
+                'first_name' => $user->name,
+                'last_name' => $user->surname,
+                'email' => $user->email
+            ];
+
+            $payment->save();
+
+            if ($payment->status == 'approved') {
+
+                $fee_mercado_pago = $amount - $payment->transaction_details->net_received_amount;
+
+                $order_id = Order::insertGetId([
+                    'user_id' => Auth::id(),
+                    'company_id' => $data['company_id'],
+                    'payment_type' => $data['payment_type'],
+                    'payment_method_id' => $data['payment_method_id'],
+                    'card_number' => $data['card_number'],
+                    'card_holder_name' => $data['card_holder_name'],
+                    'address' => $data['address'],
+                    'latitude' => $data['latitude'],
+                    'longitude' => $data['longitude'],
+                    'price' => $total_price,
+                    'delivery_price' => $company->delivery_price,
+                    'amount' => $amount,
+                    'fee_meu_pedido' => 0,
+                    'fee_mercado_pago' => $fee_mercado_pago,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+            }
+
+            else {
+
+                return false;
+
+            }
+
+        }
+
+        else {
+
+            $order_id = Order::insertGetId([
+                'user_id' => Auth::id(),
+                'company_id' => $data['company_id'],
+                'payment_type' => $data['payment_type'],
+                'payment_method_id' => $data['payment_method_id'],
+                'address' => $data['address'],
+                'latitude' => $data['latitude'],
+                'longitude' => $data['longitude'],
+                'cashback' => $data['cashback'],
+                'price' => $total_price,
+                'delivery_price' => $company->delivery_price,
+                'amount' => $amount,
+                'fee_meu_pedido' => 0,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+        }
 
         OrderProduct::insert($orders_products);
 

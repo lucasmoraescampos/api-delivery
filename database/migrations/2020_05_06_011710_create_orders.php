@@ -21,27 +21,33 @@ class CreateOrders extends Migration
 
             $table->unsignedBigInteger('company_id')->nullable();
 
-            $table->unsignedDecimal('total_price', 15, 2)->nullable(false);
-
             $table->unsignedTinyInteger('payment_type')->nullable(false);
 
-            $table->unsignedInteger('payment_method_id')->nullable(true);
+            $table->string('payment_method_id', 20)->nullable(false);
 
-            $table->string('card_token', 255)->nullable(true);
-
-            $table->string('card_last_number', 4)->nullable(true);
+            $table->string('card_number', 20)->nullable(true);
 
             $table->string('card_holder_name', 100)->nullable(true);
-
-            $table->unsignedDecimal('cashback', 15, 2)->nullable(true);
-
-            $table->unsignedDecimal('feedback', 5, 2)->nullable(true);
 
             $table->text('address')->nullable(false);
 
             $table->string('latitude', 40)->nullable(false);
 
             $table->string('longitude', 40)->nullable(false);
+
+            $table->unsignedDecimal('cashback', 15, 2)->nullable(true);
+
+            $table->unsignedDecimal('price', 15, 2)->nullable(false);
+
+            $table->unsignedDecimal('delivery_price', 15, 2)->nullable(true);
+
+            $table->unsignedDecimal('amount', 15, 2)->nullable(false);
+
+            $table->unsignedDecimal('fee_meu_pedido', 15, 2)->nullable(false);
+
+            $table->unsignedDecimal('fee_mercado_pago', 15, 2)->nullable(true);
+
+            $table->unsignedDecimal('feedback', 5, 2)->nullable(true);
 
             $table->timestamp('created_at');
 
@@ -59,11 +65,6 @@ class CreateOrders extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('set null');
 
-            $table->foreign('payment_method_id')
-                ->references('id')
-                ->on('payment_methods')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
         });
         
     }

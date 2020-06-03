@@ -15,3 +15,5 @@ defined('AVAILABLE') OR define('AVAILABLE', 1);
 defined('PAYMENT_APP') OR define('PAYMENT_APP', 1);
 
 defined('PAYMENT_DELIVERY') OR define('PAYMENT_DELIVERY', 2);
+
+defined('PAYMENT_DESCRIPTION') OR define('PAYMENT_DESCRIPTION', 'Meu Pedido');
