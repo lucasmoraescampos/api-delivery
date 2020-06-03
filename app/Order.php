@@ -347,7 +347,7 @@ class Order extends Model
 
             $user = Auth::user();
 
-            MercadoPago\SDK::setAccessToken(env('ACCESS_TOKEN'));
+            MercadoPago\SDK::setAccessToken(env('MERCADO_PAGO_ACCESS_TOKEN'));
 
             $payment = new MercadoPago\Payment();
 
