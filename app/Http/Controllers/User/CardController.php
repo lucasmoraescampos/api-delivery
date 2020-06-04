@@ -59,6 +59,24 @@ class CardController extends Controller
             'payment_method' => $request->payment_method,
         ]);
 
+        if (!$card->checkPaymentMethod()) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Este cartão não é aceito!'            
+            ]);
+
+        }
+
+        if (!$card->checkDuplicity()) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Já existe um cartão salvo com este número!'            
+            ]);
+
+        }
+
         $card->setHolderDocumentType();
 
         $card->save();

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class UserCard extends Model
 {
@@ -33,5 +34,21 @@ class UserCard extends Model
             $this->holder_document_type = 'CNPJ';
 
         }
+    }
+
+    public function checkPaymentMethod()
+    {
+        return $this->payment_method == 'amex'
+            || $this->payment_method == 'elo'
+            || $this->payment_method == 'hipercard'
+            || $this->payment_method == 'master'
+            || $this->payment_method == 'visa';
+    }
+
+    public function checkDuplicity()
+    {
+        return UserCard::where('number', $this->number)
+            ->where('user_id', Auth::id())
+            ->count() == 0;
     }
 }
