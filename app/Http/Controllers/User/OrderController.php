@@ -16,7 +16,7 @@ class OrderController extends Controller
             'company_id' => ['required', new CompanyRule()],
             'products' => 'required|array',
             'payment_type' => ['required', new PaymentTypeRule()],
-            'payment_method_id' => 'required|string',
+            'payment_method_id' => 'required',
             'card_token' => 'required_if:payment_type,1',
             'card_number' => 'required_if:payment_type,1',
             'card_holder_name' => 'required_if:payment_type,1',
