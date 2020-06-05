@@ -10,6 +10,21 @@ use App\Rules\PaymentTypeRule;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $previous = Order::getPrevious();
+        
+        $current = Order::getCurrent();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'previous' => $previous,
+                'current' => $current
+            ]
+        ]);
+    }
+    
     public function store(Request $request)
     {
         $request->validate([

@@ -68,6 +68,8 @@ Route::prefix('user')->group(function () {
             
             Route::prefix('order')->group(function () {
 
+                Route::get('/', 'User\OrderController@index'); //
+
                 Route::post('/', 'User\OrderController@store'); //
 
             });

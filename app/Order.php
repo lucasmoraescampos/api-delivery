@@ -28,6 +28,53 @@ class Order extends Model
         'fee_mercado_pago'
     ];
 
+    public static function getCurrent()
+    {
+        $orders = Order::from('orders as o')
+            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time as company_waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
+            ->leftJoin('companies as c', 'c.id', 'o.company_id')
+            ->where('o.user_id', Auth::id())
+            ->whereNull('o.delivered_at')
+            ->orderBy('o.created_at', 'desc')
+            ->get();
+
+        foreach ($orders as &$order) {
+
+            $order->products = OrderProduct::from('orders_products as o')
+                ->select('p.name', 'o.qty')
+                ->leftJoin('products as p', 'p.id', 'o.product_id')
+                ->where('o.order_id', $order->id)
+                ->get();
+
+        }
+
+        return $orders;
+    }
+
+    public static function getPrevious()
+    {
+        $orders = Order::from('orders as o')
+            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.photo as company_photo')
+            ->leftJoin('companies as c', 'c.id', 'o.company_id')
+            ->where('o.user_id', Auth::id())
+            ->orderBy('o.delivered_at', 'desc')
+            ->whereNotNull('o.delivered_at')
+            ->get();
+
+        foreach ($orders as &$order) {
+
+            $order->products = OrderProduct::from('orders_products as o')
+                ->select('p.name', 'o.qty')
+                ->leftJoin('products as p', 'p.id', 'o.product_id')
+                ->where('o.order_id', $order->id)
+                ->get();
+
+        }
+
+        return $orders;
+
+    }
+
     public static function validateProducts($data)
     {
         if (count($data['products']) == 0) {
