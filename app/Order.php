@@ -43,6 +43,8 @@ class Order extends Model
 
         }
 
+        $total_price = 0;
+
         foreach ($data['products'] as $key => $product) {
 
             if (!isset($product['id'])) {
@@ -98,6 +100,8 @@ class Order extends Model
                 ], 422);
 
             }
+
+            $total_price += $product2->price * $product['qty'];
 
             if (isset($product['complements'])) {
 
@@ -212,6 +216,8 @@ class Order extends Model
 
                         $qty += $subcomplement['qty'];
 
+                        $total_price += $subcomplement2->price * $subcomplement['qty'];
+
                     }
 
                     if ($qty > $complement2->qty_max) {
@@ -287,6 +293,19 @@ class Order extends Model
 
             }
             
+        }
+
+        $company = Company::find($data['company_id']);
+
+        if ($total_price < $company->min_value) {
+
+            $value = number_format($company->min_value, 2, ',', '.');
+
+            return response()->json([
+                'status' => false,
+                'message' => "O pedido mínimo para esta loja é de R$ $value, não inclusa a taxa de entrega!"
+            ]);
+
         }
 
         return true;
