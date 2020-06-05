@@ -339,20 +339,24 @@ class Order extends Model
                 'note' => $note
             ];
 
-            foreach ($product['complements'] as $complement) {
+            if (isset($product['complements'])) {
 
-                foreach ($complement['subcomplements'] as $subcomplement) {
+                foreach ($product['complements'] as $complement) {
 
-                    $subcomplement_price = Subcomplement::find($subcomplement['id'])->price;
+                    foreach ($complement['subcomplements'] as $subcomplement) {
 
-                    $total_price += $subcomplement_price * $subcomplement['qty'];
+                        $subcomplement_price = Subcomplement::find($subcomplement['id'])->price;
 
-                    $orders_subcomplements[] = [
-                        'order_id' => &$order_id,
-                        'subcomplement_id' => $subcomplement['id'],
-                        'qty' => $subcomplement['qty'],
-                        'unit_price' => $subcomplement_price
-                    ];
+                        $total_price += $subcomplement_price * $subcomplement['qty'];
+
+                        $orders_subcomplements[] = [
+                            'order_id' => &$order_id,
+                            'subcomplement_id' => $subcomplement['id'],
+                            'qty' => $subcomplement['qty'],
+                            'unit_price' => $subcomplement_price
+                        ];
+
+                    }
 
                 }
 
