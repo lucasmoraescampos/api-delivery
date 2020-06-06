@@ -31,7 +31,7 @@ class Order extends Model
     public static function getCurrent()
     {
         $orders = Order::from('orders as o')
-            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time as company_waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
+            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
             ->leftJoin('companies as c', 'c.id', 'o.company_id')
             ->where('o.user_id', Auth::id())
             ->whereNull('o.delivered_at')
@@ -39,6 +39,8 @@ class Order extends Model
             ->get();
 
         foreach ($orders as &$order) {
+
+            $order->waiting_time = Order::prepareWaitingTime($order->waiting_time);
 
             $order->products = OrderProduct::from('orders_products as o')
                 ->select('p.name', 'o.qty')
@@ -499,5 +501,18 @@ class Order extends Model
 
         return Order::find($order_id);
 
+    }
+
+    private static function prepareWaitingTime($waiting_time)
+    {
+        $time = date('H:i', strtotime("+$waiting_time minutes"));
+
+        $time .= ' - ';
+
+        $waiting_time += 10;
+
+        $time .= date('H:i', strtotime("+$waiting_time minutes"));
+
+        return $time;
     }
 }

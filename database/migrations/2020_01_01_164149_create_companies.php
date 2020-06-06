@@ -51,7 +51,7 @@ class CreateCompanies extends Migration
 
             $table->unsignedDecimal('delivery_price', 15, 2)->nullable(true);
 
-            $table->time('waiting_time')->nullable(true);
+            $table->unsignedSmallInteger('waiting_time')->nullable(true);
 
             $table->boolean('is_open')->nullable(false);
 
