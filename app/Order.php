@@ -40,7 +40,7 @@ class Order extends Model
 
         foreach ($orders as &$order) {
 
-            $order->waiting_time = Order::prepareWaitingTime($order->waiting_time);
+            $order->waiting_time = Order::prepareWaitingTime($order->created_at, $order->waiting_time);
 
             $order->products = OrderProduct::from('orders_products as o')
                 ->select('p.name', 'o.qty')
@@ -503,15 +503,15 @@ class Order extends Model
 
     }
 
-    private static function prepareWaitingTime($waiting_time)
+    private static function prepareWaitingTime($created_at, $waiting_time)
     {
-        $time = date('H:i', strtotime("+$waiting_time minutes"));
+        $time = date('H:i', strtotime("+$waiting_time minutes", strtotime($created_at)));
 
         $time .= ' - ';
 
         $waiting_time += 10;
 
-        $time .= date('H:i', strtotime("+$waiting_time minutes"));
+        $time .= date('H:i', strtotime("+$waiting_time minutes", strtotime($created_at)));
 
         return $time;
     }
