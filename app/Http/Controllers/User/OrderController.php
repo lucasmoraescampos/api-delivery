@@ -7,24 +7,36 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\Rules\CompanyRule;
 use App\Rules\PaymentTypeRule;
+use App\Rules\User\OrderRule;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        $previous = Order::getPrevious();
-        
-        $current = Order::getCurrent();
+        $orders = Order::get();
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'previous' => $previous,
-                'current' => $current
-            ]
+            'data' => $orders
         ]);
     }
     
+    public function show($id)
+    {
+        $request = new Request();
+
+        $request->request->add(['id' => $id]);
+
+        $request->validate(['id' => new OrderRule()]);
+
+        $order = Order::getById($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $order
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

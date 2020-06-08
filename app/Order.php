@@ -28,53 +28,81 @@ class Order extends Model
         'fee_mercado_pago'
     ];
 
-    public static function getCurrent()
+    public static function get()
     {
         $orders = Order::from('orders as o')
             ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
             ->leftJoin('companies as c', 'c.id', 'o.company_id')
             ->where('o.user_id', Auth::id())
-            ->whereNull('o.delivered_at')
-            ->orderBy('o.created_at', 'desc')
+            ->orderBy('o.delivered_at', 'desc')
             ->get();
 
         foreach ($orders as &$order) {
+
+            if ($order->delivered_at == null) {
+
+                $order->waiting_time = Order::prepareWaitingTime($order->created_at, $order->waiting_time);
+    
+            }
+    
+            else {
+    
+                $order->waiting_time = null;
+    
+            }
+
+            $order->products = OrderProduct::from('orders_products as o')
+                ->select('p.name', 'o.qty')
+                ->leftJoin('products as p', 'p.id', 'o.product_id')
+                ->where('o.order_id', $order->id)
+                ->get();
+
+        }
+
+        return $orders;
+
+    }
+
+    public static function getById($id)
+    {
+        $order = Order::from('orders as o')
+            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
+            ->leftJoin('companies as c', 'c.id', 'o.company_id')
+            ->where('o.user_id', Auth::id())
+            ->where('o.id', $id)
+            ->first();
+
+        if ($order->delivered_at == null) {
 
             $order->waiting_time = Order::prepareWaitingTime($order->created_at, $order->waiting_time);
 
-            $order->products = OrderProduct::from('orders_products as o')
-                ->select('p.name', 'o.qty')
-                ->leftJoin('products as p', 'p.id', 'o.product_id')
-                ->where('o.order_id', $order->id)
-                ->get();
+        }
+
+        else {
+
+            $order->waiting_time = null;
 
         }
 
-        return $orders;
-    }
-
-    public static function getPrevious()
-    {
-        $orders = Order::from('orders as o')
-            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.photo as company_photo')
-            ->leftJoin('companies as c', 'c.id', 'o.company_id')
-            ->where('o.user_id', Auth::id())
-            ->orderBy('o.delivered_at', 'desc')
-            ->whereNotNull('o.delivered_at')
+        $order->products = OrderProduct::from('orders_products as o')
+            ->select('p.id', 'p.name', 'o.qty')
+            ->leftJoin('products as p', 'p.id', 'o.product_id')
+            ->where('o.order_id', $order->id)
             ->get();
 
-        foreach ($orders as &$order) {
-
-            $order->products = OrderProduct::from('orders_products as o')
-                ->select('p.name', 'o.qty')
-                ->leftJoin('products as p', 'p.id', 'o.product_id')
+        foreach ($order->products as &$product) {
+            
+            $product->subcomplements = OrderSubcomplement::from('orders_subcomplements as o')
+                ->select('s.description', 'o.qty')
+                ->leftJoin('subcomplements as s', 's.id', 'o.subcomplement_id')
+                ->leftJoin('complements as c', 'c.id', 's.complement_id')
                 ->where('o.order_id', $order->id)
+                ->where('c.product_id', $product->id)
                 ->get();
 
         }
 
-        return $orders;
-
+        return $order;
     }
 
     public static function validateProducts($data)
