@@ -99,7 +99,7 @@ class Order extends Model
         }
 
         $order->products = OrderProduct::from('orders_products as o')
-            ->select('p.id', 'p.name', 'o.qty')
+            ->select('p.id', 'p.name', 'o.unit_price', 'o.qty')
             ->leftJoin('products as p', 'p.id', 'o.product_id')
             ->where('o.order_id', $order->id)
             ->get();
@@ -107,7 +107,7 @@ class Order extends Model
         foreach ($order->products as &$product) {
             
             $product->subcomplements = OrderSubcomplement::from('orders_subcomplements as o')
-                ->select('s.description', 'o.qty')
+                ->select('s.description', 'o.unit_price', 'o.qty')
                 ->leftJoin('subcomplements as s', 's.id', 'o.subcomplement_id')
                 ->leftJoin('complements as c', 'c.id', 's.complement_id')
                 ->where('o.order_id', $order->id)
