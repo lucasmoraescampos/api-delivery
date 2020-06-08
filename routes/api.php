@@ -70,6 +70,8 @@ Route::prefix('user')->group(function () {
 
                 Route::get('/', 'User\OrderController@index'); //
 
+                Route::get('{id}', 'User\OrderController@show'); //
+
                 Route::post('/', 'User\OrderController@store'); //
 
             });
