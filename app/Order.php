@@ -82,9 +82,12 @@ class Order extends Model
                 'c.name as company_name',
                 'c.waiting_time',
                 'c.phone as company_phone',
-                'c.photo as company_photo'
+                'c.photo as company_photo',
+                'p.name as payment_method_name',
+                'p.icon as payment_method_icon'
             )
             ->leftJoin('companies as c', 'c.id', 'o.company_id')
+            ->leftJoin('payment_methods as p', 'p.id', 'o.payment_method_id')
             ->where('o.user_id', Auth::id())
             ->where('o.id', $id)
             ->first();
