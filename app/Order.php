@@ -31,10 +31,10 @@ class Order extends Model
     public static function get()
     {
         $orders = Order::from('orders as o')
-            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
+            ->select('o.id', 'o.created_at', 'o.delivered_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
             ->leftJoin('companies as c', 'c.id', 'o.company_id')
             ->where('o.user_id', Auth::id())
-            ->orderBy('o.delivered_at', 'desc')
+            ->orderBy('o.created_at', 'desc')
             ->get();
 
         foreach ($orders as &$order) {
@@ -66,7 +66,7 @@ class Order extends Model
     public static function getById($id)
     {
         $order = Order::from('orders as o')
-            ->select('o.id', 'o.created_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
+            ->select('o.id', 'o.created_at', 'o.delivered_at', 'o.feedback', 'c.name as company_name', 'c.waiting_time', 'c.phone as company_phone', 'c.photo as company_photo')
             ->leftJoin('companies as c', 'c.id', 'o.company_id')
             ->where('o.user_id', Auth::id())
             ->where('o.id', $id)
