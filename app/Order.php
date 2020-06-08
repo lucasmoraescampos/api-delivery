@@ -75,7 +75,7 @@ class Order extends Model
                 'o.payment_type',
                 'o.payment_method_id',
                 'o.card_number',
-                'o.card_holder_number',
+                'o.card_holder_name',
                 'c.name as company_name',
                 'c.waiting_time',
                 'c.phone as company_phone',
