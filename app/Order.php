@@ -99,7 +99,7 @@ class Order extends Model
         }
 
         $order->products = OrderProduct::from('orders_products as o')
-            ->select('p.id', 'p.name', 'o.unit_price', 'o.qty')
+            ->select('p.id', 'p.name', 'o.unit_price', 'o.qty', 'o.note')
             ->leftJoin('products as p', 'p.id', 'o.product_id')
             ->where('o.order_id', $order->id)
             ->get();
