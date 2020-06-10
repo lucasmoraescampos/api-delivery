@@ -82,7 +82,7 @@ class Product extends Model
     public static function getAvailableBySubcategory($subcategory_id)
     {
         return Product::from('products as p')
-            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude')
+            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.id as company_id', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude')
             ->leftJoin('companies as c', 'c.id', 'p.company_id')
             ->where('p.subcategory_id', $subcategory_id)
             ->where('c.is_open', OPEN)
