@@ -15,15 +15,24 @@ class CompanyController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'category_id' => ['required_without:subcategory_id', new CategoryRule()],
-            'subcategory_id' => ['required_without:category_id', new SubcategoryRule()],
+            'search' => 'required_without:category_id,subcategory_id',
+            'category_id' => ['required_without:search,subcategory_id', new CategoryRule()],
+            'subcategory_id' => ['required_without:search,category_id', new SubcategoryRule()],
         ]);
 
-        if ($request->category_id) {
+        if ($request->search) {
+
+            $companies = Company::getBySearch($request->search);
+
+        }
+
+        elseif ($request->category_id) {
 
             $companies = Company::getByCategory($request->category_id);
 
-        } else {
+        }
+        
+        else {
 
             $companies = Company::getBySubcategory($request->subcategory_id); 
 

@@ -8,18 +8,23 @@ use App\Product;
 use App\Rules\CompanyRule;
 use App\Rules\ProductRule;
 use App\Rules\SubcategoryRule;
-use App\Subcomplement;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
         $request->validate([
-            'company_id' => ['required_without:subcategory_id', new CompanyRule()],
-            'subcategory_id' => ['required_without:company_id', new SubcategoryRule()],
+            'search' => 'required_without:company_id,subcategory_id',
+            'company_id' => ['required_without:search,subcategory_id', new CompanyRule()],
+            'subcategory_id' => ['required_without:search,company_id', new SubcategoryRule()],
         ]);
 
-        if ($request->company_id) {
+        if ($request->search) {
+
+
+        }
+
+        elseif ($request->company_id) {
 
             $data = Product::getAvailableByCompany($request->company_id);
 

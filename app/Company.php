@@ -68,4 +68,15 @@ class Company extends Authenticatable implements JWTSubject
             ->orderBy('is_open', 'desc')
             ->get();
     }
+
+    public static function getBySearch($search)
+    {
+        return Product::from('products as p')
+            ->select('c.id', 'c.photo', 'c.name', 'c.waiting_time', 'c.latitude', 'c.longitude', 'c.delivery_price', 'c.is_open')
+            ->leftJoin('companies as c', 'c.id', 'p.company_id')
+            ->where('p.name', 'like', "%$search%")
+            ->orderBy('c.created_at', 'asc')
+            ->orderBy('c.is_open', 'desc')
+            ->distinct('p.name');
+    }
 }
