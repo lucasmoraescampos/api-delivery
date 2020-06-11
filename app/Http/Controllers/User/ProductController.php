@@ -15,24 +15,25 @@ class ProductController extends Controller
     {
         $request->validate([
             'search' => 'required_without:company_id,subcategory_id',
-            'company_id' => ['required_without:search,subcategory_id', new CompanyRule()],
-            'subcategory_id' => ['required_without:search,company_id', new SubcategoryRule()],
+            'company_id' => ['required_without:search', new CompanyRule()],
+            'subcategory_id' => ['required_without:search', new SubcategoryRule()],
         ]);
 
         if ($request->search) {
 
+            $data = Product::getBySearch($request->search);
 
         }
 
         elseif ($request->company_id) {
 
-            $data = Product::getAvailableByCompany($request->company_id);
+            $data = Product::getByCompany($request->company_id);
 
         }
 
         else {
 
-            $data = Product::getAvailableBySubcategory($request->subcategory_id);
+            $data = Product::getBySubcategory($request->subcategory_id);
 
         }
 

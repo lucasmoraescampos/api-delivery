@@ -54,7 +54,7 @@ class Product extends Model
         return $complements;
     }
 
-    public static function getAvailableByCompany($company_id)
+    public static function getByCompany($company_id)
     {
         $products = Product::from('products as p')
             ->select('m.name as menu_session_name', 'p.id', 'p.menu_session_id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price')
@@ -79,7 +79,7 @@ class Product extends Model
         return $data;
     }
 
-    public static function getAvailableBySubcategory($subcategory_id)
+    public static function getBySubcategory($subcategory_id)
     {
         return Product::from('products as p')
             ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.id as company_id', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude')
@@ -88,6 +88,18 @@ class Product extends Model
             ->where('c.is_open', OPEN)
             ->where('p.status', ACTIVE)
             ->where(Product::today(), AVAILABLE)
+            ->get();
+    }
+
+    public static function getBySearch($search)
+    {
+        return Product::from('products as p')
+            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.id as company_id', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude', 'c.is_open')
+            ->leftJoin('companies as c', 'c.id', 'p.company_id')
+            ->where('p.name', 'like', "%$search%")
+            ->orderBy('p.created_at', 'asc')
+            ->orderBy('c.is_open', 'desc')
+            ->distinct()
             ->get();
     }
 

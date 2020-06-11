@@ -16,8 +16,8 @@ class CompanyController extends Controller
     {
         $request->validate([
             'search' => 'required_without:category_id,subcategory_id',
-            'category_id' => ['required_without:search,subcategory_id', new CategoryRule()],
-            'subcategory_id' => ['required_without:search,category_id', new SubcategoryRule()],
+            'category_id' => ['required_without:search', new CategoryRule()],
+            'subcategory_id' => ['required_without:search', new SubcategoryRule()],
         ]);
 
         if ($request->search) {
