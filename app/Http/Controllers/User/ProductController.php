@@ -14,9 +14,9 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'search' => 'required_without:company_id,subcategory_id',
-            'company_id' => ['required_without:search', new CompanyRule()],
-            'subcategory_id' => ['required_without:search', new SubcategoryRule()],
+            'search' => 'required_without_all:company_id,subcategory_id',
+            'company_id' => ['required_without_all:search,subcategory_id', new CompanyRule()],
+            'subcategory_id' => ['required_without_all:search,company_id', new SubcategoryRule()],
         ]);
 
         if ($request->search) {

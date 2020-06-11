@@ -103,7 +103,8 @@ class Product extends Model
             ->get();
     }
 
-    private static function today() {
+    private static function today()
+    {
 
         switch (date('N')) {
 
