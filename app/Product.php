@@ -94,7 +94,7 @@ class Product extends Model
     public static function getBySearch($search)
     {
         return Product::from('products as p')
-            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'c.id as company_id', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude', 'c.is_open')
+            ->select('p.id', 'p.photo', 'p.name', 'p.description', 'p.price', 'p.promotional_price', 'p.created_at', 'c.id as company_id', 'c.photo as company_photo', 'c.waiting_time', 'c.delivery_price', 'c.latitude', 'c.longitude', 'c.is_open')
             ->leftJoin('companies as c', 'c.id', 'p.company_id')
             ->where('p.name', 'like', "%$search%")
             ->orderBy('p.created_at', 'asc')
