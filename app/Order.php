@@ -538,6 +538,8 @@ class Order extends Model
     {
         $this->status = DELIVERED;
 
+        $this->delivered_at = date('Y-m-d H:i:s');
+
         $this->save();
     }
 
