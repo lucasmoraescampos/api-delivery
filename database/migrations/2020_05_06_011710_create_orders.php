@@ -49,6 +49,8 @@ class CreateOrders extends Migration
 
             $table->unsignedDecimal('feedback', 5, 2)->nullable(true);
 
+            $table->unsignedTinyInteger('status')->nullable(false);
+
             $table->timestamp('created_at');
 
             $table->dateTime('delivered_at')->nullable(true);

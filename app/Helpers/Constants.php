@@ -17,3 +17,15 @@ defined('PAYMENT_APP') OR define('PAYMENT_APP', 1);
 defined('PAYMENT_DELIVERY') OR define('PAYMENT_DELIVERY', 2);
 
 defined('PAYMENT_DESCRIPTION') OR define('PAYMENT_DESCRIPTION', 'Meu Pedido');
+
+// Order status
+
+defined('WAITING_CONFIRMATION') OR define('WAITING_CONFIRMATION', 0);
+
+defined('PREPARING') OR define('PREPARING', 1);
+
+defined('WAITING_DELIVERY_MAN') OR define('WAITING_DELIVERY_MAN', 2);
+
+defined('ON_THE_WAY') OR define('ON_THE_WAY', 3);
+
+defined('DELIVERED') OR define('DELIVERED', 4);

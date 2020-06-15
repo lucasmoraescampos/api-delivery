@@ -28,6 +28,10 @@ class Order extends Model
         'fee_mercado_pago'
     ];
 
+    protected $attributes = [
+        'status' => WAITING_CONFIRMATION
+    ];
+
     public static function get()
     {
         $orders = Order::from('orders as o')
