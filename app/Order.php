@@ -29,10 +29,6 @@ class Order extends Model
         'status'
     ];
 
-    protected $attributes = [
-        'status' => WAITING_CONFIRMATION
-    ];
-
     public static function get()
     {
         $orders = Order::from('orders as o')
@@ -485,6 +481,7 @@ class Order extends Model
                     'amount' => $amount,
                     'fee_meu_pedido' => 0,
                     'fee_mercado_pago' => $fee_mercado_pago,
+                    'status' => WAITING_CONFIRMATION,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
             } else {
@@ -506,6 +503,7 @@ class Order extends Model
                 'delivery_price' => $company->delivery_price,
                 'amount' => $amount,
                 'fee_meu_pedido' => 0,
+                'status' => WAITING_CONFIRMATION,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         }
@@ -532,7 +530,7 @@ class Order extends Model
             ->sum('feedback');
 
         Company::where('id', $this->company_id)->update([
-            'feedback' => ($sum + $feedback) / ($qty + 1)
+            'feedback' => ($sum + $feedback) / ($qty + 2)
         ]);
     }
 
