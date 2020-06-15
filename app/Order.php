@@ -517,10 +517,6 @@ class Order extends Model
 
     public function sendFeedback($feedback)
     {
-        // $this->feedback = $feedback;
-
-        // $this->save();
-
         $qty = Order::where('company_id', $this->company_id)
             ->whereNotNull('feedback')
             ->count();
@@ -529,13 +525,13 @@ class Order extends Model
             ->whereNotNull('feedback')
             ->sum('feedback');
 
-        $feedback = ($sum + $feedback) / ($qty + 1);
+        Company::where('id', $this->company_id)->update([
+            'feedback' => ($sum + $feedback) / ($qty + 1)
+        ]);
 
-        dd($feedback);
+        $this->feedback = $feedback;
 
-        // Company::where('id', $this->company_id)->update([
-        //     'feedback' => $feedback
-        // ]);
+        $this->save();
     }
 
     public function confirmDelivery()
