@@ -135,7 +135,7 @@ class OrderController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Avaliação realizada com sucesso!',
+            'message' => 'Atualização realizada com sucesso!',
             'data' => $order
         ]);
     }
