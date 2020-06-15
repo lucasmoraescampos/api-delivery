@@ -39,7 +39,7 @@ class Company extends Authenticatable implements JWTSubject
 
     public static function getByCategory($category_id)
     {
-        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open', 'feeback')
+        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open', 'feedback')
             ->where('category_id', $category_id)
             ->whereIn('id', function ($query) {
 
