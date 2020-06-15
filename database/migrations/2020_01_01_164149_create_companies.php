@@ -57,6 +57,8 @@ class CreateCompanies extends Migration
 
             $table->boolean('accept_payment_app')->nullable(false);
 
+            $table->unsignedDecimal('feedback', 5, 1)->nullable(true);
+
             $table->unsignedTinyInteger('status')->nullable(false);
 
             $table->timestamps();

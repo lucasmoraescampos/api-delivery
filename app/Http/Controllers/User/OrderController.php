@@ -90,4 +90,33 @@ class OrderController extends Controller
             'message' => 'Pedido realizado com sucesso!'
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->request->add(['id' => $id]);
+
+        $request->validate([
+            'id' => new OrderRule(),
+            'feedback' => 'required|numeric|min:1|max:5'
+        ]);
+
+        $order = Order::find($id);
+
+        if ($order->feedback != null) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Este pedido já foi avaliado!'
+            ]);
+
+        }
+
+        $order->updateFeedback($request->feedback);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avaliação realizada com sucesso!',
+            'data' => $order
+        ]);
+    }
 }

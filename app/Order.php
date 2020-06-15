@@ -12,7 +12,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'company_id', 
+        'company_id',
         'payment_type',
         'payment_method_id',
         'card_number',
@@ -56,13 +56,9 @@ class Order extends Model
             if ($order->delivered_at == null) {
 
                 $order->waiting_time = Order::prepareWaitingTime($order->created_at, $order->waiting_time);
-    
-            }
-    
-            else {
-    
+            } else {
+
                 $order->waiting_time = null;
-    
             }
 
             $order->products = OrderProduct::from('orders_products as o')
@@ -70,11 +66,9 @@ class Order extends Model
                 ->leftJoin('products as p', 'p.id', 'o.product_id')
                 ->where('o.order_id', $order->id)
                 ->get();
-
         }
 
         return $orders;
-
     }
 
     public static function getById($id)
@@ -110,13 +104,9 @@ class Order extends Model
         if ($order->delivered_at == null) {
 
             $order->waiting_time = Order::prepareWaitingTime($order->created_at, $order->waiting_time);
-
-        }
-
-        else {
+        } else {
 
             $order->waiting_time = null;
-
         }
 
         $order->products = OrderProduct::from('orders_products as o')
@@ -126,7 +116,7 @@ class Order extends Model
             ->get();
 
         foreach ($order->products as &$product) {
-            
+
             $product->subcomplements = OrderSubcomplement::from('orders_subcomplements as o')
                 ->select('s.description', 'o.unit_price', 'o.qty')
                 ->leftJoin('subcomplements as s', 's.id', 'o.subcomplement_id')
@@ -134,7 +124,6 @@ class Order extends Model
                 ->where('o.order_id', $order->id)
                 ->where('c.product_id', $product->id)
                 ->get();
-
         }
 
         return $order;
@@ -152,7 +141,6 @@ class Order extends Model
                     ]
                 ]
             ], 422);
-
         }
 
         $total_price = 0;
@@ -169,7 +157,6 @@ class Order extends Model
                         ]
                     ]
                 ], 422);
-    
             }
 
             if (!isset($product['qty'])) {
@@ -182,7 +169,6 @@ class Order extends Model
                         ]
                     ]
                 ], 422);
-    
             }
 
             $product2 = Product::find($product['id']);
@@ -197,7 +183,6 @@ class Order extends Model
                         ]
                     ]
                 ], 422);
-
             }
 
             if ($product2->company_id != $data['company_id']) {
@@ -210,7 +195,6 @@ class Order extends Model
                         ]
                     ]
                 ], 422);
-
             }
 
             $total_price += $product2->price * $product['qty'];
@@ -231,7 +215,6 @@ class Order extends Model
                                 ]
                             ]
                         ], 422);
-            
                     }
 
                     if (!isset($complement['subcomplements']) || count($complement['subcomplements']) == 0) {
@@ -244,7 +227,6 @@ class Order extends Model
                                 ]
                             ]
                         ], 422);
-            
                     }
 
                     $complement2 = Complement::find($complement['id']);
@@ -259,13 +241,11 @@ class Order extends Model
                                 ]
                             ]
                         ], 422);
-        
                     }
 
                     if ($complement2->is_required) {
 
                         $complements_requireds[] = $complement2->id;
-
                     }
 
                     $qty = 0;
@@ -273,7 +253,7 @@ class Order extends Model
                     foreach ($complement['subcomplements'] as $key3 => $subcomplement) {
 
                         if (!isset($subcomplement['id'])) {
-                
+
                             return response()->json([
                                 'message' => 'The given data was invalid.',
                                 'errors' => [
@@ -282,11 +262,10 @@ class Order extends Model
                                     ]
                                 ]
                             ], 422);
-
                         }
 
                         if (!isset($subcomplement['qty'])) {
-                
+
                             return response()->json([
                                 'message' => 'The given data was invalid.',
                                 'errors' => [
@@ -295,13 +274,12 @@ class Order extends Model
                                     ]
                                 ]
                             ], 422);
-
                         }
 
                         $subcomplement2 = Subcomplement::find($subcomplement['id']);
 
                         if ($subcomplement2 == null) {
-            
+
                             return response()->json([
                                 'message' => 'The given data was invalid.',
                                 'errors' => [
@@ -310,7 +288,6 @@ class Order extends Model
                                     ]
                                 ]
                             ], 422);
-
                         }
 
                         if ($subcomplement2->complement_id != $complement2->id) {
@@ -323,13 +300,11 @@ class Order extends Model
                                     ]
                                 ]
                             ], 422);
-
                         }
 
                         $qty += $subcomplement['qty'];
 
                         $total_price += $subcomplement2->price * $subcomplement['qty'];
-
                     }
 
                     if ($qty > $complement2->qty_max) {
@@ -342,7 +317,6 @@ class Order extends Model
                                 ]
                             ]
                         ], 422);
-
                     }
 
                     if ($complement2->qty_min !== null && $qty < $complement2->qty_min) {
@@ -355,11 +329,8 @@ class Order extends Model
                                 ]
                             ]
                         ], 422);
-
                     }
-
                 }
-
             }
 
             if (isset($complements_requireds) && count($complements_requireds) > 0) {
@@ -379,12 +350,8 @@ class Order extends Model
                             ]
                         ]
                     ], 422);
-
                 }
-
-            }
-
-            else {
+            } else {
 
                 $complement = Complement::where('product_id', $product['id'])
                     ->where('is_required', 1)
@@ -400,11 +367,8 @@ class Order extends Model
                             ]
                         ]
                     ], 422);
-
                 }
-
             }
-            
         }
 
         $company = Company::find($data['company_id']);
@@ -417,7 +381,6 @@ class Order extends Model
                 'status' => false,
                 'message' => "O pedido mínimo para esta loja é de R$ $value, não inclusa a taxa de entrega!"
             ]);
-
         }
 
         return true;
@@ -467,13 +430,9 @@ class Order extends Model
                             'qty' => $subcomplement['qty'],
                             'unit_price' => $subcomplement_price
                         ];
-
                     }
-
                 }
-
             }
-
         }
 
         $amount = $total_price + $company->delivery_price;
@@ -527,18 +486,11 @@ class Order extends Model
                     'fee_mercado_pago' => $fee_mercado_pago,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-
-            }
-
-            else {
+            } else {
 
                 return false;
-
             }
-
-        }
-
-        else {
+        } else {
 
             $order_id = Order::insertGetId([
                 'user_id' => Auth::id(),
@@ -555,7 +507,6 @@ class Order extends Model
                 'fee_meu_pedido' => 0,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-
         }
 
         OrderProduct::insert($orders_products);
@@ -563,7 +514,25 @@ class Order extends Model
         OrderSubcomplement::insert($orders_subcomplements);
 
         return Order::find($order_id);
+    }
 
+    public function updateFeedback($feedback)
+    {
+        $this->feedback = $feedback;
+
+        $this->save();
+
+        $qty = Order::where('company_id', $this->company_id)
+            ->whereNotNull('feedback')
+            ->count();
+
+        $sum = Order::where('company_id', $this->company_id)
+            ->whereNotNull('feedback')
+            ->sum('feedback');
+
+        Company::where('id', $this->company_id)->update([
+            'feedback' => ($sum + $feedback) / ($qty + 1)
+        ]);
     }
 
     private static function prepareWaitingTime($created_at, $waiting_time)

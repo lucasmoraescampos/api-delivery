@@ -52,7 +52,7 @@ class CompanyController extends Controller
 
         $request->validate(['id' => new CompanyRule()]);
 
-        $company = Company::select('name', 'photo', 'min_value', 'delivery_price', 'waiting_time', 'accept_payment_app', 'latitude', 'longitude')
+        $company = Company::select('name', 'photo', 'min_value', 'delivery_price', 'waiting_time', 'accept_payment_app', 'feedback', 'latitude', 'longitude')
             ->where('id', $id)
             ->first();
 

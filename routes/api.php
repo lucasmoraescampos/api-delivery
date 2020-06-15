@@ -74,6 +74,8 @@ Route::prefix('user')->group(function () {
 
                 Route::post('/', 'User\OrderController@store'); //
 
+                Route::put('{id}', 'User\OrderController@update'); //
+
             });
 
             Route::prefix('location')->group(function () {

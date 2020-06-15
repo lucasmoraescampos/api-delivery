@@ -39,7 +39,7 @@ class Company extends Authenticatable implements JWTSubject
 
     public static function getByCategory($category_id)
     {
-        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open', 'feeback')
             ->where('category_id', $category_id)
             ->whereIn('id', function ($query) {
 
@@ -55,7 +55,7 @@ class Company extends Authenticatable implements JWTSubject
 
     public static function getBySubcategory($subcategory_id)
     {
-        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open')
+        return Company::select('id', 'photo', 'name', 'waiting_time', 'latitude', 'longitude', 'delivery_price', 'is_open', 'feedback')
             ->whereIn('id', function ($query) use ($subcategory_id) {
 
                 $query->select('company_id')
@@ -72,7 +72,7 @@ class Company extends Authenticatable implements JWTSubject
     public static function getBySearch($search)
     {
         return Product::from('products as p')
-            ->select('c.id', 'c.photo', 'c.name', 'c.waiting_time', 'c.latitude', 'c.longitude', 'c.delivery_price', 'c.created_at', 'c.is_open')
+            ->select('c.id', 'c.photo', 'c.name', 'c.waiting_time', 'c.latitude', 'c.longitude', 'c.delivery_price', 'c.created_at', 'c.is_open', 'c.feedback')
             ->leftJoin('companies as c', 'c.id', 'p.company_id')
             ->where('p.name', 'like', "%$search%")
             ->orWhere('c.name', 'like', "%$search%")

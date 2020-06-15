@@ -47,7 +47,7 @@ class CreateOrders extends Migration
 
             $table->unsignedDecimal('fee_mercado_pago', 15, 2)->nullable(true);
 
-            $table->unsignedDecimal('feedback', 5, 2)->nullable(true);
+            $table->unsignedTinyInteger('feedback')->nullable(true);
 
             $table->unsignedTinyInteger('status')->nullable(false);
 
