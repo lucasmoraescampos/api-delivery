@@ -25,7 +25,8 @@ class Order extends Model
         'delivery_price',
         'amount',
         'fee_meu_pedido',
-        'fee_mercado_pago'
+        'fee_mercado_pago',
+        'status'
     ];
 
     protected $attributes = [
