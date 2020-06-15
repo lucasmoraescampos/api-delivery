@@ -97,21 +97,41 @@ class OrderController extends Controller
 
         $request->validate([
             'id' => new OrderRule(),
-            'feedback' => 'required|numeric|min:1|max:5'
+            'feedback' => 'required_without:delivered|numeric|min:1|max:5',
+            'delivered' => 'required_without:feedback|bool'
         ]);
-
+        
         $order = Order::find($id);
 
-        if ($order->feedback != null) {
+        if ($request->feedback) {
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Este pedido já foi avaliado!'
-            ]);
+            if ($order->feedback != null) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Este pedido já foi avaliado!'
+                ]);
+
+            }
+
+            $order->sendFeedback($request->feedback);
 
         }
 
-        $order->updateFeedback($request->feedback);
+        elseif ($request->delivered) {
+
+            if ($order->status == 4) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Entrega já confirmada!'
+                ]);
+
+            }
+
+            $order->confirmDelivery();
+
+        }
 
         return response()->json([
             'success' => true,

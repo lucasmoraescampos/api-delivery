@@ -515,7 +515,7 @@ class Order extends Model
         return Order::find($order_id);
     }
 
-    public function updateFeedback($feedback)
+    public function sendFeedback($feedback)
     {
         $this->feedback = $feedback;
 
@@ -532,6 +532,13 @@ class Order extends Model
         Company::where('id', $this->company_id)->update([
             'feedback' => ($sum + $feedback) / ($qty + 2)
         ]);
+    }
+
+    public function confirmDelivery()
+    {
+        $this->status = DELIVERED;
+
+        $this->save();
     }
 
     private static function prepareWaitingTime($created_at, $waiting_time)
