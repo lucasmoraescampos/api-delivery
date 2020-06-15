@@ -529,7 +529,7 @@ class Order extends Model
             ->whereNotNull('feedback')
             ->sum('feedback');
 
-        dd(($sum + $feedback) / ($qty + 2));
+        dd(($sum + $feedback) / ($qty + 1));
 
         // Company::where('id', $this->company_id)->update([
         //     'feedback' => ($sum + $feedback) / ($qty + 2)
