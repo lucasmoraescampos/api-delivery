@@ -85,6 +85,7 @@ class Order extends Model
                 'o.delivery_price',
                 'o.amount',
                 'o.status',
+                'o.company_id',
                 'c.name as company_name',
                 'c.waiting_time',
                 'c.phone as company_phone',
