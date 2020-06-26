@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Storage;
 
 class Company extends Authenticatable implements JWTSubject
 {
@@ -80,5 +81,36 @@ class Company extends Authenticatable implements JWTSubject
             ->orderBy('c.is_open', 'desc')
             ->distinct()
             ->get();
+    }
+
+    public function upload($file)
+    {
+        $this->deleteLastPhoto();
+        
+        $name = uniqid(date('HisYmd'));
+
+        $ext = $file->extension();
+
+        $full_name = "{$name}.{$ext}";
+
+        $file->storeAs('companies', $full_name);
+
+        $this->photo = 'https://api.meupedido.org/storage/companies/' . $full_name;
+
+        $this->save();
+    }
+
+    private function deleteLastPhoto() {
+
+        if ($this->photo) {
+
+            $array = explode('/', $this->photo);
+
+            $photo = 'companies/' . end($array);
+
+            Storage::delete($photo);
+
+        }
+
     }
 }

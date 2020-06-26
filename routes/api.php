@@ -120,6 +120,8 @@ Route::prefix('company')->group(function () {
 
     Route::group(['middleware' => ['assign.guard:companies', 'auth.jwt']], function () {
 
+        Route::put('/{id}', 'Company\AuthController@update');
+
         Route::prefix('menusession')->group(function () {
 
             Route::get('/', 'Company\MenuSessionController@index');
