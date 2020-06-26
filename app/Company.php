@@ -18,7 +18,6 @@ class Company extends Authenticatable implements JWTSubject
     ];
 
     protected $attributes = [
-        'accept_payment_app' => 0,
         'status' => WAITING,
         'is_open' => 0
     ];

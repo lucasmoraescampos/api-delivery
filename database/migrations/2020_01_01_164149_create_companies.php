@@ -55,7 +55,11 @@ class CreateCompanies extends Migration
 
             $table->boolean('is_open')->nullable(false);
 
-            $table->boolean('accept_payment_app')->nullable(false);
+            $table->boolean('accept_payment_app')->nullable(true);
+
+            $table->boolean('accept_outsourced_delivery')->nullable(true);
+
+            $table->boolean('accept_withdrawal_local')->nullable(true);
 
             $table->unsignedDecimal('feedback', 5, 1)->nullable(true);
 
