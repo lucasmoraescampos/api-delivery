@@ -173,7 +173,7 @@ Route::prefix('company')->group(function () {
             Route::delete('subcomplement/{id}', 'Company\ProductController@deleteSubcomplement');
         });
 
-        Route::prefix('paymentMethods')->group(function () {
+        Route::prefix('paymentMethod')->group(function () {
 
             Route::get('/', 'Company\PaymentMethodController@index');
 
