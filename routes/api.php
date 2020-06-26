@@ -112,15 +112,15 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('company')->group(function () {
 
-    Route::get('categories', 'Company\AuthController@showCategories');
+    Route::get('category', 'Company\CategoryController@index');
 
-    Route::post('register', 'Company\AuthController@store');
+    Route::post('auth', 'Company\AuthController@store');
 
-    Route::post('login', 'Company\AuthController@login');
+    Route::put('auth', 'Company\AuthController@login');
 
     Route::group(['middleware' => ['assign.guard:companies', 'auth.jwt']], function () {
 
-        Route::put('/{id}', 'Company\AuthController@update');
+        Route::put('auth/{id}', 'Company\AuthController@update');
 
         Route::prefix('menusession')->group(function () {
 
