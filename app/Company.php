@@ -32,7 +32,9 @@ class Company extends Authenticatable implements JWTSubject
         'delivery_price',
         'waiting_time',
         'is_open',
-        'accept_payment_app'
+        'accept_payment_app',
+        'accept_outsourced_delivery',
+        'accept_withdrawal_local'
     ];
 
     protected $attributes = [

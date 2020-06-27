@@ -90,7 +90,9 @@ class AuthController extends Controller
             'delivery_price',
             'waiting_time',
             'is_open',
-            'accept_payment_app'
+            'accept_payment_app',
+            'accept_outsourced_delivery',
+            'accept_withdrawal_local'
         ]);
 
         $company = Company::find($id);
