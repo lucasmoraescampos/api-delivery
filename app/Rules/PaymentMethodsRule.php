@@ -32,7 +32,7 @@ class PaymentMethodsRule implements Rule
 
         foreach ($search as $s) {
 
-            $data[] = $s;
+            $data[] = $s->id;
 
         }
 

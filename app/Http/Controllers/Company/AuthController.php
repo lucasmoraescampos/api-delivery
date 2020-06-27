@@ -64,7 +64,7 @@ class AuthController extends Controller
             'uf' => 'nullable|string|max:2',
             'latitude' => 'nullable|string|max:40',
             'longitude' => 'nullable|string|max:40',
-            'photo' => 'nullable|file|size:8000|mimes:jpeg,png',
+            'photo' => 'nullable|file|max:8000|mimes:jpeg,png',
             'min_value' => 'nullable|numeric',
             'delivery_price' => 'nullable|numeric',
             'waiting_time' => 'nullable|numeric',
