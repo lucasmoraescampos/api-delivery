@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CompanyPaymentMethod extends Model
 {
+    public $timestamps = false;
+    
     protected $table = 'companies_payment_methods';
 
     protected $fillable = [
