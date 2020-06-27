@@ -105,7 +105,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $company,
+            'data' => $data,
             'message' => 'Empresa atualizada com sucesso!'
         ]);
     }
