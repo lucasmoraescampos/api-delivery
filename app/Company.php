@@ -14,7 +14,25 @@ class Company extends Authenticatable implements JWTSubject
     protected $table = 'companies';
 
     protected $fillable = [
-        'category_id', 'name', 'email', 'phone', 'password'
+        'category_id',
+        'name',
+        'email',
+        'phone',
+        'password',
+        'zipcode',
+        'street_name',
+        'street_number',
+        'complement',
+        'district',
+        'city',
+        'uf',
+        'latitude',
+        'longitude',
+        'min_value',
+        'delivery_price',
+        'waiting_time',
+        'is_open',
+        'accept_payment_app'
     ];
 
     protected $attributes = [
@@ -46,7 +64,6 @@ class Company extends Authenticatable implements JWTSubject
                 $query->select('company_id')
                     ->from(with(new Product)->getTable())
                     ->distinct();
-                    
             })
             ->orderBy('created_at', 'asc')
             ->orderBy('is_open', 'desc')
@@ -62,7 +79,6 @@ class Company extends Authenticatable implements JWTSubject
                     ->from(with(new Product)->getTable())
                     ->where('subcategory_id', $subcategory_id)
                     ->distinct();
-                    
             })
             ->orderBy('created_at', 'asc')
             ->orderBy('is_open', 'desc')
@@ -85,7 +101,7 @@ class Company extends Authenticatable implements JWTSubject
     public function upload($file)
     {
         $this->deleteLastPhoto();
-        
+
         $name = uniqid(date('HisYmd'));
 
         $ext = $file->extension();
@@ -99,7 +115,8 @@ class Company extends Authenticatable implements JWTSubject
         $this->save();
     }
 
-    private function deleteLastPhoto() {
+    private function deleteLastPhoto()
+    {
 
         if ($this->photo) {
 
@@ -108,8 +125,6 @@ class Company extends Authenticatable implements JWTSubject
             $photo = 'companies/' . end($array);
 
             Storage::delete($photo);
-
         }
-
     }
 }
