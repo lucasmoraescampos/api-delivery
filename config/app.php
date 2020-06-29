@@ -1,7 +1,5 @@
 <?php
 
-setlocale(LC_TIME, 'pt-br');
-
 return [
 
     /*
