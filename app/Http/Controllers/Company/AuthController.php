@@ -142,4 +142,14 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    public function performance()
+    {
+        $performance = Company::getPerformance();
+
+        return response()->json([
+            'success' => true,
+            'data' => $performance
+        ]);
+    }
 }

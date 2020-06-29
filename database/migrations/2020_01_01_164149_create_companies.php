@@ -27,6 +27,10 @@ class CreateCompanies extends Migration
 
             $table->string('password', 255)->nullable(false);
 
+            $table->unsignedDecimal('balance_available', 15, 2)->nullable(false);
+
+            $table->unsignedDecimal('balance_receivable', 15, 2)->nullable(false);
+
             $table->string('zipcode', 9)->nullable(true);
 
             $table->string('street_name', 255)->nullable(true);
@@ -52,6 +56,8 @@ class CreateCompanies extends Migration
             $table->unsignedDecimal('delivery_price', 15, 2)->nullable(true);
 
             $table->unsignedSmallInteger('waiting_time')->nullable(true);
+
+            $table->unsignedMediumInteger('range')->nullable(true);
 
             $table->boolean('is_open')->nullable(false);
 

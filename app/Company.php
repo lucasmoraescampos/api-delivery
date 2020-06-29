@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,6 +32,7 @@ class Company extends Authenticatable implements JWTSubject
         'min_value',
         'delivery_price',
         'waiting_time',
+        'range',
         'is_open',
         'accept_payment_app',
         'accept_outsourced_delivery',
@@ -38,8 +40,14 @@ class Company extends Authenticatable implements JWTSubject
     ];
 
     protected $attributes = [
+        'balance_available' => 0,
+        'balance_receivable' => 0,
         'status' => WAITING,
         'is_open' => 0
+    ];
+
+    protected $hidden = [
+        'password'
     ];
 
     public function getJWTIdentifier()
@@ -98,6 +106,125 @@ class Company extends Authenticatable implements JWTSubject
             ->orderBy('c.is_open', 'desc')
             ->distinct()
             ->get();
+    }
+
+    public static function getPerformance()
+    {
+        $year = date('Y', strtotime('-5 month'));
+
+        $month = date('m', strtotime('-5 month'));
+
+        $date = "$year-$month-01 00:00:00";
+
+        $months = [
+            [
+                'name' => date('M', strtotime('-5 month')),
+                'value' => 0
+            ],
+            [
+                'name' => date('M', strtotime('-4 month')),
+                'value' => 0
+            ],
+            [
+                'name' => date('M', strtotime('-3 month')),
+                'value' => 0
+            ],
+            [
+                'name' => date('M', strtotime('-2 month')),
+                'value' => 0
+            ],
+            [
+                'name' => date('M', strtotime('-1 month')),
+                'value' => 0
+            ],
+            [
+                'name' => date('M'),
+                'value' => 0
+            ]
+        ];
+
+        $days = [
+            [
+                'name' => date('D', strtotime('-5 day')),
+                'value' => 0
+            ],
+            [
+                'name' => date('D', strtotime('-4 day')),
+                'value' => 0
+            ],
+            [
+                'name' => date('D', strtotime('-3 day')),
+                'value' => 0
+            ],
+            [
+                'name' => date('D', strtotime('-2 day')),
+                'value' => 0
+            ],
+            [
+                'name' => date('D', strtotime('-1 day')),
+                'value' => 0
+            ],
+            [
+                'name' => date('D'),
+                'value' => 0
+            ]
+        ];
+
+        $orders = Order::select('created_at', 'amount')
+            ->where('created_at', '>=', $date)
+            ->where('status', DELIVERED)
+            ->where('company_id', Auth::id())
+            ->get();
+
+        foreach ($orders as $order) {
+
+            if (date('M', strtotime($order->created_at)) == $months[0]['name']) {
+                $months[0]['value'] += $order->amount;
+            }
+            elseif (date('M', strtotime($order->created_at)) == $months[1]['name']) {
+                $months[1]['value'] += $order->amount;
+            }
+            elseif (date('M', strtotime($order->created_at)) == $months[2]['name']) {
+                $months[2]['value'] += $order->amount;
+            }
+            elseif (date('M', strtotime($order->created_at)) == $months[3]['name']) {
+                $months[3]['value'] += $order->amount;
+            }
+            elseif (date('M', strtotime($order->created_at)) == $months[4]['name']) {
+                $months[4]['value'] += $order->amount;
+            }
+            elseif (date('M', strtotime($order->created_at)) == $months[5]['name']) {
+                $months[5]['value'] += $order->amount;
+            }
+
+            if (date('D', strtotime($order->created_at)) == $days[0]['name']) {
+                $days[0]['value'] += $order->amount;
+            }
+            elseif (date('D', strtotime($order->created_at)) == $days[1]['name']) {
+                $days[1]['value'] += $order->amount;
+            }
+            elseif (date('D', strtotime($order->created_at)) == $days[2]['name']) {
+                $days[2]['value'] += $order->amount;
+            }
+            elseif (date('D', strtotime($order->created_at)) == $days[3]['name']) {
+                $days[3]['value'] += $order->amount;
+            }
+            elseif (date('D', strtotime($order->created_at)) == $days[4]['name']) {
+                $days[4]['value'] += $order->amount;
+            }
+            elseif (date('D', strtotime($order->created_at)) == $days[5]['name']) {
+                $days[5]['value'] += $order->amount;
+            }
+        }
+
+        $days[4]['name'] = 'Ontem';
+
+        $days[5]['name'] = 'Hoje';
+
+        return [
+            'days' => $days,
+            'months' => $months
+        ];
     }
 
     public function upload($file)
