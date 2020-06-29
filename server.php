@@ -7,8 +7,6 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
-date_default_timezone_set('America/Sao_Paulo');
-
 $uri = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 );
