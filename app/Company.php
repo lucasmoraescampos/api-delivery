@@ -110,10 +110,6 @@ class Company extends Authenticatable implements JWTSubject
 
     public static function getPerformance()
     {
-        $day_week = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-        $months_year = [null, 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-
         $year = date('Y', strtotime('-5 month'));
 
         $month = date('m', strtotime('-5 month'));
@@ -122,54 +118,54 @@ class Company extends Authenticatable implements JWTSubject
 
         $months = [
             [
-                'name' => $months_year[date('n', strtotime('-5 month'))],
+                'name' => date('Y-m-d', strtotime('-5 month')),
                 'value' => 0
             ],
             [
-                'name' => $months_year[date('n', strtotime('-4 month'))],
+                'name' => date('Y-m-d', strtotime('-4 month')),
                 'value' => 0
             ],
             [
-                'name' => $months_year[date('n', strtotime('-3 month'))],
+                'name' => date('Y-m-d', strtotime('-3 month')),
                 'value' => 0
             ],
             [
-                'name' => $months_year[date('n', strtotime('-2 month'))],
+                'name' => date('Y-m-d', strtotime('-2 month')),
                 'value' => 0
             ],
             [
-                'name' => $months_year[date('n', strtotime('-1 month'))],
+                'name' => date('Y-m-d', strtotime('-1 month')),
                 'value' => 0
             ],
             [
-                'name' => $months_year[date('n')],
+                'name' => date('Y-m-d'),
                 'value' => 0
             ]
         ];
 
         $days = [
             [
-                'name' => $day_week[date('w', strtotime('-5 day'))],
+                'name' => date('Y-m-d', strtotime('-5 day')),
                 'value' => 0
             ],
             [
-                'name' => $day_week[date('w', strtotime('-4 day'))],
+                'name' => date('Y-m-d', strtotime('-4 day')),
                 'value' => 0
             ],
             [
-                'name' => $day_week[date('w', strtotime('-3 day'))],
+                'name' => date('Y-m-d', strtotime('-3 day')),
                 'value' => 0
             ],
             [
-                'name' => $day_week[date('w', strtotime('-2 day'))],
+                'name' => date('Y-m-d', strtotime('-2 day')),
                 'value' => 0
             ],
             [
-                'name' => $day_week[date('w', strtotime('-1 day'))],
+                'name' => date('Y-m-d', strtotime('-1 day')),
                 'value' => 0
             ],
             [
-                'name' => $day_week[date('w')],
+                'name' => date('Y-m-d'),
                 'value' => 0
             ]
         ];
@@ -182,48 +178,44 @@ class Company extends Authenticatable implements JWTSubject
 
         foreach ($orders as $order) {
 
-            if ($months_year[date('n', strtotime($order->created_at))] == $months[0]['name']) {
+            if (date('Y-m-d', strtotime($order->created_at)) == $months[0]['name']) {
                 $months[0]['value'] += $order->amount;
             }
-            elseif ($months_year[date('n', strtotime($order->created_at))] == $months[1]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[1]['name']) {
                 $months[1]['value'] += $order->amount;
             }
-            elseif ($months_year[date('n', strtotime($order->created_at))] == $months[2]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[2]['name']) {
                 $months[2]['value'] += $order->amount;
             }
-            elseif ($months_year[date('n', strtotime($order->created_at))] == $months[3]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[3]['name']) {
                 $months[3]['value'] += $order->amount;
             }
-            elseif ($months_year[date('n', strtotime($order->created_at))] == $months[4]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[4]['name']) {
                 $months[4]['value'] += $order->amount;
             }
-            elseif ($months_year[date('n', strtotime($order->created_at))] == $months[5]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[5]['name']) {
                 $months[5]['value'] += $order->amount;
             }
 
-            if ($day_week[date('w', strtotime($order->created_at))] == $days[0]['name']) {
+            if (date('Y-m-d', strtotime($order->created_at)) == $days[0]['name']) {
                 $days[0]['value'] += $order->amount;
             }
-            elseif ($day_week[date('w', strtotime($order->created_at))] == $days[1]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $days[1]['name']) {
                 $days[1]['value'] += $order->amount;
             }
-            elseif ($day_week[date('w', strtotime($order->created_at))] == $days[2]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $days[2]['name']) {
                 $days[2]['value'] += $order->amount;
             }
-            elseif ($day_week[date('w', strtotime($order->created_at))] == $days[3]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $days[3]['name']) {
                 $days[3]['value'] += $order->amount;
             }
-            elseif ($day_week[date('w', strtotime($order->created_at))] == $days[4]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $days[4]['name']) {
                 $days[4]['value'] += $order->amount;
             }
-            elseif ($day_week[date('w', strtotime($order->created_at))] == $days[5]['name']) {
+            elseif (date('Y-m-d', strtotime($order->created_at)) == $days[5]['name']) {
                 $days[5]['value'] += $order->amount;
             }
         }
-
-        $days[4]['name'] = 'Ontem';
-
-        $days[5]['name'] = 'Hoje';
 
         return [
             'days' => $days,
