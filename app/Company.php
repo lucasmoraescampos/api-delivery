@@ -223,6 +223,53 @@ class Company extends Authenticatable implements JWTSubject
         ];
     }
 
+    public static function getOrderById($id)
+    {
+        $order = Order::from('orders as o')
+            ->select(
+                'o.id',
+                'o.created_at',
+                'o.delivered_at',
+                'o.feedback',
+                'o.address',
+                'o.payment_type',
+                'o.payment_method_id',
+                'o.price',
+                'o.delivery_price',
+                'o.delivery_forecast',
+                'o.amount',
+                'o.status',
+                'u.id as user_id',
+                'u.name as user_name',
+                'p.name as payment_method_name',
+                'p.icon as payment_method_icon'
+            )
+            ->leftJoin('users as u', 'u.id', 'o.user_id')
+            ->leftJoin('payment_methods as p', 'p.id', 'o.payment_method_id')
+            ->where('o.company_id', Auth::id())
+            ->where('o.id', $id)
+            ->first();
+
+        $order->products = OrderProduct::from('orders_products as o')
+            ->select('p.id', 'p.name', 'o.unit_price', 'o.qty', 'o.note')
+            ->leftJoin('products as p', 'p.id', 'o.product_id')
+            ->where('o.order_id', $order->id)
+            ->get();
+
+        foreach ($order->products as &$product) {
+
+            $product->subcomplements = OrderSubcomplement::from('orders_subcomplements as o')
+                ->select('s.description', 'o.unit_price', 'o.qty')
+                ->leftJoin('subcomplements as s', 's.id', 'o.subcomplement_id')
+                ->leftJoin('complements as c', 'c.id', 's.complement_id')
+                ->where('o.order_id', $order->id)
+                ->where('c.product_id', $product->id)
+                ->get();
+        }
+
+        return $order;
+    }
+
     public function upload($file)
     {
         $this->deleteLastPhoto();

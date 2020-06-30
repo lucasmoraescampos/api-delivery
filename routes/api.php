@@ -181,6 +181,8 @@ Route::prefix('company')->group(function () {
 
             Route::get('/', 'Company\OrderController@index');
 
+            Route::get('/{id}', 'Company\OrderController@show');
+
         });
 
         Route::prefix('paymentMethod')->group(function () {

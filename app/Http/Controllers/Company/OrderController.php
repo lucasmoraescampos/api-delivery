@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Company;
 
+use App\Company;
 use App\Order;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Rules\User\OrderRule;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -22,5 +25,22 @@ class OrderController extends Controller
             'success' => true,
             'data' => $orders
         ]);
+    }
+
+    public function show($id)
+    {
+        dd(1);
+        // $request = new Request();
+
+        // $request->request->add(['id' => $id]);
+
+        // $request->validate(['id' => new OrderRule()]);
+
+        // $order = Company::getOrderById($id);
+
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $order
+        // ]);
     }
 }
