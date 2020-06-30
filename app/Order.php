@@ -23,6 +23,7 @@ class Order extends Model
         'cashback',
         'price',
         'delivery_price',
+        'delivery_time',
         'amount',
         'fee_meu_pedido',
         'fee_mercado_pago',

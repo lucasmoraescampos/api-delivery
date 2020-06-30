@@ -41,6 +41,8 @@ class CreateOrders extends Migration
 
             $table->unsignedDecimal('delivery_price', 15, 2)->nullable(true);
 
+            $table->dateTime('delivery_time')->nullable(true);
+
             $table->unsignedDecimal('amount', 15, 2)->nullable(false);
 
             $table->unsignedDecimal('fee_meu_pedido', 15, 2)->nullable(false);
