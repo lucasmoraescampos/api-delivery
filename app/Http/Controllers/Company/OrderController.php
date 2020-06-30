@@ -13,8 +13,8 @@ class OrderController extends Controller
         $orders = Order::from('orders as o')
             ->select('o.id', 'o.latitude', 'o.longitude', 'o.delivery_time', 'o.amount', 'o.status', 'u.name', 'u.surname')
             ->leftJoin('users as u', 'u.id', 'o.user_id')
-            ->where('company_id', Auth::id())
-            ->orderBy('created_at', 'desc')
+            ->where('o.company_id', Auth::id())
+            ->orderBy('o.created_at', 'desc')
             ->get()
             ->groupBy('status');
         
