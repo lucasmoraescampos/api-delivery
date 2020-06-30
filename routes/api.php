@@ -114,15 +114,17 @@ Route::prefix('company')->group(function () {
 
     Route::get('category', 'Company\CategoryController@index');
 
-    Route::post('auth', 'Company\AuthController@store');
+    Route::post('auth/register', 'Company\AuthController@register');
 
-    Route::put('auth', 'Company\AuthController@login');
+    Route::put('auth/login', 'Company\AuthController@login');
 
     Route::group(['middleware' => ['assign.guard:companies', 'auth.jwt']], function () {
-
+        
         Route::get('auth/performance', 'Company\AuthController@performance');
 
-        Route::put('auth/{id}', 'Company\AuthController@update');
+        Route::post('auth/logout', 'Company\AuthController@logout');
+
+        Route::put('auth/update/{id}', 'Company\AuthController@update');
 
         Route::prefix('menusession')->group(function () {
 

@@ -8,10 +8,11 @@ use App\Company;
 use App\Rules\CategoryRule;
 use App\Rules\CompanyAuthRule;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $request->validate([
             'category_id' => ['required', new CategoryRule()],
@@ -141,6 +142,34 @@ class AuthController extends Controller
                 'message' => 'Senha incorreta!'
             ]);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|string'
+        ]);
+
+        try {
+
+            JWTAuth::invalidate($request->token);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Empresa desconectada com successo!'
+            ]);
+
+        }
+
+        catch (JWTException $exception) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Não foi possível sair!'
+            ]);
+
+        }
+
     }
 
     public function performance()
