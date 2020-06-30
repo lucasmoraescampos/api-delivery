@@ -29,7 +29,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        dd(1);
+        dd(Auth::guard());
         // $request = new Request();
 
         // $request->request->add(['id' => $id]);
