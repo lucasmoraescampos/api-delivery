@@ -118,27 +118,27 @@ class Company extends Authenticatable implements JWTSubject
 
         $months = [
             [
-                'name' => date('Y-m-d', strtotime('-5 month')),
+                'name' => date('Y-m-01', strtotime('-5 month')),
                 'value' => 0
             ],
             [
-                'name' => date('Y-m-d', strtotime('-4 month')),
+                'name' => date('Y-m-01', strtotime('-4 month')),
                 'value' => 0
             ],
             [
-                'name' => date('Y-m-d', strtotime('-3 month')),
+                'name' => date('Y-m-01', strtotime('-3 month')),
                 'value' => 0
             ],
             [
-                'name' => date('Y-m-d', strtotime('-2 month')),
+                'name' => date('Y-m-01', strtotime('-2 month')),
                 'value' => 0
             ],
             [
-                'name' => date('Y-m-d', strtotime('-1 month')),
+                'name' => date('Y-m-01', strtotime('-1 month')),
                 'value' => 0
             ],
             [
-                'name' => date('Y-m-d'),
+                'name' => date('Y-m-01'),
                 'value' => 0
             ]
         ];
@@ -178,22 +178,22 @@ class Company extends Authenticatable implements JWTSubject
 
         foreach ($orders as $order) {
 
-            if (date('Y-m-d', strtotime($order->created_at)) == $months[0]['name']) {
+            if (date('m', strtotime($order->created_at)) == date('m', strtotime($months[0]['name']))) {
                 $months[0]['value'] += $order->amount;
             }
-            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[1]['name']) {
+            elseif (date('m', strtotime($order->created_at)) == date('m', strtotime($months[1]['name']))) {
                 $months[1]['value'] += $order->amount;
             }
-            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[2]['name']) {
+            elseif (date('m', strtotime($order->created_at)) == date('m', strtotime($months[2]['name']))) {
                 $months[2]['value'] += $order->amount;
             }
-            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[3]['name']) {
+            elseif (date('m', strtotime($order->created_at)) == date('m', strtotime($months[3]['name']))) {
                 $months[3]['value'] += $order->amount;
             }
-            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[4]['name']) {
+            elseif (date('m', strtotime($order->created_at)) == date('m', strtotime($months[4]['name']))) {
                 $months[4]['value'] += $order->amount;
             }
-            elseif (date('Y-m-d', strtotime($order->created_at)) == $months[5]['name']) {
+            elseif (date('m', strtotime($order->created_at)) == date('m', strtotime($months[5]['name']))) {
                 $months[5]['value'] += $order->amount;
             }
 
