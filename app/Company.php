@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Storage;
 
@@ -108,7 +107,7 @@ class Company extends Authenticatable implements JWTSubject
             ->get();
     }
 
-    public static function getPerformance()
+    public function getPerformance()
     {
         $year = date('Y', strtotime('-5 month'));
 
@@ -173,7 +172,7 @@ class Company extends Authenticatable implements JWTSubject
         $orders = Order::select('created_at', 'amount')
             ->where('created_at', '>=', $date)
             ->where('status', DELIVERED)
-            ->where('company_id', Auth::id())
+            ->where('company_id', $this->id)
             ->get();
 
         foreach ($orders as $order) {
@@ -223,7 +222,7 @@ class Company extends Authenticatable implements JWTSubject
         ];
     }
 
-    public static function getOrderById($id)
+    public function getOrderById($id)
     {
         $order = Order::from('orders as o')
             ->select(
@@ -246,7 +245,7 @@ class Company extends Authenticatable implements JWTSubject
             )
             ->leftJoin('users as u', 'u.id', 'o.user_id')
             ->leftJoin('payment_methods as p', 'p.id', 'o.payment_method_id')
-            ->where('o.company_id', Auth::id())
+            ->where('o.company_id', $this->id)
             ->where('o.id', $id)
             ->first();
 

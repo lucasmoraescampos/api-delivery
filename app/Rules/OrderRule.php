@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules\User;
+namespace App\Rules;
 
 use App\Order;
 use Illuminate\Contracts\Validation\Rule;
@@ -34,9 +34,9 @@ class OrderRule implements Rule
      */
     public function passes($attribute, $id)
     {
-        $order = Order::find($id);
+        $auth_id = Auth::id();
 
-        $user_id = Auth::id();
+        $order = Order::find($id);
 
         if ($order == null) {
 
@@ -46,9 +46,17 @@ class OrderRule implements Rule
 
         }
 
-        if ($order->user_id != $user_id) {
+        if (Auth::guard('users')->check() && $order->user_id != $auth_id) {
 
-            $this->message = "this order does not belong to user_id $user_id.";
+            $this->message = "this order does not belong to user_id $auth_id.";
+
+            return false;
+
+        }
+
+        if (Auth::guard('companies')->check() && $order->company_id != $auth_id) {
+
+            $this->message = "this order does not belong to company_id $auth_id.";
 
             return false;
 

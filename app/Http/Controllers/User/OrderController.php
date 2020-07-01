@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\Rules\CompanyRule;
 use App\Rules\PaymentTypeRule;
-use App\Rules\User\OrderRule;
+use App\Rules\OrderRule;
 
 class OrderController extends Controller
 {

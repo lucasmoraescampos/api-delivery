@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Company;
 use App\Rules\CategoryRule;
 use App\Rules\CompanyAuthRule;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -174,7 +175,9 @@ class AuthController extends Controller
 
     public function performance()
     {
-        $performance = Company::getPerformance();
+        $company = Company::find(Auth::id());
+
+        $performance = $company->getPerformance();
 
         return response()->json([
             'success' => true,
