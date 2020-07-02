@@ -240,6 +240,7 @@ class Company extends Authenticatable implements JWTSubject
                 'o.status',
                 'u.id as user_id',
                 'u.name as user_name',
+                'u.surname as user_surname',
                 'p.name as payment_method_name',
                 'p.icon as payment_method_icon'
             )
