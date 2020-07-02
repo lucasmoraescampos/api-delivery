@@ -236,6 +236,7 @@ class Company extends Authenticatable implements JWTSubject
                 'o.price',
                 'o.delivery_price',
                 'o.delivery_forecast',
+                'o.cashback',
                 'o.amount',
                 'o.status',
                 'u.id as user_id',
