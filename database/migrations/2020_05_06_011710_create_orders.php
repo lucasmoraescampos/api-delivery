@@ -21,6 +21,8 @@ class CreateOrders extends Migration
 
             $table->unsignedBigInteger('company_id')->nullable();
 
+            $table->unsignedBigInteger('deliver_id')->nullable();
+
             $table->unsignedTinyInteger('payment_type')->nullable(false);
 
             $table->string('payment_method_id', 20)->nullable(false);

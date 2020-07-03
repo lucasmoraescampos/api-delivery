@@ -183,6 +183,8 @@ Route::prefix('company')->group(function () {
 
             Route::get('/{id}', 'Company\OrderController@show');
 
+            Route::put('/{id}', 'Company\OrderController@update');
+
         });
 
         Route::prefix('paymentMethod')->group(function () {

@@ -13,13 +13,9 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::from('orders as o')
-            ->select('o.id', 'o.latitude', 'o.longitude', 'o.delivery_forecast', 'o.amount', 'o.status', 'o.created_at', 'o.delivered_at', 'u.name', 'u.surname')
-            ->leftJoin('users as u', 'u.id', 'o.user_id')
-            ->where('o.company_id', Auth::id())
-            ->orderBy('o.created_at', 'desc')
-            ->get()
-            ->groupBy('status');
+        $company = Company::find(Auth::id());
+
+        $orders = $company->getOrders();
         
         return response()->json([
             'success' => true,
@@ -42,6 +38,23 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'data' => $order
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->request->add(['id' => $id]);
+
+        $request->validate([
+            'id' => new OrderRule(),
+            'status' => 'required|min:1|max:4'
+        ]);
+
+        Order::where('id', $id)->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pedido atualizado com sucesso!'
         ]);
     }
 }

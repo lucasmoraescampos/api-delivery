@@ -222,6 +222,18 @@ class Company extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function getOrders()
+    {
+        return Order::from('orders as o')
+            ->select('o.id', 'o.latitude', 'o.longitude', 'o.delivery_forecast', 'o.amount', 'o.status', 'o.created_at', 'o.delivered_at', 'u.name', 'u.surname')
+            ->leftJoin('users as u', 'u.id', 'o.user_id')
+            ->where('o.company_id', $this->id)
+            ->where('o.status', '<>', REFUSED)
+            ->orderBy('o.created_at', 'desc')
+            ->get()
+            ->groupBy('status');
+    }
+
     public function getOrderById($id)
     {
         $order = Order::from('orders as o')
@@ -249,6 +261,7 @@ class Company extends Authenticatable implements JWTSubject
             ->leftJoin('users as u', 'u.id', 'o.user_id')
             ->leftJoin('payment_methods as p', 'p.id', 'o.payment_method_id')
             ->where('o.company_id', $this->id)
+            ->where('o.status', '<>', REFUSED)
             ->where('o.id', $id)
             ->first();
 

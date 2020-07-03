@@ -24,8 +24,8 @@ defined('WAITING_CONFIRMATION') OR define('WAITING_CONFIRMATION', 0);
 
 defined('PREPARING') OR define('PREPARING', 1);
 
-defined('WAITING_DELIVERY_MAN') OR define('WAITING_DELIVERY_MAN', 2);
+defined('ON_THE_WAY') OR define('ON_THE_WAY', 2);
 
-defined('ON_THE_WAY') OR define('ON_THE_WAY', 3);
+defined('DELIVERED') OR define('DELIVERED', 3);
 
-defined('DELIVERED') OR define('DELIVERED', 4);
+defined('REFUSED') OR define('REFUSED', 4);
