@@ -47,7 +47,7 @@ class OrderController extends Controller
 
         $request->validate([
             'id' => new OrderRule(),
-            'status' => 'required|min:1|max:4'
+            'status' => 'required|min:1|max:5'
         ]);
 
         Order::where('id', $id)->update(['status' => $request->status]);
