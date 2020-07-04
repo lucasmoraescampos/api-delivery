@@ -483,7 +483,7 @@ class Order extends Model
                     'amount' => $amount,
                     'fee_meu_pedido' => 0,
                     'fee_mercado_pago' => $fee_mercado_pago,
-                    'status' => WAITING_CONFIRMATION,
+                    'status' => WAITING,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
             } else {
@@ -505,7 +505,7 @@ class Order extends Model
                 'delivery_price' => $company->delivery_price,
                 'amount' => $amount,
                 'fee_meu_pedido' => 0,
-                'status' => WAITING_CONFIRMATION,
+                'status' => WAITING,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
         }
@@ -536,9 +536,9 @@ class Order extends Model
         $this->save();
     }
 
-    public function confirmDelivery()
+    public function completeOrder()
     {
-        $this->status = DELIVERED;
+        $this->status = COMPLETED;
 
         $this->delivered_at = date('Y-m-d H:i:s');
 

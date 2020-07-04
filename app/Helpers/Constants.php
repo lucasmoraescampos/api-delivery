@@ -20,12 +20,12 @@ defined('PAYMENT_DESCRIPTION') OR define('PAYMENT_DESCRIPTION', 'Meu Pedido');
 
 // Order status
 
-defined('WAITING_CONFIRMATION') OR define('WAITING_CONFIRMATION', 0);
-
 defined('PREPARING') OR define('PREPARING', 1);
 
-defined('ON_THE_WAY') OR define('ON_THE_WAY', 2);
+defined('RELEASED') OR define('RELEASED', 2);
 
-defined('DELIVERED') OR define('DELIVERED', 3);
+defined('DELIVERING') OR define('DELIVERING', 3);
 
-defined('REFUSED') OR define('REFUSED', 4);
+defined('COMPLETED') OR define('COMPLETED', 4);
+
+defined('REFUSED') OR define('REFUSED', 5);

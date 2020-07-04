@@ -171,7 +171,7 @@ class Company extends Authenticatable implements JWTSubject
 
         $orders = Order::select('created_at', 'amount')
             ->where('created_at', '>=', $date)
-            ->where('status', DELIVERED)
+            ->where('status', COMPLETED)
             ->where('company_id', $this->id)
             ->get();
 

@@ -120,7 +120,7 @@ class OrderController extends Controller
 
         elseif ($request->delivered) {
 
-            if ($order->status == 4) {
+            if ($order->status == COMPLETED) {
 
                 return response()->json([
                     'success' => false,
@@ -129,7 +129,7 @@ class OrderController extends Controller
 
             }
 
-            $order->confirmDelivery();
+            $order->completeOrder();
 
         }
 
