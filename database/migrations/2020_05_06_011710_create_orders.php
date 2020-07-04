@@ -53,6 +53,8 @@ class CreateOrders extends Migration
 
             $table->unsignedTinyInteger('feedback')->nullable(true);
 
+            $table->boolean('is_withdrawal_local')->nullable(false);
+
             $table->unsignedTinyInteger('status')->nullable(false);
 
             $table->timestamp('created_at');

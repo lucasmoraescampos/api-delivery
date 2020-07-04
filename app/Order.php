@@ -27,6 +27,7 @@ class Order extends Model
         'amount',
         'fee_meu_pedido',
         'fee_mercado_pago',
+        'is_withdrawal_local',
         'status'
     ];
 
