@@ -65,8 +65,6 @@ class ProductController extends Controller
             'is_available_thursday' => 'required|boolean',
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
             'photo' => 'nullable|file|mimes:png,jpg,jpeg|max:8192'
         ]);
 
