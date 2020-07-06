@@ -84,13 +84,13 @@ class ProductController extends Controller
             'is_available_saturday' => $request->is_available_saturday
         ]);
 
-        if ($request->start_time && $request->end_time) {
+        // if ($request->start_time && $request->end_time) {
 
-            $product->start_time = $request->start_time;
+        //     $product->start_time = $request->start_time;
 
-            $product->end_time = $request->end_time;
+        //     $product->end_time = $request->end_time;
 
-        }
+        // }
 
         if ($request->photo != null) {
 
