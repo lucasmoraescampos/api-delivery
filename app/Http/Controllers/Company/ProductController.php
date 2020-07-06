@@ -68,7 +68,7 @@ class ProductController extends Controller
             'photo' => 'nullable|file|mimes:png,jpg,jpeg|max:8192'
         ]);
 
-        $product = Product::create([
+        $product = new Product([
             'name' => $request->name,
             'description' => $request->description,
             'company_id' => Auth::id(),
@@ -81,14 +81,24 @@ class ProductController extends Controller
             'is_available_wednesday' => $request->is_available_wednesday,
             'is_available_thursday' => $request->is_available_thursday,
             'is_available_friday' => $request->is_available_friday,
-            'is_available_saturday' => $request->is_available_saturday,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time
+            'is_available_saturday' => $request->is_available_saturday
         ]);
 
-        if ($request->photo != null) {
-            $product->uploadPhoto($request->photo);
+        if ($request->start_time && $request->end_time) {
+
+            $product->start_time = $request->start_time;
+
+            $product->end_time = $request->end_time;
+
         }
+
+        if ($request->photo != null) {
+
+            $product->uploadPhoto($request->photo);
+
+        }
+
+        $product->save();
 
         return response()->json([
             'success' => true,
@@ -140,31 +150,6 @@ class ProductController extends Controller
             'success' => true,
             'message' => 'Item cadastrado com sucesso!',
             'data' => $subcomplement
-        ]);
-    }
-
-    public function storePhoto(Request $request)
-    {
-        $request->validate([
-            'photo' => 'required|file|mimes:png,jpg,jpeg|max:8192',
-            'product_id' => 'required'
-        ]);
-
-        $product = Product::find($request->product_id);
-
-        if ($product == null) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Produto não encontrado!'
-            ]);
-        }
-
-        $product->uploadPhoto($request->photo);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Foto atualizada com sucesso!'
         ]);
     }
 

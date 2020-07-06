@@ -39,8 +39,6 @@ class Product extends Model
         $file->storeAs('products', $full_name);
 
         $this->photo = 'https://api.meupedido.org/storage/products/' . $full_name;
-
-        $this->save();
     }
 
     public function getComplements()
