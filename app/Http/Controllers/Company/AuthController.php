@@ -29,6 +29,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Esse e-mail já está sendo usado por outra empresa!'
             ]);
+
         }
 
         $company = Company::create([
@@ -127,21 +128,28 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada!'
+                'message' => 'Este e-mail não está cadastrado!'
             ]);
-        } elseif (password_verify($request->password, $company->password)) {
+            
+        }
+        
+        elseif (password_verify($request->password, $company->password)) {
 
             return response()->json([
                 'success' => true,
                 'data' => $company,
                 'token' => JWTAuth::fromUser($company)
             ]);
-        } else {
+
+        }
+        
+        else {
 
             return response()->json([
                 'success' => false,
                 'message' => 'Senha incorreta!'
             ]);
+
         }
     }
 
@@ -166,11 +174,10 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Não foi possível sair!'
+                'message' => 'Não foi possível fazer logout!'
             ]);
 
         }
-
     }
 
     public function performance()

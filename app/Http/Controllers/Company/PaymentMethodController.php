@@ -27,7 +27,7 @@ class PaymentMethodController extends Controller
             'payment_methods' => ['required', 'array', new PaymentMethodsRule()]
         ]);
 
-        CompanyPaymentMethod::addPaymentMethods(Auth::id(), $request->payment_methods);
+        CompanyPaymentMethod::addPaymentMethods($request->payment_methods);
 
         return response()->json([
             'success' => true,

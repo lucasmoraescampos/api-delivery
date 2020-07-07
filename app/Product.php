@@ -21,14 +21,16 @@ class Product extends Model
         'is_available_friday',
         'is_available_saturday',
         'start_time',
-        'end_time'
+        'end_time',
+        'status',
+        'promotional_price'
     ];
 
     protected $attributes = [
         'status' => 1
     ];
 
-    public function uploadPhoto($file)
+    public function upload($file)
     {
         $name = uniqid(date('HisYmd'));
 

@@ -6,6 +6,7 @@ use App\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\MenuSession;
+use App\Rules\MenuSessionRule;
 use App\Setting;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,14 +30,6 @@ class MenuSessionController extends Controller
             ->where('company_id', Auth::id())
             ->first();
 
-        if ($session == null) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Sessão não encontrada!'
-            ]);
-        }
-
         return response()->json([
             'success' => true,
             'data' => $session
@@ -49,13 +42,13 @@ class MenuSessionController extends Controller
             'name' => 'required|string'
         ]);
 
-        $company = Company::find(Auth::id());
+        $company = Company::find();
 
         if ($company->getQtyMenuSessions() == Setting::getQtyMaxMenuSession()) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'Quantidade máxima de sessões excedida!'
+                'message' => 'Você excedeu o limite máximo de sessões!'
             ]);
 
         }
@@ -78,21 +71,14 @@ class MenuSessionController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->request->add(['id' => $id]);
+
         $request->validate([
+            'id' => new MenuSessionRule(),
             'name' => 'required|string'
         ]);
 
-        $session = MenuSession::where('id', $id)
-            ->where('company_id', Auth::id())
-            ->first();
-
-        if ($session == null) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Sessão não encontrada!'
-            ]);
-        }
+        $session = MenuSession::find($id);
 
         $session->name = $request->name;
 
@@ -139,17 +125,14 @@ class MenuSessionController extends Controller
     public function reorder(Request $request)
     {
         $request->validate([
-            'sessions' => 'required|array'
+            'sessions' => ['required', 'array', new MenuSessionRule()]
         ]);
 
         $position = 1;
 
         foreach ($request->sessions as $session) {
 
-            MenuSession::where('id', $session['id'])
-                ->update([
-                    'position' => $position
-                ]);
+            MenuSession::where('id', $session['id'])->update(['position' => $position]);
 
             $position++;
 

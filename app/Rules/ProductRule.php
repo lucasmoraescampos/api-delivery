@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use App\Product;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ProductRule implements Rule
 {
@@ -12,9 +13,9 @@ class ProductRule implements Rule
      *
      * @return void
      */
-    public function __construct($company_id = null)
+    public function __construct()
     {
-        $this->company_id = $company_id;
+        //
     }
 
     /**
@@ -26,15 +27,16 @@ class ProductRule implements Rule
      */
     public function passes($attribute, $id)
     {
-        if ($this->company_id === null) {
+        if (Auth::guard('companies')->check()) {
 
-            return Product::where('id', $id)->count() > 0;
+            return Product::where('id', $id)
+                ->where('company_id', Auth::id())
+                ->count() > 0;
 
         }
 
-        return Product::where('id', $id)
-            ->where('company_id', $id)
-            ->count() > 0;
+        return Product::where('id', $id)->count() > 0;
+
     }
 
     /**

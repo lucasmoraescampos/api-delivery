@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use App\MenuSession;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class MenuSessionRule implements Rule
 {
@@ -14,19 +15,55 @@ class MenuSessionRule implements Rule
      */
     public function __construct()
     {
-        //
+        $this->unauthorized = false;
     }
 
     /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param  mixed  $value
+     * @param  mixed  $data
      * @return bool
      */
-    public function passes($attribute, $id)
+    public function passes($attribute, $data)
     {
-        return MenuSession::where('id', $id)->count() > 0;
+        if (is_array($data)) {
+
+            foreach ($data as $session) {
+
+                if ($session['company_id'] != Auth::id()) {
+
+                    $this->unauthorized = true;
+
+                    return false;
+
+                }
+
+                $count = MenuSession::where('id', $session['id'])
+                    ->where('company_id', $session['company_id'])
+                    ->count();
+
+                if ($count == 0) {
+
+                    $this->id = $session['id'];
+
+                    return false;
+
+                }
+
+            }
+
+            return true;
+
+        }
+
+        else {
+
+            return MenuSession::where('id', $data)
+                ->where('company_id', Auth::id())
+                ->count() > 0;
+
+        }
     }
 
     /**
@@ -36,6 +73,17 @@ class MenuSessionRule implements Rule
      */
     public function message()
     {
-        return 'Menu Session não encontrado.';
+        if ($this->unauthorized) {
+            return 'unauthorized.';
+        }
+
+        if ($this->id) {
+            return "session id $this->id not found.";
+        }
+
+        else {
+            return "session id not found.";
+        }
+        
     }
 }

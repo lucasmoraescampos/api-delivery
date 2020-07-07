@@ -2,7 +2,9 @@
 
 namespace App\Rules;
 
+use App\Subcomplement;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class SubcomplementRule implements Rule
 {
@@ -23,9 +25,14 @@ class SubcomplementRule implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $id)
     {
-        //
+        return Subcomplement::from('subcomplements as s')
+            ->leftJoin('complements as c', 'c.id', 's.complement_id')
+            ->leftJoin('products as p', 'p.id', 'c.product_id')
+            ->where('s.id', $id)
+            ->where('p.company_id', Auth::id())
+            ->count() > 0;
     }
 
     /**
@@ -35,6 +42,6 @@ class SubcomplementRule implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'Subcomplement ID not authorized.';
     }
 }

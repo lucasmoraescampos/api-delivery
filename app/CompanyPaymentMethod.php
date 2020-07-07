@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyPaymentMethod extends Model
 {
@@ -14,12 +15,12 @@ class CompanyPaymentMethod extends Model
         'company_id', 'payment_method_id'
     ];
 
-    public static function addPaymentMethods($company_id, $payment_methods)
+    public static function addPaymentMethods($payment_methods)
     {
         foreach ($payment_methods as $pm) {
 
             CompanyPaymentMethod::create([
-                'company_id' => $company_id,
+                'company_id' => Auth::id(),
                 'payment_method_id' => $pm 
             ]);
 

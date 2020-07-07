@@ -50,10 +50,13 @@ class OrderController extends Controller
             'status' => 'required|min:1|max:5'
         ]);
 
-        Order::where('id', $id)->update(['status' => $request->status]);
+        $order = Order::find($id);
+        
+        $order->update(['status' => $request->status]);
 
         return response()->json([
             'success' => true,
+            'data' => $order,
             'message' => 'Pedido atualizado com sucesso!'
         ]);
     }
