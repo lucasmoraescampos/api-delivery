@@ -140,7 +140,7 @@ class MenuSessionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Sessões reordenadas com sucesso!'
+            'message' => 'Ordem atualizada com sucesso!'
         ]);
     }
 }
