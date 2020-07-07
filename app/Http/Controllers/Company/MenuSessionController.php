@@ -42,7 +42,7 @@ class MenuSessionController extends Controller
             'name' => 'required|string'
         ]);
 
-        $company = Company::find();
+        $company = Company::find(Auth::id());
 
         if ($company->getQtyMenuSessions() == Setting::getQtyMaxMenuSession()) {
 
