@@ -34,27 +34,27 @@ class SubcomplementController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request = new Request();
+        // $request = new Request();
 
-        $request->request->add(['id' => $id]);
+        // $request->request->add(['id' => $id]);
 
-        $request->validate([
-            'id' => new SubcomplementRule(),
-            'description' => 'required|string',
-            'price' => 'nullable|numeric'
-        ]);
+        // $request->validate([
+        //     'id' => new SubcomplementRule(),
+        //     'description' => 'required|string',
+        //     'price' => 'nullable|numeric'
+        // ]);
         
-        $subcomplement = Subcomplement::find($id);
+        // $subcomplement = Subcomplement::find($id);
 
-        $subcomplement->update([
-            'description' => $request->description,
-            'price' => $request->price
-        ]);
+        // $subcomplement->update([
+        //     'description' => $request->description,
+        //     'price' => $request->price
+        // ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Item atualizado com sucesso!',
-            'data' => $subcomplement
+            'data' => $request->all()
         ]);
     }
 
