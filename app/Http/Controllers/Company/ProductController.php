@@ -176,6 +176,12 @@ class ProductController extends Controller
 
         }
 
+        else {
+
+            $data['promotional_price'] = null;
+
+        }
+
         $product->update($data);
 
         if ($request->photo != null) {
