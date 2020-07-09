@@ -108,6 +108,12 @@ class Product extends Model
 
     public static function checkRebate($rebate, $price)
     {
+        if ($rebate >= $price) {
+
+            return 'O desconto não pode ser maior que o preço.';
+
+        }
+        
         if ($rebate < 2) {
 
             return 'O desconto não pode ser menor que R$ 2,00.';
