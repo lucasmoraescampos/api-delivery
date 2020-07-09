@@ -142,35 +142,39 @@ class ProductController extends Controller
 
         $product = Product::find($id);
 
-        if ($request->rebate == 0) {
+        if ($request->rebate !== null) {
 
-            $data['promotional_price'] = null;
+            if ($request->rebate == 0) {
 
-        }
-
-        elseif ($request->rebate > 0) {
-
-            if ($request->rebate < 2) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'O desconto não pode ser menor que R$ 2,00.'
-                ]);
+                $data['promotional_price'] = null;
 
             }
 
-            $price = $request->price ? $request->price : $product->price;
+            elseif ($request->rebate > 0) {
 
-            if (percentValue($price, $request->rebate) < 10) {
+                if ($request->rebate < 2) {
 
-                return response()->json([
-                    'success' => false,
-                    'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
-                ]);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'O desconto não pode ser menor que R$ 2,00.'
+                    ]);
+
+                }
+
+                $price = $request->price ? $request->price : $product->price;
+
+                if (percentValue($price, $request->rebate) < 10) {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
+                    ]);
+
+                }
+
+                $data['promotional_price'] = $price - $request->rebate;
 
             }
-
-            $data['promotional_price'] = $price - $request->rebate;
 
         }
 
