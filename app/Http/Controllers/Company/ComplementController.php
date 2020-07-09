@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Rules\ComplementRule;
 use App\Rules\ProductRule;
-use Illuminate\Support\Facades\Auth;
 
 class ComplementController extends Controller
 {
@@ -16,10 +15,12 @@ class ComplementController extends Controller
         $request->validate([
             'product_id' => ['required', new ProductRule()],
             'title' => 'required|string',
-            'qty_min' => 'required_if:is_required,1',
-            'qty_max' => 'required',
-            'is_required' => 'required'
+            'qty_min' => 'required_if:is_required,1|min:1',
+            'qty_max' => 'required|min:1',
+            'is_required' => 'required|boolean'
         ]);
+
+        $request->qty_min = $request->is_required ? $request->qty_min : null;
 
         $complement = Complement::create([
             'product_id' => $request->product_id,
@@ -43,10 +44,12 @@ class ComplementController extends Controller
         $request->validate([
             'id' => new ComplementRule(),
             'title' => 'required|string',
-            'qty_min' => 'required_if:is_required,1',
-            'qty_max' => 'required',
-            'is_required' => 'required'
+            'qty_min' => 'required_if:is_required,1|min:1',
+            'qty_max' => 'required|min:1',
+            'is_required' => 'required|boolean'
         ]);
+
+        $request->qty_min = $request->is_required ? $request->qty_min : null;
 
         $complement = Complement::find($id);
 

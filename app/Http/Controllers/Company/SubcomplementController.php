@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Rules\ComplementRule;
 use App\Rules\SubcomplementRule;
 use App\Subcomplement;
-use Illuminate\Support\Facades\Auth;
 
 class SubcomplementController extends Controller
 {
@@ -18,6 +17,8 @@ class SubcomplementController extends Controller
             'description' => 'required|string',
             'price' => 'nullable|numeric'
         ]);
+
+        $request->price = $request->price > 0 ? $request->price : null;
 
         $subcomplement = Subcomplement::create([
             'complement_id' => $request->complement_id,
@@ -41,6 +42,8 @@ class SubcomplementController extends Controller
             'description' => 'required|string',
             'price' => 'nullable|numeric'
         ]);
+
+        $request->price = $request->price > 0 ? $request->price : null;
         
         $subcomplement = Subcomplement::find($id);
 
