@@ -143,7 +143,7 @@ class ProductController extends Controller
 
         $product = Product::find($id);
 
-        if ($request->rebate != null) {
+        if ($request->rebate > 0) {
 
             $price = $request->price ? $request->price : $product->price;
 
@@ -167,6 +167,8 @@ class ProductController extends Controller
         }
 
         else {
+
+            $data['rebate'] = null;
 
             $data['promotional_price'] = null;
 
