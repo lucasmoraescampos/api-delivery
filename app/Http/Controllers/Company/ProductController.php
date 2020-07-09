@@ -186,6 +186,8 @@ class ProductController extends Controller
 
         }
 
+        $product->complements = $product->getComplements();
+
         return response()->json([
             'success' => true,
             'message' => 'Produto atualizado com sucesso!',
