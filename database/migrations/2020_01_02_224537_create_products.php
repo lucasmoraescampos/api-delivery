@@ -47,6 +47,8 @@ class CreateProducts extends Migration
 
             $table->unsignedDecimal('price', 15, 2)->nullable(false);
 
+            $table->unsignedDecimal('rebate', 15, 2)->nullable(true);
+
             $table->unsignedDecimal('promotional_price', 15, 2)->nullable(true);
 
             $table->string('photo', 255)->nullable(true);

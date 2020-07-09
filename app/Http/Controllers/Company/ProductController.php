@@ -137,42 +137,40 @@ class ProductController extends Controller
             'is_available_saturday',
             'start_time',
             'end_time',
-            'status'
+            'status',
+            'rebate'
         ]);
 
         $product = Product::find($id);
 
         if ($request->rebate !== null) {
 
-            if ($request->rebate == 0) {
+            $price = $request->price ? $request->price : $product->price;
 
-                $data['promotional_price'] = null;
+            $result = Product::checkRebate($request->rebate, $price);
+
+            if ($result === true) {
+
+                if ($request->rebate == 0) {
+
+                    $data['promotional_price'] = null;
+
+                }
+
+                else {
+
+                    $data['promotional_price'] = $product->price - $request->rebate;
+
+                }
 
             }
 
-            elseif ($request->rebate > 0) {
+            else {
 
-                if ($request->rebate < 2) {
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'O desconto não pode ser menor que R$ 2,00.'
-                    ]);
-
-                }
-
-                $price = $request->price ? $request->price : $product->price;
-
-                if (percentValue($price, $request->rebate) < 10) {
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'O desconto não pode ser menor que 10% do valor do produto.'
-                    ]);
-
-                }
-
-                $data['promotional_price'] = $price - $request->rebate;
+                return response()->json([
+                    'success' => false,
+                    'message' => $result
+                ]);
 
             }
 
