@@ -14,7 +14,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::select('id', 'menu_session_id', 'photo', 'name', 'description')
+        $products = Product::select('id', 'menu_session_id', 'photo', 'name', 'status', 'description')
             ->where('company_id', Auth::id())
             ->orderBy('name', 'asc')
             ->get();
