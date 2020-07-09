@@ -110,7 +110,7 @@ class Product extends Model
     {
         if ($rebate >= $price) {
 
-            return 'O desconto não pode ser maior que o preço.';
+            return 'O desconto não pode ser maior ou igual ao preço.';
 
         }
         
