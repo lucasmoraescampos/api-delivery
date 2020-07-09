@@ -15,7 +15,7 @@ class ComplementController extends Controller
         $request->validate([
             'product_id' => ['required', new ProductRule()],
             'title' => 'required|string',
-            'qty_min' => 'required_if:is_required,1|min:1',
+            'qty_min' => 'nullable|required_if:is_required,1|min:1',
             'qty_max' => 'required|min:1',
             'is_required' => 'required|boolean'
         ]);
@@ -44,7 +44,7 @@ class ComplementController extends Controller
         $request->validate([
             'id' => new ComplementRule(),
             'title' => 'required|string',
-            'qty_min' => 'required_if:is_required,1|min:1',
+            'qty_min' => 'nullable|required_if:is_required,1|min:1',
             'qty_max' => 'required|min:1',
             'is_required' => 'required|boolean'
         ]);
