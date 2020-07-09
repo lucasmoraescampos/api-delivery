@@ -242,8 +242,7 @@ class Company extends Authenticatable implements JWTSubject
             ->where('o.company_id', $this->id)
             ->where('o.status', '<>', REFUSED)
             ->orderBy('o.created_at', 'desc')
-            ->get()
-            ->groupBy('status');
+            ->get();
     }
 
     public function getOrderById($id)
