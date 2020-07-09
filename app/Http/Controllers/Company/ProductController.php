@@ -143,34 +143,38 @@ class ProductController extends Controller
 
         $product = Product::find($id);
 
-        if ($request->rebate > 0) {
+        if ($request->rebate !== null) {
 
-            $price = $request->price ? $request->price : $product->price;
+            if ($request->rebate > 0) {
 
-            $result = Product::checkRebate($request->rebate, $price);
+                $price = $request->price ? $request->price : $product->price;
 
-            if ($result === true) {
+                $result = Product::checkRebate($request->rebate, $price);
 
-                $data['promotional_price'] = $product->price - $request->rebate;
+                if ($result === true) {
+
+                    $data['promotional_price'] = $product->price - $request->rebate;
+
+                }
+
+                else {
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => $result
+                    ]);
+
+                }
 
             }
 
             else {
 
-                return response()->json([
-                    'success' => false,
-                    'message' => $result
-                ]);
+                $data['rebate'] = null;
+
+                $data['promotional_price'] = null;
 
             }
-
-        }
-
-        else {
-
-            $data['rebate'] = null;
-
-            $data['promotional_price'] = null;
 
         }
 
