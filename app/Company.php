@@ -235,8 +235,8 @@ class Company extends Authenticatable implements JWTSubject
                 'o.is_withdrawal_local',
                 'o.created_at',
                 'o.delivered_at',
-                'u.name',
-                'u.surname'
+                'u.name as user_name',
+                'u.surname as user_surname'
             )
             ->leftJoin('users as u', 'u.id', 'o.user_id')
             ->where('o.company_id', $this->id)
@@ -253,6 +253,8 @@ class Company extends Authenticatable implements JWTSubject
                 'o.created_at',
                 'o.delivered_at',
                 'o.feedback',
+                'o.latitude',
+                'o.longitude',
                 'o.address',
                 'o.payment_type',
                 'o.payment_method_id',
