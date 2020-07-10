@@ -23,13 +23,13 @@ class CreateVouchers extends Migration
 
             $table->string('code', 40);
 
-            $table->unsignedSmallInteger('qty');
+            $table->unsignedSmallInteger('qty')->nullable();
 
             $table->unsignedDecimal('value', 15, 2);
 
-            $table->unsignedDecimal('min_value', 15, 2);
+            $table->unsignedDecimal('min_value', 15, 2)->nullable();
 
-            $table->dateTime('expiration_date');
+            $table->dateTime('expiration_date')->nullable();
 
             $table->unsignedTinyInteger('status');
 
