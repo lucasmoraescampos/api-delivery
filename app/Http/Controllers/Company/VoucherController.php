@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Rules\VoucherCodeRule;
 use App\Voucher;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,11 +13,11 @@ class VoucherController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required',
+            'code' => ['required', new VoucherCodeRule()],
             'qty' => 'nullable|max:50000',
             'value' => 'required',
             'min_value' => 'nullable|min:0',
-            'expiration_date' => 'nullable|date_format:"Y-m-d H:i:s"'
+            'expiration_date' => 'nullable|date_format:"Y-m-d H:i"'
         ]);
 
         if (!Voucher::checkCode($request->code)) {
