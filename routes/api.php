@@ -206,6 +206,13 @@ Route::prefix('company')->group(function () {
             Route::post('/', 'Company\PaymentMethodController@store'); //
 
         });
+
+        Route::prefix('voucher')->group(function () {
+
+            Route::post('/', 'Company\VoucherController@store');
+
+        });
+
     });
 });
 
