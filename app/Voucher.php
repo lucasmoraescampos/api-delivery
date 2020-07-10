@@ -16,7 +16,7 @@ class Voucher extends Model
 
     public static function checkCode($code)
     {
-        return Voucher::where('code', strtolower($code))->count() == 0;
+        return Voucher::where('code', $code)->count() == 0;
     }
 
     public static function findUser($user)

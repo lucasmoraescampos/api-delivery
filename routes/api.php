@@ -193,9 +193,9 @@ Route::prefix('company')->group(function () {
 
             Route::get('/', 'Company\OrderController@index'); //
 
-            Route::get('/{id}', 'Company\OrderController@show'); //
+            Route::get('{id}', 'Company\OrderController@show'); //
 
-            Route::put('/{id}', 'Company\OrderController@update'); //
+            Route::put('{id}', 'Company\OrderController@update'); //
 
         });
 
@@ -209,7 +209,15 @@ Route::prefix('company')->group(function () {
 
         Route::prefix('voucher')->group(function () {
 
-            Route::post('/', 'Company\VoucherController@store');
+            Route::get('/', 'Company\VoucherController@index'); //
+
+            Route::get('{id}', 'Company\VoucherController@show'); //
+
+            Route::post('/', 'Company\VoucherController@store'); //
+
+            Route::update('{id}', 'Company\VoucherController@update'); //
+
+            Route::post('{id}', 'Company\VoucherController@delete'); //
 
         });
 
