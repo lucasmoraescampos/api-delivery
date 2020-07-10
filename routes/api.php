@@ -215,7 +215,7 @@ Route::prefix('company')->group(function () {
 
             Route::post('/', 'Company\VoucherController@store'); //
 
-            Route::update('{id}', 'Company\VoucherController@update'); //
+            Route::put('{id}', 'Company\VoucherController@update'); //
 
             Route::post('{id}', 'Company\VoucherController@delete'); //
 
