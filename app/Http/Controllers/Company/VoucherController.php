@@ -86,7 +86,7 @@ class VoucherController extends Controller
             'qty' => $request->qty,
             'value' => $request->value,
             'min_value' => $request->min_value,
-            'expiration_date' => $request->expiration_date
+            'expiration_date' => date('Y-m-d H:i', strtotime($request->expiration_date))
         ]);
 
         return response()->json([
@@ -151,7 +151,7 @@ class VoucherController extends Controller
             'qty' => $request->qty,
             'value' => $request->value,
             'min_value' => $request->min_value,
-            'expiration_date' => $request->expiration_date
+            'expiration_date' => date('Y-m-d H:i', strtotime($request->expiration_date))
         ]);
 
         return response()->json([
