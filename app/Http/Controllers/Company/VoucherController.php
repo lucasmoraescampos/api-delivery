@@ -141,7 +141,7 @@ class VoucherController extends Controller
 
         else {
 
-            $user_id = $voucher->id;
+            $user_id = $voucher->user_id;
 
         }
 
