@@ -14,7 +14,7 @@ class VoucherController extends Controller
     public function index()
     {
         $vouchers = Voucher::where('company_id', Auth::id())
-            ->orderBy('code', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
