@@ -167,7 +167,7 @@ class VoucherController extends Controller
 
         $request->request->add(['id' => $id]);
 
-        $request->validade(['id' => new VoucherRule()]);
+        $request->validate(['id' => new VoucherRule()]);
 
         Voucher::where('id', $id)->delete();
 
