@@ -46,7 +46,7 @@ class VoucherController extends Controller
             'qty' => 'nullable|max:50000',
             'value' => 'required',
             'min_value' => 'nullable|min:0',
-            'expiration_date' => 'nullable|date_format:"Y-m-d H:i"'
+            'expiration_date' => 'nullable|date_format:"Y-m-d H:i:s"'
         ]);
 
         $request->code = strtoupper($request->code);
