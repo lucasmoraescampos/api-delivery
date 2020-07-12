@@ -63,8 +63,8 @@ class ProductController extends Controller
             'is_available_thursday' => 'required|boolean',
             'is_available_friday' => 'required|boolean',
             'is_available_saturday' => 'required|boolean',
-            'start_time' => 'nullable|date_format:H:i:s',
-            'end_time' => 'nullable|date_format:H:i:s',
+            'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date',
             'photo' => 'nullable|file|mimes:png,jpg,jpeg|max:8192'
         ]);
 
@@ -82,8 +82,8 @@ class ProductController extends Controller
             'is_available_thursday' => $request->is_available_thursday,
             'is_available_friday' => $request->is_available_friday,
             'is_available_saturday' => $request->is_available_saturday,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time
+            'start_time' => date('H:i', strtotime($request->start_time)),
+            'end_time' => date('H:i', strtotime($request->end_time))
         ]);
 
         if ($request->photo != null) {
@@ -115,12 +115,16 @@ class ProductController extends Controller
             'is_available_thursday' => 'nullable|boolean',
             'is_available_friday' => 'nullable|boolean',
             'is_available_saturday' => 'nullable|boolean',
-            'start_time' => 'nullable|date_format:H:i:s',
-            'end_time' => 'nullable|date_format:H:i:s',
+            'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date',
             'status' => 'nullable|boolean',
             'photo' => 'nullable|file|max:8000|mimes:jpeg,png',
             'rebate' => 'nullable|numeric'
         ]);
+
+        $request->start_time = $request->start_time ? date('H:i', strtotime($request->start_time)) : null;
+        
+        $request->end_time = $request->end_time ? date('H:i', strtotime($request->end_time)) : null;
 
         $data = $request->only([
             'name',
