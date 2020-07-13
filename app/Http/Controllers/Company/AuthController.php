@@ -50,69 +50,70 @@ class AuthController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->request->add(['id' => $id]);
+        // $request->request->add(['id' => $id]);
 
         $request->validate([
-            'id' => new CompanyAuthRule(),
-            'category_id' => ['nullable', new CategoryRule()],
-            'name' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'password' => 'nullable|string|max:255',
-            'zipcode' => 'nullable|string|max:9',
-            'street_name' => 'nullable|string|max:255',
-            'street_number' => 'nullable|string|max:10',
-            'complement' => 'nullable|string|max:255',
-            'district' => 'nullable|string|max:200',
-            'city' => 'nullable|string|max:200',
-            'uf' => 'nullable|string|max:2',
-            'latitude' => 'nullable|string|max:40',
-            'longitude' => 'nullable|string|max:40',
-            'photo' => 'nullable|file|max:8000|mimes:jpeg,png',
-            'min_value' => 'nullable|numeric',
-            'delivery_price' => 'nullable|numeric',
-            'waiting_time' => 'nullable|numeric',
-            'is_open' => 'nullable|boolean',
-            'accept_payment_app' => 'nullable|boolean'
+            // 'id' => new CompanyAuthRule(),
+            // 'category_id' => ['nullable', new CategoryRule()],
+            // 'name' => 'nullable|string|max:255',
+            // 'phone' => 'nullable|string|max:255',
+            // 'password' => 'nullable|string|max:255',
+            // 'zipcode' => 'nullable|string|max:9',
+            // 'street_name' => 'nullable|string|max:255',
+            // 'street_number' => 'nullable|string|max:10',
+            // 'complement' => 'nullable|string|max:255',
+            // 'district' => 'nullable|string|max:200',
+            // 'city' => 'nullable|string|max:200',
+            // 'uf' => 'nullable|string|max:2',
+            // 'latitude' => 'nullable|string|max:40',
+            // 'longitude' => 'nullable|string|max:40',
+            // 'photo' => 'nullable|file|max:8000|mimes:jpeg,png',
+            // 'min_value' => 'nullable|numeric',
+            // 'delivery_price' => 'nullable|numeric',
+            // 'waiting_time' => 'nullable|numeric',
+            // 'is_open' => 'nullable|boolean',
+            'accept_payment_app' => 'nullable|boolean',
+            'accept_payment_delivery' => 'required_if:accept_payment_app,true'
         ]);
 
-        $data = $request->only([
-            'category_id',
-            'name',
-            'phone',
-            'password',
-            'zipcode',
-            'street_name',
-            'street_number',
-            'complement',
-            'district',
-            'city',
-            'uf',
-            'latitude',
-            'longitude',
-            'min_value',
-            'delivery_price',
-            'waiting_time',
-            'is_open',
-            'accept_payment_app',
-            'accept_outsourced_delivery',
-            'accept_withdrawal_local'
-        ]);
+        // $data = $request->only([
+        //     'category_id',
+        //     'name',
+        //     'phone',
+        //     'password',
+        //     'zipcode',
+        //     'street_name',
+        //     'street_number',
+        //     'complement',
+        //     'district',
+        //     'city',
+        //     'uf',
+        //     'latitude',
+        //     'longitude',
+        //     'min_value',
+        //     'delivery_price',
+        //     'waiting_time',
+        //     'is_open',
+        //     'accept_payment_app',
+        //     'accept_outsourced_delivery',
+        //     'accept_withdrawal_local'
+        // ]);
 
-        $company = Company::find($id);
+        // $company = Company::find($id);
 
-        $company->update($data);
+        // $company->update($data);
 
-        if ($request->photo) {
+        // if ($request->photo) {
 
-            $company->upload($request->photo);
+        //     $company->upload($request->photo);
 
-        }
+        // }
 
-        return response()->json([
-            'success' => true,
-            'data' => $company,
-            'message' => 'Empresa atualizada com sucesso!'
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $company,
+        //     'message' => 'Empresa atualizada com sucesso!'
+        // ]);
     }
 
     public function login(Request $request)
@@ -134,6 +135,8 @@ class AuthController extends Controller
         }
         
         elseif (password_verify($request->password, $company->password)) {
+
+            $company->payment_methods = $company->getPaymentMethods();
 
             return response()->json([
                 'success' => true,

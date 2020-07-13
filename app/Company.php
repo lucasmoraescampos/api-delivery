@@ -34,6 +34,7 @@ class Company extends Authenticatable implements JWTSubject
         'range',
         'is_open',
         'accept_payment_app',
+        'accept_payment_delivery',
         'accept_outsourced_delivery',
         'accept_withdrawal_local'
     ];
@@ -297,6 +298,15 @@ class Company extends Authenticatable implements JWTSubject
         }
 
         return $order;
+    }
+
+    public function getPaymentMethods()
+    {
+        return CompanyPaymentMethod::from('companies_payment_methods as cpm')
+            ->select('pm.*')
+            ->leftJoin('payment_methods as pm')
+            ->where('cpm.company_id', $this->id)
+            ->get();
     }
 
     public function upload($file)
