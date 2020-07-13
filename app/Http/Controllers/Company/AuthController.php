@@ -120,6 +120,8 @@ class AuthController extends Controller
 
         }
 
+        $company->payment_methods = $company->getPaymentMethods();
+
         return response()->json([
             'success' => true,
             'data' => $company,
