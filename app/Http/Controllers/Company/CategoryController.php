@@ -16,4 +16,14 @@ class CategoryController extends Controller
             'data' => $categories
         ]);
     }
+
+    public function show($id)
+    {
+        $category = Category::find($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $category
+        ]);
+    }
 }

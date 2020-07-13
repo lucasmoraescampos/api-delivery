@@ -112,7 +112,13 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('company')->group(function () {
 
-    Route::get('category', 'Company\CategoryController@index'); //
+    Route::prefix('category')->group(function () {
+
+        Route::get('/', 'Company\CategoryController@index'); //
+
+        Route::get('{id}', 'Company\CategoryController@show'); //
+
+    });
 
     Route::prefix('auth')->group(function () {
 
