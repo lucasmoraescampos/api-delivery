@@ -69,6 +69,8 @@ class CreateCompanies extends Migration
 
             $table->boolean('accept_withdrawal_local')->nullable(true);
 
+            $table->string('payment_methods', 100)->nullable(true);
+
             $table->unsignedDecimal('feedback', 5, 1)->nullable(true);
 
             $table->unsignedTinyInteger('status')->nullable(false);

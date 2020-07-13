@@ -302,11 +302,32 @@ class Company extends Authenticatable implements JWTSubject
 
     public function getPaymentMethods()
     {
-        return CompanyPaymentMethod::from('companies_payment_methods as cpm')
-            ->select('pm.*')
-            ->leftJoin('payment_methods as pm')
-            ->where('cpm.company_id', $this->id)
-            ->get();
+        if ($this->payment_methods) {
+
+            return explode(',', $this->payment_methods);
+
+        }
+
+        return [];
+    }
+
+    public function setPaymentMethods($payment_methods)
+    {
+        $this->payment_methods = '';
+
+        for ($i = 0; $i < count($payment_methods); $i++) {
+
+            $this->payment_methods .= $payment_methods[$i];
+
+            if ($i + 1 < count($payment_methods)) {
+
+                $this->payment_methods += ',';
+
+            }
+
+        }
+
+        $this->save();
     }
 
     public function upload($file)

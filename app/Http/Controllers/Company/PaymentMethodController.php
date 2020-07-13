@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\CompanyPaymentMethod;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\PaymentMethod;
-use App\Rules\PaymentMethodsRule;
-use Illuminate\Support\Facades\Auth;
 
 class PaymentMethodController extends Controller
 {
@@ -18,20 +14,6 @@ class PaymentMethodController extends Controller
         return response()->json([
             'success' => true,
             'data' => $payment_methods
-        ]);
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'payment_methods' => ['required', 'array', new PaymentMethodsRule()]
-        ]);
-
-        CompanyPaymentMethod::addPaymentMethods($request->payment_methods);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Métodos de pagamento cadastrados com sucesso!'
         ]);
     }
 }

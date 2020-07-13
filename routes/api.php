@@ -209,8 +209,6 @@ Route::prefix('company')->group(function () {
 
             Route::get('/', 'Company\PaymentMethodController@index'); //
 
-            Route::post('/', 'Company\PaymentMethodController@store'); //
-
         });
 
         Route::prefix('voucher')->group(function () {
