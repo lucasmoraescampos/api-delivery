@@ -73,7 +73,7 @@ class AuthController extends Controller
             // 'waiting_time' => 'nullable|numeric',
             // 'is_open' => 'nullable|boolean',
             'accept_payment_app' => 'nullable|boolean',
-            'accept_payment_delivery' => 'required_if:accept_payment_app,true'
+            'accept_payment_delivery' => 'required_if:accept_payment_app,true,1'
         ]);
 
         // $data = $request->only([
