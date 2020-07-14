@@ -302,13 +302,21 @@ class Company extends Authenticatable implements JWTSubject
 
     public function getPaymentMethods()
     {
+        $data = [];
+
         if ($this->payment_methods) {
 
-            return explode(',', $this->payment_methods);
+            $payment_methods = explode(',', $this->payment_methods);
+
+            foreach ($payment_methods as $payment_method) {
+
+                $data[] = intval($payment_method);
+
+            }
 
         }
 
-        return [];
+        return $data;
     }
 
     public function setPaymentMethods($payment_methods)
