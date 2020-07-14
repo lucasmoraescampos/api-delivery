@@ -122,8 +122,6 @@ Route::prefix('company')->group(function () {
 
     Route::prefix('auth')->group(function () {
 
-        Route::get('/', 'Company\AuthController@auth'); //
-
         Route::post('register', 'Company\AuthController@register'); //
 
         Route::post('login', 'Company\AuthController@login'); //
@@ -133,6 +131,8 @@ Route::prefix('company')->group(function () {
     Route::group(['middleware' => ['assign.guard:companies', 'auth.jwt']], function () {
         
         Route::prefix('auth')->group(function () {
+
+            Route::get('/', 'Company\AuthController@auth'); //
 
             Route::get('performance', 'Company\AuthController@performance'); //
 
