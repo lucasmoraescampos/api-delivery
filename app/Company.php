@@ -341,22 +341,14 @@ class Company extends Authenticatable implements JWTSubject
 
     public function checkPaymentMethods($accept_payment_app, $accept_payment_delivery)
     {
-        if (($accept_payment_app !== null && $accept_payment_delivery !== null) && (!$accept_payment_app && !$accept_payment_delivery)) {
+        $accept_payment_app = $accept_payment_app !== null ? $accept_payment_app : $this->accept_payment_app;
+
+        $accept_payment_delivery = $accept_payment_delivery !== null ? $accept_payment_delivery : $this->accept_payment_delivery;
+
+        if (!$accept_payment_app && !$accept_payment_delivery) {
 
             return false;
             
-        }
-
-        elseif ($accept_payment_app === null && !$this->accept_payment_delivery) {
-
-            return false;
-
-        }
-
-        elseif ($accept_payment_delivery === null && !$this->accept_payment_app) {
-
-            return false;
-
         }
 
         return true;
