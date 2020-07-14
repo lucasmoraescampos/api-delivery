@@ -72,6 +72,7 @@ class AuthController extends Controller
             'min_value' => 'nullable|numeric',
             'delivery_price' => 'nullable|numeric',
             'waiting_time' => 'nullable|numeric',
+            'range' => 'nullable|numeric',
             'is_open' => 'nullable|boolean',
             'accept_outsourced_delivery' => 'nullable|boolean',
             'accept_withdrawal_local' => 'nullable|boolean',
@@ -97,6 +98,7 @@ class AuthController extends Controller
             'min_value',
             'delivery_price',
             'waiting_time',
+            'range',
             'is_open',
             'accept_outsourced_delivery',
             'accept_withdrawal_local',
@@ -104,7 +106,7 @@ class AuthController extends Controller
             'accept_payment_delivery'
         ]);
 
-        if (!$request->accept_payment_delivery) {
+        if ($request->accept_payment_delivery === 0 || $request->accept_payment_delivery === false) {
 
             $data['payment_methods'] = null;
 
