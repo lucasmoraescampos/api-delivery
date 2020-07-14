@@ -321,7 +321,7 @@ class Company extends Authenticatable implements JWTSubject
 
             if ($i + 1 < count($payment_methods)) {
 
-                $this->payment_methods += ',';
+                $this->payment_methods .= ',';
 
             }
 
