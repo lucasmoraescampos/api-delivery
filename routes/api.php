@@ -122,6 +122,8 @@ Route::prefix('company')->group(function () {
 
     Route::prefix('auth')->group(function () {
 
+        Route::post('/', 'Company\AuthController@auth'); //
+
         Route::post('register', 'Company\AuthController@register'); //
 
         Route::post('login', 'Company\AuthController@login'); //

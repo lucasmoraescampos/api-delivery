@@ -14,6 +14,16 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
+    public function auth()
+    {
+        $company = Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'data' => $company
+        ]);
+    }
+
     public function register(Request $request)
     {
         $request->validate([
