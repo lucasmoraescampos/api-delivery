@@ -122,7 +122,7 @@ Route::prefix('company')->group(function () {
 
     Route::prefix('auth')->group(function () {
 
-        Route::post('/', 'Company\AuthController@auth'); //
+        Route::get('/', 'Company\AuthController@auth'); //
 
         Route::post('register', 'Company\AuthController@register'); //
 
