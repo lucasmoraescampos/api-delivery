@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $company = Company::find(Auth::id());
 
-        $company->payment_methods = $company->getPaymentMethods();
+        // $company->payment_methods = $company->getPaymentMethods();
 
         return response()->json([
             'success' => true,
