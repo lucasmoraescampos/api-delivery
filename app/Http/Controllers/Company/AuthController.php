@@ -106,13 +106,22 @@ class AuthController extends Controller
             'accept_payment_delivery'
         ]);
 
-        if ($request->accept_payment_delivery === 0 || $request->accept_payment_delivery === false) {
+        if ($request->accept_payment_delivery === 0 || $request->accept_payment_delivery === '0' || $request->accept_payment_delivery === false) {
 
             $data['payment_methods'] = null;
 
         }
 
         $company = Company::find($id);
+
+        if (!$company->checkPaymentMethods($request->accept_payment_app, $request->accept_payment_delivery)) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Escolha algum um método de pagamento!'
+            ]);
+
+        }
 
         $company->update($data);
 
