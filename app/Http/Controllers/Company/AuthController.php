@@ -104,6 +104,12 @@ class AuthController extends Controller
             'accept_payment_delivery'
         ]);
 
+        if (!$request->accept_payment_delivery) {
+
+            $data['payment_methods'] = null;
+
+        }
+
         $company = Company::find($id);
 
         $company->update($data);
