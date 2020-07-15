@@ -37,7 +37,13 @@ class Company extends Authenticatable implements JWTSubject
         'accept_payment_delivery',
         'accept_outsourced_delivery',
         'accept_withdrawal_local',
-        'payment_methods'
+        'payment_methods',
+        'bank_name',
+        'bank_agency',
+        'bank_type_account',
+        'bank_account',
+        'bank_holder_name',
+        'bank_document_number'
     ];
 
     protected $attributes = [
