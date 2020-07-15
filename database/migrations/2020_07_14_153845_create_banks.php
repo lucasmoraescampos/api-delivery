@@ -17,7 +17,7 @@ class CreateBanks extends Migration
 
             $table->smallIncrements('id');
 
-            $table->unsignedSmallInteger('code');
+            $table->string('code', 5);
 
             $table->string('name', 100);
 

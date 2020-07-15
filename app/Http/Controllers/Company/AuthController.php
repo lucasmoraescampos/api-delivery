@@ -90,7 +90,13 @@ class AuthController extends Controller
             'accept_withdrawal_local' => 'nullable|boolean',
             'accept_payment_app' => 'nullable|boolean',
             'accept_payment_delivery' => 'nullable|boolean',
-            'payment_methods' => ['required_if:accept_payment_delivery,1', 'array', new PaymentMethodsRule()]
+            'payment_methods' => ['required_if:accept_payment_delivery,1', 'array', new PaymentMethodsRule()],
+            'bank_name' => 'nullable|string',
+            'bank_agency' => 'nullable|string',
+            'bank_type_account' => 'nullable|string',
+            'bank_account' => 'nullable|string',
+            'bank_holder_name' => 'nullable|string',
+            'bank_document_number' => 'nullable|string'
         ]);
 
         $data = $request->only([
@@ -115,7 +121,13 @@ class AuthController extends Controller
             'accept_outsourced_delivery',
             'accept_withdrawal_local',
             'accept_payment_app',
-            'accept_payment_delivery'
+            'accept_payment_delivery',
+            'bank_name',
+            'bank_agency',
+            'bank_type_account',
+            'bank_account',
+            'bank_holder_name',
+            'bank_document_number'
         ]);
 
         if ($request->accept_payment_delivery === 0 || $request->accept_payment_delivery === '0' || $request->accept_payment_delivery === false) {
