@@ -227,6 +227,12 @@ Route::prefix('company')->group(function () {
 
         });
 
+        Route::prefix('bank')->group(function () {
+
+            Route::get('/', 'Company\BankController@index'); //
+
+        });
+
     });
 });
 
