@@ -235,6 +235,7 @@ class Company extends Authenticatable implements JWTSubject
         return Order::from('orders as o')
             ->select(
                 'o.id',
+                'o.user_id',
                 'o.latitude',
                 'o.longitude',
                 'o.delivery_forecast',
