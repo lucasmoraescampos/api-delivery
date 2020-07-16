@@ -481,17 +481,24 @@ class Order extends Model
                     'longitude' => $data['longitude'],
                     'price' => $total_price,
                     'delivery_price' => $company->delivery_price,
+                    'delivery_forecast' => date('H:i', strtotime("+$company->waiting_time minutes")),
                     'amount' => $amount,
                     'fee_meu_pedido' => 0,
                     'fee_mercado_pago' => $fee_mercado_pago,
                     'status' => WAITING,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-            } else {
+            }
+            
+            else {
 
                 return false;
+
             }
-        } else {
+
+        }
+        
+        else {
 
             $order_id = Order::insertGetId([
                 'user_id' => Auth::id(),
@@ -504,11 +511,13 @@ class Order extends Model
                 'cashback' => $data['cashback'],
                 'price' => $total_price,
                 'delivery_price' => $company->delivery_price,
+                'delivery_forecast' => date('H:i', strtotime("+$company->waiting_time minutes")),
                 'amount' => $amount,
                 'fee_meu_pedido' => 0,
                 'status' => WAITING,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
+
         }
 
         OrderProduct::insert($orders_products);
