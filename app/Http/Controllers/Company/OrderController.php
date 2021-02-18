@@ -2,62 +2,40 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Company;
-use App\Order;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Rules\OrderRule;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\OrderRepositoryInterface;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
-    {
-        $company = Company::find(Auth::id());
+    private $orderRepository;
 
-        $orders = $company->getOrders();
-        
-        return response()->json([
-            'success' => true,
-            'data' => $orders
-        ]);
+    public function __construct(OrderRepositoryInterface $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
     }
 
-    public function show($id)
+    public function index($company_id)
     {
-        $request = new Request();
-
-        $request->request->add(['id' => $id]);
-
-        $request->validate(['id' => new OrderRule]);
-
-        $company = Company::find(Auth::id());
-
-        $order = $company->getOrderById($id);
+        $order = $this->orderRepository->getByCompany($company_id);
 
         return response()->json([
             'success' => true,
+            'message' => 'Pedido realizado com sucesso',
             'data' => $order
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request, $company_id)
     {
-        $request->request->add(['id' => $id]);
+        $attributes = $request->all() + ['company_id' => $company_id];
 
-        $request->validate([
-            'id' => new OrderRule(),
-            'status' => 'required|min:1|max:5'
-        ]);
-
-        $order = Order::find($id);
-        
-        $order->update(['status' => $request->status]);
+        $order = $this->orderRepository->createByCompany($attributes);
 
         return response()->json([
             'success' => true,
-            'data' => $order,
-            'message' => 'Pedido atualizado com sucesso!'
+            'message' => 'Pedido realizado com sucesso',
+            'data' => $order
         ]);
     }
 }

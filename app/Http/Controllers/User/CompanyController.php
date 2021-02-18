@@ -2,64 +2,26 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Company;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\PaymentMethod;
-use App\Rules\CategoryRule;
-use App\Rules\CompanyRule;
-use App\Rules\SubcategoryRule;
+use App\Repositories\CompanyRepositoryInterface;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    public function index(Request $request)
+    private $companyRepository;
+
+    public function __construct(CompanyRepositoryInterface $companyRepository)
     {
-        $request->validate([
-            'search' => 'required_without_all:category_id,subcategory_id',
-            'category_id' => ['required_without_all:search,subcategory_id', new CategoryRule()],
-            'subcategory_id' => ['required_without_all:search,category_id', new SubcategoryRule()],
-        ]);
-
-        if ($request->search) {
-
-            $companies = Company::getBySearch($request->search);
-
-        }
-
-        elseif ($request->category_id) {
-
-            $companies = Company::getByCategory($request->category_id);
-
-        }
-        
-        else {
-
-            $companies = Company::getBySubcategory($request->subcategory_id); 
-
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $companies
-        ]);
+        $this->companyRepository = $companyRepository;
     }
 
-    public function show($id)
+    public function store(Request $request)
     {
-        $request = new Request();
-
-        $request->replace(['id' => $id]);
-
-        $request->validate(['id' => new CompanyRule()]);
-
-        $company = Company::select('name', 'photo', 'min_value', 'delivery_price', 'waiting_time', 'accept_payment_app', 'feedback', 'latitude', 'longitude')
-            ->where('id', $id)
-            ->first();
-
-        $company->payment_methods = PaymentMethod::all();
+        $company = $this->companyRepository->create($request->all());
 
         return response()->json([
             'success' => true,
+            'message' => 'Empresa cadastrada com sucesso',
             'data' => $company
         ]);
     }

@@ -1,43 +1,51 @@
 <?php
 
-if (!function_exists('percentValue')) {
+use Illuminate\Http\UploadedFile;
 
-    function percentValue($base, $value)
+if (!function_exists('fileUpload')) {
+
+    /**
+     * @param UploadedFile $file
+     * @param string $folder
+     * @return string
+     */
+    function fileUpload(UploadedFile $file, string $folder): string
     {
-        $base = $base;
-        $value = $value;
+        $name = uniqid(date('HisYmd'));
 
-        return $value * 100 / $base;
+        $ext = $file->extension();
+
+        $full_name = "{$name}.{$ext}";
+
+        $file->storeAs($folder, $full_name);
+
+        return env('APP_URL') . "/storage/$folder/$full_name";
     }
-}
 
-if (!function_exists('validateEmail')) {
-
-    function validateEmail($email)
-    {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 
 if (!function_exists('generateCode')) {
 
-    function generateCode()
+    /**
+     * @return string
+     */
+    function generateCode($length = 5): string
     {
         $array = [];
 
-        while (count($array) < 4) {
+        while (count($array) < $length) {
 
             $n = rand(0, 9);
 
             if (count($array) == 0 || in_array($n, $array) == false) {
+
                 $array[] = $n;
+
             }
+
         }
 
-        return "{$array[0]}{$array[1]}{$array[2]}{$array[3]}";
+        return "{$array[0]}{$array[1]}{$array[2]}{$array[3]}{$array[4]}";
     }
+
 }

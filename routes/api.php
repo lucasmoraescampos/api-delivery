@@ -13,235 +13,81 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('user')->group(function () {
+Route::get('company/{slug}', 'ApiController@company');
 
-    Route::post('sendRegisterCodeConfirmation', 'User\AuthController@sendRegisterCodeConfirmation');
+Route::get('states', 'ApiController@states');
 
-    Route::post('registerWithPhone', 'User\AuthController@registerWithPhone');
+Route::get('cities/{uf}', 'ApiController@cities');
 
-    Route::post('sendLoginCodeConfirmation', 'User\AuthController@sendLoginCodeConfirmation');
+Route::get('payment-methods', 'ApiController@paymentMethods');
 
-    Route::post('loginWithConfirmationCode', 'User\AuthController@loginWithConfirmationCode');
+Route::get('online-payment-fee', 'ApiController@onlinePaymentFee');
 
-    Route::post('logout', 'User\AuthController@logout');
+Route::post('check-duplicity', 'ApiController@checkDuplicity');
 
-    Route::prefix('verify')->group(function () {
+Route::post('send-code-verification', 'ApiController@sendCodeVerification');
 
-        Route::post('email', 'User\VerifyController@storeEmail');
+Route::post('confirm-code-verification', 'ApiController@confirmCodeVerification');
 
-        Route::post('phone', 'User\VerifyController@storePhone');
+Route::namespace('User')->prefix('user')->group(function () {
+
+    Route::get('plan', 'PlanController@index');
+
+    Route::post('sign-up', 'AuthController@signUp');
+
+    Route::post('authenticate', 'AuthController@authenticate');
+
+    Route::post('authenticate-with-provider', 'AuthController@authenticateWithProvider');
+
+    Route::middleware(['auth:users'])->group(function () {
+
+        Route::post('logout', 'AuthController@logout');
+
+        Route::post('plan', 'PlanController@store');
+
+        Route::post('card', 'CardController@store');
+
+        Route::post('company', 'CompanyController@store');
     });
 
-    Route::group(['middleware' => 'assign.guard:users'], function () {
-
-        Route::group(['middleware' => 'auth.jwt'], function () {
-
-            Route::prefix('company')->group(function () {
-
-                Route::get('/', 'User\CompanyController@index'); //
-
-                Route::get('{id}', 'User\CompanyController@show'); //
-
-            });
-
-            Route::prefix('category')->group(function () {
-
-                Route::get('/', 'User\CategoryController@index'); //
-
-            });
-
-            Route::prefix('subcategory')->group(function () {
-
-                Route::get('/', 'User\SubcategoryController@index'); //
-
-                Route::get('{id}', 'User\SubcategoryController@show'); //
-
-            });
-
-            Route::prefix('product')->group(function () {
-
-                Route::get('/', 'User\ProductController@index'); //
-
-                Route::get('{id}', 'User\ProductController@show'); //
-
-            });
-            
-            Route::prefix('order')->group(function () {
-
-                Route::get('/', 'User\OrderController@index'); //
-
-                Route::get('{id}', 'User\OrderController@show'); //
-
-                Route::post('/', 'User\OrderController@store'); //
-
-                Route::put('{id}', 'User\OrderController@update'); //
-
-            });
-
-            Route::prefix('location')->group(function () {
-
-                Route::get('/', 'User\UserLocationController@index'); //
-
-                Route::get('{id}', 'User\UserLocationController@show'); //
-
-                Route::post('/', 'User\UserLocationController@store'); //
-
-                Route::put('{id}', 'User\UserLocationController@update');
-
-                Route::delete('{id}', 'User\UserLocationController@delete');
-
-            });
-
-            Route::prefix('card')->group(function () {
-
-                Route::get('/', 'User\CardController@index'); //
-
-                Route::get('{id}', 'User\CardController@show'); //
-
-                Route::post('/', 'User\CardController@store'); //
-
-                Route::put('{id}', 'User\CardController@update'); //
-
-                Route::delete('{id}', 'User\CardController@delete'); //
-
-            });
-
-        });
-    });
 });
 
-Route::prefix('company')->group(function () {
+Route::namespace('Company')->prefix('company')->group(function () {
 
-    Route::prefix('category')->group(function () {
+    Route::middleware(['auth:users'])->group(function () {
 
-        Route::get('/', 'Company\CategoryController@index'); //
+        Route::get('{company_id}/segment', 'SegmentController@index');
 
-        Route::get('{id}', 'Company\CategoryController@show'); //
+        Route::post('{company_id}/segment', 'SegmentController@store');
 
+        Route::post('{company_id}/segment/reorder', 'SegmentController@reorder');
+
+        Route::put('{company_id}/segment/{id}', 'SegmentController@update');
+
+        Route::delete('{company_id}/segment/{id}', 'SegmentController@delete');
+
+
+        Route::get('{company_id}/product', 'ProductController@index');
+
+        Route::post('{company_id}/product', 'ProductController@store');
+
+        Route::put('{company_id}/product/{id}', 'ProductController@update');
+
+        Route::delete('{company_id}/product/{id}', 'ProductController@delete');
+
+
+        Route::get('{company_id}/delivery-person', 'DeliveryPersonController@index');
+
+        Route::post('{company_id}/delivery-person', 'DeliveryPersonController@store');
+
+        Route::put('{company_id}/delivery-person/{id}', 'DeliveryPersonController@update');
+
+        Route::delete('{company_id}/delivery-person/{id}', 'DeliveryPersonController@delete');
+
+
+        Route::get('{company_id}/order', 'OrderController@index');
+
+        Route::post('{company_id}/order', 'OrderController@store');
     });
-
-    Route::prefix('auth')->group(function () {
-
-        Route::post('register', 'Company\AuthController@register'); //
-
-        Route::post('login', 'Company\AuthController@login'); //
-
-    });
-
-    Route::group(['middleware' => ['assign.guard:companies', 'auth.jwt']], function () {
-        
-        Route::prefix('auth')->group(function () {
-
-            Route::get('/', 'Company\AuthController@auth'); //
-
-            Route::get('performance', 'Company\AuthController@performance'); //
-
-            Route::post('logout', 'Company\AuthController@logout'); //
-
-            Route::put('{id}', 'Company\AuthController@update'); //
-
-        });
-
-        Route::prefix('menuSession')->group(function () {
-
-            Route::get('/', 'Company\MenuSessionController@index'); //
-
-            Route::get('{id}', 'Company\MenuSessionController@show'); //
-
-            Route::post('/', 'Company\MenuSessionController@store'); //
-
-            Route::put('{id}', 'Company\MenuSessionController@update'); //
-
-            Route::put('/', 'Company\MenuSessionController@reorder'); //
-
-            Route::delete('{id}', 'Company\MenuSessionController@delete'); //
-
-        });
-
-        Route::prefix('subcategory')->group(function () {
-
-            Route::get('/', 'Company\SubcategoryController@index'); //
-        });
-
-        Route::prefix('product')->group(function () {
-
-            Route::get('/', 'Company\ProductController@index'); //
-
-            Route::get('{id}', 'Company\ProductController@show'); //
-
-            Route::post('/', 'Company\ProductController@store'); //
-
-            Route::put('{id}', 'Company\ProductController@update'); //
-
-            Route::delete('{id}', 'Company\ProductController@delete'); //
-
-        });
-
-        Route::prefix('complement')->group(function () {
-
-            Route::post('/', 'Company\ComplementController@store'); //
-
-            Route::put('{id}', 'Company\ComplementController@update'); //
-
-            Route::delete('{id}', 'Company\ComplementController@delete'); //
-
-        });
-
-        Route::prefix('subcomplement')->group(function () {
-
-            Route::post('/', 'Company\SubcomplementController@store'); //
-
-            Route::put('{id}', 'Company\SubcomplementController@update'); //
-
-            Route::delete('{id}', 'Company\SubcomplementController@delete'); //
-
-        });
-
-        Route::prefix('order')->group(function () {
-
-            Route::get('/', 'Company\OrderController@index'); //
-
-            Route::get('{id}', 'Company\OrderController@show'); //
-
-            Route::put('{id}', 'Company\OrderController@update'); //
-
-        });
-
-        Route::prefix('paymentMethod')->group(function () {
-
-            Route::get('/', 'Company\PaymentMethodController@index'); //
-
-        });
-
-        Route::prefix('voucher')->group(function () {
-
-            Route::get('/', 'Company\VoucherController@index'); //
-
-            Route::get('{id}', 'Company\VoucherController@show'); //
-
-            Route::post('/', 'Company\VoucherController@store'); //
-
-            Route::put('{id}', 'Company\VoucherController@update'); //
-
-            Route::delete('{id}', 'Company\VoucherController@delete'); //
-
-        });
-
-        Route::prefix('bank')->group(function () {
-
-            Route::get('/', 'Company\BankController@index'); //
-
-        });
-
-    });
-});
-
-Route::prefix('admin')->group(function () {
-
-    Route::prefix('payment_methods')->group(function () {
-
-        Route::post('/', 'Admin\PaymentMethodController@store');
-
-    });
-
+    
 });
