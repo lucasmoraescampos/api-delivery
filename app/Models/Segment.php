@@ -38,7 +38,7 @@ class Segment extends Model
 	 */
 	public function company()
 	{
-		return $this->belongsTo('App\Company');
+		return $this->belongsTo('App\Models\Company');
     }
 
 	/**
@@ -46,6 +46,6 @@ class Segment extends Model
      */
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany('App\Models\Product');
     }
 }

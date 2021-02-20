@@ -55,6 +55,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         $user->save();
 
+        $user->load('companies');
+
         VerificationCode::where('email', $attributes['email'])
             ->orWhere('phone', $attributes['phone'])
             ->delete();
@@ -89,6 +91,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 if ($verification->code != $attributes['code']) {
                     throw new CustomException('Código inválido', 200);
                 }
+
+                $user->load('companies');
 
                 VerificationCode::where('email', $attributes['email'])->delete();
     
@@ -131,6 +135,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 if ($verification->code != $attributes['code']) {
                     throw new CustomException('Código inválido', 200);
                 }
+
+                $user->load('companies');
 
                 VerificationCode::where('phone', $attributes['phone'])->delete();
 
@@ -214,6 +220,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 $user->save();
 
             }
+
+            $user->load('companies');
 
             return $user;
 

@@ -35,6 +35,6 @@ class PaymentMethod extends Model
 	 */
 	public function companies()
 	{
-        return $this->belongsToMany('App\Company', 'companies_payment_methods', 'payment_method_id', 'company_id');
+        return $this->belongsToMany('App\Models\Company', 'companies_payment_methods', 'payment_method_id', 'company_id');
     }
 }

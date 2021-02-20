@@ -49,3 +49,67 @@ if (!function_exists('generateCode')) {
     }
 
 }
+
+
+if (!function_exists('validateDocumentNumber')) {
+
+    /**
+     * @return string
+     */
+    function validateDocumentNumber($document_number) {
+
+        if(empty($document_number))
+            return false;
+
+        $document_number = preg_replace('/[^0-9]/', '', $document_number);
+
+        if (strlen($document_number) == 11) {
+
+            if (preg_match('/(\d)\1{10}/', $document_number))
+                return false;
+
+            for ($t = 9; $t < 11; $t++) {
+
+                for ($d = 0, $c = 0; $c < $t; $c++) {
+                    $d += $document_number[$c] * (($t + 1) - $c);
+                }
+
+                $d = ((10 * $d) % 11) % 10;
+
+                if ($document_number[$c] != $d) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
+        elseif (strlen($document_number) == 11) {
+
+            if (preg_match('/(\d)\1{13}/', $document_number))
+                return false;
+
+            $b = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+            for ($i = 0, $n = 0; $i < 12; $n += $document_number[$i] * $b[++$i]);
+
+            if ($document_number[12] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+                return false;
+            }
+
+            for ($i = 0, $n = 0; $i <= 12; $n += $document_number[$i] * $b[$i++]);
+
+            if ($document_number[13] != ((($n %= 11) < 2) ? 0 : 11 - $n)) {
+                return false;
+            }
+
+            return true;
+
+        }
+
+        else {
+            return false;
+        }
+    }
+}

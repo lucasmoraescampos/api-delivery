@@ -5,8 +5,10 @@ namespace App\Repositories;
 use App\Models\DeliveryPerson;
 use App\Models\Order;
 use App\Exceptions\CustomException;
+use App\Models\Company;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DeliveryPersonRepository extends BaseRepository implements DeliveryPersonRepositoryInterface
@@ -27,7 +29,7 @@ class DeliveryPersonRepository extends BaseRepository implements DeliveryPersonR
      */
     public function getByCompany($company_id): Collection
     {
-        if (!CompanyRepository::checkAuth($company_id)) {
+        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
             throw new CustomException('Empresa não autorizada.', 422);
         }
 
@@ -102,7 +104,7 @@ class DeliveryPersonRepository extends BaseRepository implements DeliveryPersonR
      */
     public function delete($id, $company_id = null): void
     {
-        if (!CompanyRepository::checkAuth($company_id)) {
+        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
             throw new CustomException('Empresa não autorizada.', 422);
         }
 
@@ -134,7 +136,7 @@ class DeliveryPersonRepository extends BaseRepository implements DeliveryPersonR
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {
-                    if (!CompanyRepository::checkAuth($value)) {
+                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
                         $fail('Empresa não autorizada.');
                     }
                 }
@@ -158,7 +160,7 @@ class DeliveryPersonRepository extends BaseRepository implements DeliveryPersonR
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {
-                    if (!CompanyRepository::checkAuth($value)) {
+                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
                         $fail('Empresa não autorizada.');
                     }
                 }

@@ -15,10 +15,11 @@ class CreatePlans extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained('categories')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name', 60);
-            $table->boolean('digital_menu');
-            $table->unsignedTinyInteger('limit_companies');
-            $table->unsignedDecimal('price', 15, 2);
+            $table->unsignedDecimal('fee', 5, 1);
+            $table->unsignedDecimal('online_payment_fee', 5, 1);
+            $table->boolean('delivery_person');
             $table->boolean('status');
             $table->timestamps();
         });

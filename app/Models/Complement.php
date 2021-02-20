@@ -4,21 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Plan extends Model
+class Complement extends Model
 {
     /**
+	 * Indicates if the model should be timestamped.
+	 *
+	 * @var bool
+	 */
+	public $timestamps = false;
+
+	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
 	protected $fillable = [
-        'category_id',
-        'name',
-        'fee',
-        'online_payment_fee',
-        'delivery_person',
-        'status'
-    ];
+        'product_id',
+		'title',
+        'qty_min',
+        'qty_max',
+        'required'
+	];
 
     /**
      * The attributes that should be casted to native types.
@@ -26,9 +32,6 @@ class Plan extends Model
      * @var array
      */
     protected $casts = [
-        'fee' => 'float',
-        'online_payment_fee' => 'float',
-        'delivery_person' => 'boolean',
-        'status' => 'boolean'
+        'required' => 'boolean'
     ];
 }

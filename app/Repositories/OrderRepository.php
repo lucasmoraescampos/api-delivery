@@ -199,7 +199,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {
-                    if (!CompanyRepository::checkAuth($value)) {
+                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
                         $fail('Empresa não autorizada.');
                     }
                 }

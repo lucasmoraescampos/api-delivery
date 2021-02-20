@@ -70,6 +70,6 @@ class DeliveryPerson extends Authenticatable implements JWTSubject
 	 */
 	public function company()
 	{
-		return $this->belongsTo('App\Company');
+		return $this->belongsTo('App\Models\Company');
     }
 }

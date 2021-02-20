@@ -18,7 +18,6 @@ class Product extends Model
 		'description',
 		'qty',
 		'price',
-		'cost',
 		'rebate',
 		'has_sunday',
 		'has_monday',
@@ -59,7 +58,6 @@ class Product extends Model
 		'has_saturday' => 'boolean',
 		'qty' => 'numeric',
 		'price' => 'float',
-		'cost' => 'float',
 		'rebate' => 'float',
 		'status' => 'boolean'
 	];
@@ -69,7 +67,7 @@ class Product extends Model
      */
     public function company()
     {
-        return $this->belongsTo('App\Company');
+        return $this->belongsTo('App\Models\Company');
 	}
 
 	/**
@@ -77,6 +75,6 @@ class Product extends Model
      */
     public function segment()
     {
-        return $this->belongsTo('App\Segment');
+        return $this->belongsTo('App\Models\Segment');
 	}
 }

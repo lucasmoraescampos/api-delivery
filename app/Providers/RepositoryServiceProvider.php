@@ -10,6 +10,8 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\CategoryRepositoryInterface;
 use App\Repositories\CompanyRepository;
 use App\Repositories\CompanyRepositoryInterface;
+use App\Repositories\ComplementRepository;
+use App\Repositories\ComplementRepositoryInterface;
 use App\Repositories\DeliveryPersonRepository;
 use App\Repositories\DeliveryPersonRepositoryInterface;
 use App\Repositories\OrderRepository;
@@ -43,6 +45,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DeliveryPersonRepositoryInterface::class, DeliveryPersonRepository::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(SegmentRepositoryInterface::class, SegmentRepository::class);
+        $this->app->bind(ComplementRepositoryInterface::class, ComplementRepository::class);
     }
 
     /**

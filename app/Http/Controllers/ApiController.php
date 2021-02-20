@@ -5,18 +5,42 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Exceptions\CustomException;
 use App\Mail\SendVerificationCode;
+use App\Models\Category;
+use App\Models\PaymentMethod;
+use App\Models\Plan;
 use App\Models\Segment;
 use App\Repositories\HttpClientRepository;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ApiController extends Controller
 {
-    public function company($slug) {
+    public function categories()
+    {
+        $categories = Category::all();
 
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
+    }
+
+    public function plans($category_id)
+    {
+        $plans = Plan::where('category_id', $category_id)
+            ->where('status', true)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $plans
+        ]);
+    }
+
+    public function company($slug)
+    {
         $company = Company::where('slug', $slug)->first();
 
         $company = collect($company->toArray())->except([
@@ -24,12 +48,7 @@ class ApiController extends Controller
         ]);
 
         if (!$company) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Nenhuma empresa encontrada'
-            ]);
-
+            throw new CustomException('Nenhuma empresa encontrada', 200);
         }
 
         $menu = Segment::with('products:id,segment_id,name,description,price,rebate,image')
@@ -47,41 +66,13 @@ class ApiController extends Controller
 
     }
 
-    public function states()
-    {
-        $data = DB::table('states')->orderBy('name', 'asc')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
-    }
-
-    public function cities($uf)
-    {
-        $data = DB::table('cities')->where('uf', $uf)->orderBy('name', 'asc')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
-    }
-
     public function paymentMethods()
     {
-        $data = DB::table('payment_methods')->get();
+        $data = PaymentMethod::all();
 
         return response()->json([
             'success' => true,
             'data' => $data
-        ]);
-    }
-
-    public function onlinePaymentFee()
-    {
-        return response()->json([
-            'success' => true,
-            'data' => 4.99
         ]);
     }
 

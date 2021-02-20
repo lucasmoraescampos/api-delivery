@@ -13,15 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('categories', 'ApiController@categories');
+
+Route::get('category/{category_id}/plans', 'ApiController@plans');
+
 Route::get('company/{slug}', 'ApiController@company');
 
-Route::get('states', 'ApiController@states');
-
-Route::get('cities/{uf}', 'ApiController@cities');
-
 Route::get('payment-methods', 'ApiController@paymentMethods');
-
-Route::get('online-payment-fee', 'ApiController@onlinePaymentFee');
 
 Route::post('check-duplicity', 'ApiController@checkDuplicity');
 
@@ -30,8 +28,6 @@ Route::post('send-code-verification', 'ApiController@sendCodeVerification');
 Route::post('confirm-code-verification', 'ApiController@confirmCodeVerification');
 
 Route::namespace('User')->prefix('user')->group(function () {
-
-    Route::get('plan', 'PlanController@index');
 
     Route::post('sign-up', 'AuthController@signUp');
 
@@ -43,11 +39,10 @@ Route::namespace('User')->prefix('user')->group(function () {
 
         Route::post('logout', 'AuthController@logout');
 
-        Route::post('plan', 'PlanController@store');
-
         Route::post('card', 'CardController@store');
-
+        
         Route::post('company', 'CompanyController@store');
+
     });
 
 });
@@ -76,6 +71,11 @@ Route::namespace('Company')->prefix('company')->group(function () {
         Route::delete('{company_id}/product/{id}', 'ProductController@delete');
 
 
+        Route::post('{company_id}/product/{product_id}/complement', 'ComplementController@store');
+
+        Route::post('{company_id}/product/{product_id}/complement/{id}', 'ComplementController@update');
+
+
         Route::get('{company_id}/delivery-person', 'DeliveryPersonController@index');
 
         Route::post('{company_id}/delivery-person', 'DeliveryPersonController@store');
@@ -88,6 +88,7 @@ Route::namespace('Company')->prefix('company')->group(function () {
         Route::get('{company_id}/order', 'OrderController@index');
 
         Route::post('{company_id}/order', 'OrderController@store');
+
     });
     
 });

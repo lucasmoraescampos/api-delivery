@@ -16,12 +16,11 @@ class CreateProducts extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('segment_id')->nullable()->constrained('segments')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('segment_id')->constrained('segments')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name', 100);
             $table->string('description', 200);
             $table->unsignedSmallInteger('qty')->nullable();
             $table->unsignedDecimal('price', 15, 2);
-            $table->unsignedDecimal('cost', 15, 2)->nullable();
             $table->unsignedDecimal('rebate', 15, 2)->nullable();
             $table->boolean('has_sunday');
             $table->boolean('has_monday');

@@ -20,26 +20,32 @@ class Company extends Model
 	 * @var array
 	 */
 	protected $fillable = [
+        'user_id',
+        'category_id',
+        'plan_id',
         'name',
         'phone',
         'document_number',
-        'postal_code',
-        'latitude',
-        'longitude',
-        'street_name',
-        'street_number',
-        'district',
-        'uf',
-        'city',
-        'allow_payment_online',
-        'allow_payment_delivery',
-        'allow_withdrawal_local',
-        'min_order_value',
+        'slug',
         'waiting_time',
         'delivery_price',
+        'min_order_value',
         'radius',
-        'slug',
-        'image'
+        'allow_payment_delivery',
+        'allow_payment_online',
+        'allow_withdrawal_local',
+        'image',
+        'banner',
+        'street_name',
+        'street_number',
+        'complement',
+        'district',
+        'city',
+        'uf',
+        'postal_code',
+        'country',
+        'latitude',
+        'longitude'
 	];
 
     /**
@@ -72,12 +78,20 @@ class Company extends Model
         'allow_withdrawal_local' => 'boolean'
     ];
 
+    /**
+     * Get the plan that owns the company.
+     */
+    public function plan()
+    {
+        return $this->belongsTo('App\Models\Plan');
+	}
+
 	/**
      * Get the payment methods for the company.
      */
     public function payment_methods()
     {
-        return $this->belongsToMany('App\PaymentMethod', 'companies_payment_methods', 'company_id', 'payment_method_id');
+        return $this->belongsToMany('App\Models\PaymentMethod', 'companies_payment_methods', 'company_id', 'payment_method_id');
     }
 
     /**

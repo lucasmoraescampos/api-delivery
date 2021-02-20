@@ -15,12 +15,8 @@ class CreatePlanSubscriptions extends Migration
     {
         Schema::create('plan_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
+            $table->foreignId('company_id')->constrained('companies')->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('plan_id')->constrained('plans')->onUpdate('cascade')->onDelete('restrict');
-            $table->string('payment_id', 255)->comment('Mercado Pago Payment');
-            $table->unsignedDecimal('transaction_amount', 15, 2);
-            $table->unsignedDecimal('transaction_fee', 15, 2)->nullable();
-            $table->datetime('expiration');
             $table->boolean('status');
             $table->timestamps();
         });

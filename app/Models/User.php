@@ -77,6 +77,6 @@ class User extends Authenticatable implements JWTSubject
      */
     public function companies()
     {
-        return $this->belongsToMany('App\Company', 'users_companies', 'user_id', 'company_id');
+        return $this->hasMany('App\Models\Company');
     }
 }

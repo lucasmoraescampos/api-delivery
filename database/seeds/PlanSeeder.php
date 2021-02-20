@@ -13,33 +13,91 @@ class PlanSeeder extends Seeder
     public function run()
     {
         DB::table('plans')->insert([
+
+            // Restaurantes
             [
+                'category_id' => 1,
                 'name' => 'Plano Básico',
-                'digital_menu' => '1',
-                'limit_companies' => '1',
-                'price' => '99.90',
-                'status' => '1',
-                'created_at' => '2021-01-23',
-                'updated_at' => '2021-01-23'
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
             ],
             [
-                'name' => 'Plano Intermediário',
-                'digital_menu' => '1',
-                'limit_companies' => '2',
-                'price' => '149.90',
-                'status' => '1',
-                'created_at' => '2021-01-23',
-                'updated_at' => '2021-01-23'
+                'category_id' => 1,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => true,
+                'status' => true
+            ],
+
+            // Supermercados
+            [
+                'category_id' => 2,
+                'name' => 'Plano Básico',
+                'fee' => 6,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
+            ],
+
+            // Padarias
+            [
+                'category_id' => 3,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
             ],
             [
-                'name' => 'Plano Avançado',
-                'digital_menu' => '1',
-                'limit_companies' => '4',
-                'price' => '249.90',
-                'status' => '1',
-                'created_at' => '2021-01-23',
-                'updated_at' => '2021-01-23'
+                'category_id' => 3,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => true,
+                'status' => true
+            ],
+
+            // Bebidas
+            [
+                'category_id' => 4,
+                'name' => 'Plano Básico',
+                'fee' => 6,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
+            ],
+
+            // Farmácias
+            [
+                'category_id' => 5,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
+            ],
+            [
+                'category_id' => 5,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => true,
+                'status' => true
+            ],
+
+            // Água e gás
+            [
+                'category_id' => 6,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_person' => false,
+                'status' => true
             ]
+
         ]);
     }
 }

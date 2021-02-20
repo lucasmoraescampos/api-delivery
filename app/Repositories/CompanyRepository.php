@@ -2,10 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\CompanyPaymentMethod;
 use App\Models\PaymentMethod;
-use App\Models\UserCompany;
+use App\Models\Plan;
+use App\Models\PlanSubscription;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -23,17 +26,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     }
 
     /**
-     * @param mixed $company_id
-     * @return boolean
-     */
-    public static function checkAuth($company_id): bool
-    {
-        return UserCompany::where('user_id', Auth::id())
-            ->where('company_id', $company_id)
-            ->count() > 0;
-    }
-
-    /**
      * @param array $attributes
      * @return Company
      */
@@ -41,39 +33,49 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         $this->validateCreate($attributes);
 
-        $company = new Company([
-            'name' => $attributes['name'],
-            'phone' => $attributes['phone'],
-            'document_number' => $attributes['document_number'],
-            'postal_code' => $attributes['postal_code'],
-            'latitude' => $attributes['latitude'],
-            'longitude' => $attributes['longitude'],
-            'street_name' => $attributes['street_name'],
-            'street_number' => $attributes['street_number'],
-            'district' => $attributes['district'],
-            'uf' => $attributes['uf'],
-            'city' => $attributes['city'],
-            'allow_payment_online' => $attributes['allow_payment_online'],
-            'allow_payment_delivery' => $attributes['allow_payment_delivery'],
-            'allow_withdrawal_local' => $attributes['allow_withdrawal_local'],
-            'min_order_value' => $attributes['min_order_value'],
-            'waiting_time' => $attributes['waiting_time'],
-            'delivery_price' => $attributes['delivery_price'],
-            'radius' => $attributes['radius']            
-        ]);
+        $company = new Company(Arr::only($attributes, [
+            'name',
+            'category_id',
+            'phone',
+            'document_number',
+            'postal_code',
+            'latitude',
+            'longitude',
+            'street_name',
+            'street_number',
+            'district',
+            'complement',
+            'uf',
+            'city',
+            'plan_id',
+            'allow_payment_online',
+            'allow_payment_delivery',
+            'allow_withdrawal_local',
+            'min_order_value',
+            'waiting_time',
+            'delivery_price',
+            'radius'
+        ]));
+
+        $company->user_id = Auth::id();
 
         $company->slug = $this->createSlug($company->name);
 
         $company->image = fileUpload($attributes['image'], 'companies');
 
+        if (isset($attributes['banner'])) {
+            
+            $company->banner = fileUpload($attributes['banner'], 'companies');
+
+        }
+
         $company->save();
 
-        UserCompany::create([
-            'user_id' => Auth::id(),
-            'company_id' => $company->id
-        ]);
+        $this->signPlan($company->id, $attributes['plan_id']);
 
         $this->insertPaymentMethods($company->id, $attributes['payment_methods']);
+
+        $company->load('plan');
 
         $company->load('payment_methods');
 
@@ -108,6 +110,16 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     /**
      * @param mixed $company_id
+     * @param mixed $plan_id
+     * @return void
+     */
+    private function signPlan($company_id, $plan_id): void
+    {
+        PlanSubscription::create(['company_id' => $company_id, 'plan_id' => $plan_id]);   
+    }
+
+    /**
+     * @param mixed $company_id
      * @param array $payment_methods
      * @return void
      */
@@ -133,9 +145,9 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         $validator = Validator::make($attributes, [
             'image' => 'required|file|mimes:gif,png,jpeg,bmp,webp',
+            'banner' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'required|string|max:150',
             'phone' => 'required|string|max:11',
-            'document_number' => 'required|string|max:20',
             'postal_code' => 'required|string|max:20',
             'latitude' => 'required|string|max:40',
             'longitude' => 'required|string|max:40',
@@ -151,14 +163,32 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'waiting_time' => 'required|numeric',
             'delivery_price' => 'required|numeric',
             'radius' => 'required|numeric',
-            'payment_methods' => [
-                'required_if:allow_payment_delivery,1', 'array',
-                function ($attribute, $value, $fail) {
-                    $payment_methods = PaymentMethod::all()->pluck('id');
-                    foreach ($value as $v) {
-                        if ($payment_methods->search($v) === false) {
-                            return $fail("Método de pagamento $v não encontrado.");
-                        }
+            'payment_methods' => 'required_if:allow_payment_delivery,1|array',
+            'document_number' => [
+                'required', 'string', 'max:15', function ($attribute, $value, $fail) {
+                    if (validateDocumentNumber($value) == false) {
+                        $fail('Número de documento inválido.');
+                    }
+                }
+            ],
+            'category_id' => [
+                'required', 'numeric', function ($attribute, $value, $fail) {
+                    if (Category::where('id', $value)->count() == 0) {
+                        $fail('Categoria não encontrada.');
+                    }
+                }
+            ],
+            'plan_id' => [
+                'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
+                    if (Plan::where('id', $value)->where('category_id', $attributes['category_id'])->count() == 0) {
+                        $fail('Plano não encontrado.');
+                    }
+                }
+            ],
+            'payment_methods.*.id' => [
+                'required', 'numeric', function ($attribute, $value, $fail) {
+                    if (PaymentMethod::where('id', $value)->count() == 0) {
+                        $fail('Método de pagamento não encontrado.');
                     }
                 }
             ]

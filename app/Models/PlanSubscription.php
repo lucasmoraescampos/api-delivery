@@ -12,12 +12,8 @@ class PlanSubscription extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-        'user_id',
-        'plan_id',
-        'payment_id',
-        'transaction_amount',
-        'transaction_fee',
-        'expiration'
+        'company_id',
+        'plan_id'
     ];
 
     /**
@@ -35,8 +31,6 @@ class PlanSubscription extends Model
      * @var array
      */
     protected $casts = [
-        'transaction_amount' => 'float',
-        'transaction_fee' => 'float',
         'status' => 'boolean'
     ];
 
@@ -45,6 +39,6 @@ class PlanSubscription extends Model
 	 */
 	public function plan()
 	{
-		return $this->belongsTo('App\Plan');
+		return $this->belongsTo('App\Models\Plan');
     }
 }

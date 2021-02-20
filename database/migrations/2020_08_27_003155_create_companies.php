@@ -15,6 +15,9 @@ class CreateCompanies extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('plan_id')->constrained('plans')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name', 150);
             $table->string('phone', 11);
             $table->string('document_number', 20);
@@ -31,6 +34,7 @@ class CreateCompanies extends Migration
             $table->boolean('allow_payment_online');
             $table->boolean('allow_withdrawal_local');
             $table->string('image', 255);
+            $table->string('banner', 255)->nullable();
             $table->string('street_name', 255);
             $table->string('street_number', 20);
             $table->string('complement', 255)->nullable();

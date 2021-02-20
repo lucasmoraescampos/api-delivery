@@ -80,7 +80,7 @@ class Order extends Model
      */
     public function company()
     {
-        return $this->belongsTo('App\Company');
+        return $this->belongsTo('App\Models\Company');
     }
 
     /**
@@ -88,6 +88,6 @@ class Order extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }
