@@ -40,6 +40,8 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
         $complement->qty_min = $complement->required ? $attributes['qty_min'] : null;
 
         $complement->save();
+
+        $complement->load('subcomplements');
         
         return $complement;
     }
@@ -71,7 +73,33 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
 
         $complement->save();
 
+        $complement->load('subcomplements');
+
         return $complement;
+    }
+
+    /**
+     * @param mixed $id
+     * @param mixed $company_id
+     * @return void
+     */
+    public function delete($id, $company_id = null): void
+    {
+        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
+            throw new CustomException('Empresa não encontrada.', 422);
+        }
+
+        $complement = Complement::with(['product' => function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            }])
+            ->where('id', $id)
+            ->first();
+
+        if (!$complement) {
+            throw new CustomException('Complemento não encontrado.', 422);
+        }
+
+        $complement->delete();
     }
 
     /**
@@ -82,8 +110,8 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
     {
         $validator = Validator::make($attributes, [
             'title' => 'required|string|max:100',
-            'qty_min' => 'required_if:required,1|min:1',
-            'qty_max' => 'required|min:1',
+            'qty_min' => 'required_if:required,1|numeric|min:1',
+            'qty_max' => 'required|numeric|min:1',
             'required' => 'required|boolean',
             'company_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
@@ -112,8 +140,8 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
     {
         $validator = Validator::make($attributes, [
             'title' => 'nullable|string|max:100',
-            'qty_min' => 'required_if:required,1|min:1',
-            'qty_max' => 'nullable|min:1',
+            'qty_min' => 'required_if:required,1|numeric|min:1',
+            'qty_max' => 'nullable|numeric|min:1',
             'required' => 'nullable|boolean',
             'company_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {

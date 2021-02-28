@@ -36,4 +36,13 @@ class AccessToken extends Model
     protected $attributes = [
         'status' => true
 	];
+
+	/**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'user_id' => 'integer'
+	];
 }

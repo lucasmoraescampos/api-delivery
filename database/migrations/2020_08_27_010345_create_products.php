@@ -19,7 +19,6 @@ class CreateProducts extends Migration
             $table->foreignId('segment_id')->constrained('segments')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name', 100);
             $table->string('description', 200);
-            $table->unsignedSmallInteger('qty')->nullable();
             $table->unsignedDecimal('price', 15, 2);
             $table->unsignedDecimal('rebate', 15, 2)->nullable();
             $table->boolean('has_sunday');
@@ -29,8 +28,8 @@ class CreateProducts extends Migration
             $table->boolean('has_thursday');
             $table->boolean('has_friday');
             $table->boolean('has_saturday');
-            $table->time('start_time')->nullable();
-            $table->time('end_time')->nullable();
+            $table->time('start_time');
+            $table->time('end_time');
             $table->string('image', 255);
             $table->boolean('status');
             $table->timestamps();

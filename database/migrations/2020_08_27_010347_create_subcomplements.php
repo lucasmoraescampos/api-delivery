@@ -16,7 +16,7 @@ class CreateSubcomplements extends Migration
         Schema::create('subcomplements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('complement_id')->constrained('complements')->onUpdate('cascade')->onDelete('cascade');
-            $table->text('description');
+            $table->string('description', 200);
             $table->unsignedDecimal('price', 15, 2)->nullable();
         });
     }

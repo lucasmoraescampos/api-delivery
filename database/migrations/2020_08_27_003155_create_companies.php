@@ -22,8 +22,6 @@ class CreateCompanies extends Migration
             $table->string('phone', 11);
             $table->string('document_number', 20);
             $table->unsignedDecimal('balance', 15, 2);
-            $table->boolean('is_delivery_open');
-            $table->unsignedTinyInteger('status');
             $table->string('slug', 255)->unique();
             $table->unsignedDecimal('evaluation', 2, 1)->nullable();
             $table->unsignedSmallInteger('waiting_time');
@@ -45,7 +43,10 @@ class CreateCompanies extends Migration
             $table->string('country', 100)->nullable();
             $table->string('latitude', 40);
             $table->string('longitude', 40);
+            $table->boolean('open');
+            $table->boolean('deleted');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

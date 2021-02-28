@@ -30,4 +30,13 @@ class Subcategory extends Model
         'name',
 		'image'
 	];
+
+	/**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'category_id' => 'integer'
+	];
 }

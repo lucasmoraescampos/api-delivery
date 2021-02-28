@@ -36,4 +36,14 @@ class CompanyPaymentMethod extends Model
         'company_id',
         'payment_method_id'
     ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'company_id' => 'integer',
+		'payment_method_id' => 'integer'
+	];
 }

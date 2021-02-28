@@ -15,7 +15,7 @@ class CreatePlanSubscriptions extends Migration
     {
         Schema::create('plan_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('company_id')->constrained('companies')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('plan_id')->constrained('plans')->onUpdate('cascade')->onDelete('restrict');
             $table->boolean('status');
             $table->timestamps();

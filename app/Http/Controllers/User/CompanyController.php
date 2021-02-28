@@ -25,4 +25,25 @@ class CompanyController extends Controller
             'data' => $company
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $company = $this->companyRepository->update($id, $request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Empresa atualizada com sucesso',
+            'data' => $company
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $this->companyRepository->delete($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Empresa excluída com sucesso'
+        ]);
+    }
 }

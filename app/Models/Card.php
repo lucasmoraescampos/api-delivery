@@ -21,4 +21,13 @@ class Card extends Model
         'document_type',
         'document_number'
 	];
+
+	/**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'user_id' => 'integer'
+	];
 }

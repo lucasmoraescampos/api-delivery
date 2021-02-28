@@ -42,8 +42,9 @@ class DeliveryPerson extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
-        'status' => 'boolean'
-    ];
+		'company_id' => 'integer',
+		'status' => 'boolean'
+	];
     
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

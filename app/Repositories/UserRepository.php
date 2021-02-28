@@ -12,6 +12,7 @@ use MercadoPago;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
 use Firebase\Auth\Token\Exception\InvalidToken;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
@@ -25,6 +26,20 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function __construct(User $model)
     {
         parent::__construct($model);
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuth(): User
+    {
+        $user = User::where('id', Auth::id())->first();
+
+        $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+            $query->where('deleted', false)->orderBy('id', 'desc');
+        }]);
+
+        return $user;
     }
 
     /**
@@ -55,7 +70,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         $user->save();
 
-        $user->load('companies');
+        $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+            $query->where('deleted', false)->orderBy('id', 'desc');
+        }]);
 
         VerificationCode::where('email', $attributes['email'])
             ->orWhere('phone', $attributes['phone'])
@@ -92,7 +109,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                     throw new CustomException('Código inválido', 200);
                 }
 
-                $user->load('companies');
+                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                    $query->where('deleted', false)->orderBy('id', 'desc');
+                }]);
 
                 VerificationCode::where('email', $attributes['email'])->delete();
     
@@ -136,7 +155,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                     throw new CustomException('Código inválido', 200);
                 }
 
-                $user->load('companies');
+                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                    $query->where('deleted', false)->orderBy('id', 'desc');
+                }]);
 
                 VerificationCode::where('phone', $attributes['phone'])->delete();
 
@@ -221,7 +242,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
             }
 
-            $user->load('companies');
+            $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                $query->where('deleted', false)->orderBy('id', 'desc');
+            }]);
 
             return $user;
 

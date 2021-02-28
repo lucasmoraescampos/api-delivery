@@ -22,6 +22,8 @@ use App\Repositories\ProductRepository;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\SegmentRepository;
 use App\Repositories\SegmentRepositoryInterface;
+use App\Repositories\SubcomplementRepository;
+use App\Repositories\SubcomplementRepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -46,6 +48,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(SegmentRepositoryInterface::class, SegmentRepository::class);
         $this->app->bind(ComplementRepositoryInterface::class, ComplementRepository::class);
+        $this->app->bind(SubcomplementRepositoryInterface::class, SubcomplementRepository::class);
     }
 
     /**

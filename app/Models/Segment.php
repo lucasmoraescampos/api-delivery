@@ -34,6 +34,16 @@ class Segment extends Model
     ];
 
 	/**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'company_id' => 'integer',
+		'position' => 'integer'
+	];
+
+	/**
 	 * Get the company that owns the segment.
 	 */
 	public function company()

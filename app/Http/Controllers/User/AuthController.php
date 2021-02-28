@@ -15,6 +15,16 @@ class AuthController extends Controller
         $this->userRepository = $userRepository;
     }
 
+    public function auth()
+    {
+        $user = $this->userRepository->getAuth();
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ]);
+    }
+
     public function signUp(Request $request)
     {
         $user = $this->userRepository->create($request->all());

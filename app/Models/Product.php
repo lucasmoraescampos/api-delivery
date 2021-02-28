@@ -16,7 +16,6 @@ class Product extends Model
 		'segment_id',
 		'name',
 		'description',
-		'qty',
 		'price',
 		'rebate',
 		'has_sunday',
@@ -56,7 +55,6 @@ class Product extends Model
 		'has_thursday' => 'boolean',
 		'has_friday' => 'boolean',
 		'has_saturday' => 'boolean',
-		'qty' => 'numeric',
 		'price' => 'float',
 		'rebate' => 'float',
 		'status' => 'boolean'
@@ -77,4 +75,12 @@ class Product extends Model
     {
         return $this->belongsTo('App\Models\Segment');
 	}
+
+	/**
+     * Get the complements for the product.
+     */
+    public function complements()
+    {
+        return $this->hasMany('App\Models\Complement');
+    }
 }

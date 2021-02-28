@@ -55,8 +55,8 @@ class Company extends Model
      */
     protected $attributes = [
         'balance' => 0.00,
-        'is_delivery_open' => false,
-        'status' => true
+        'open' => false,
+        'deleted' => false
     ];
 
     /**
@@ -65,8 +65,11 @@ class Company extends Model
      * @var array
      */
     protected $casts = [
+        'user_id' => 'integer',
+        'category_id' => 'integer',
+        'plan_id' => 'integer',
         'balance' => 'float',
-        'is_delivery_open' => 'boolean',
+        'open' => 'boolean',
         'status' => 'integer',
         'evaluation' => 'float',
         'waiting_time' => 'integer',

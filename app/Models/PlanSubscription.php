@@ -31,8 +31,10 @@ class PlanSubscription extends Model
      * @var array
      */
     protected $casts = [
-        'status' => 'boolean'
-    ];
+		'company_id' => 'integer',
+		'plan_id' => 'integer',
+		'status' => 'boolean'
+	];
 
     /**
 	 * Get the plan that owns the plan subscription.

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\CustomException;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\CompanyPaymentMethod;
@@ -65,21 +66,120 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         if (isset($attributes['banner'])) {
             
-            $company->banner = fileUpload($attributes['banner'], 'companies');
+            $company->banner = fileUpload($attributes['banner'], 'companies/banners');
 
         }
 
         $company->save();
 
-        $this->signPlan($company->id, $attributes['plan_id']);
+        $this->signPlan($company->id, $company->plan_id);
 
-        $this->insertPaymentMethods($company->id, $attributes['payment_methods']);
+        if (isset($attributes['payment_methods'])) {
+
+            $this->insertPaymentMethods($company->id, $attributes['payment_methods']);
+            
+        }
 
         $company->load('plan');
 
         $company->load('payment_methods');
 
         return $company;
+    }
+
+    /**
+     * @param array $attributes
+     * @param mixed $id
+     * @return Company
+     */
+    public function update($id, array $attributes): Company
+    {
+        $this->validateUpdate($attributes);
+
+        $company = Company::find($id);
+
+        $company->fill(Arr::only($attributes, [
+            'name',
+            'category_id',
+            'phone',
+            'document_number',
+            'postal_code',
+            'latitude',
+            'longitude',
+            'street_name',
+            'street_number',
+            'district',
+            'complement',
+            'uf',
+            'city',
+            'plan_id',
+            'allow_payment_online',
+            'allow_payment_delivery',
+            'allow_withdrawal_local',
+            'min_order_value',
+            'waiting_time',
+            'delivery_price',
+            'radius'
+        ]));
+
+        if (isset($attributes['image'])) {
+
+            $company->image = fileUpload($attributes['image'], 'products');
+
+        }
+
+        if (isset($attributes['banner'])) {
+
+            $company->banner = fileUpload($attributes['banner'], 'companies/banners');
+
+        }
+
+        $company->save();
+
+        if (isset($attributes['plan_id'])) {
+
+            $this->signPlan($company->id, $company->plan_id);
+
+        }
+
+        if (isset($attributes['payment_methods'])) {
+
+            $this->insertPaymentMethods($company->id, $attributes['payment_methods']);
+            
+        }
+
+        if (isset($attributes['allow_payment_delivery']) && $attributes['allow_payment_delivery'] == false) {
+
+            $this->deletePaymentMethodsByCompany($company->id);
+
+        }
+
+        $company->load('plan');
+
+        $company->load('payment_methods');
+
+        return $company;
+    }
+
+    /**
+     * @param mixed $id
+     * @return void
+     */
+    public function delete($id): void
+    {
+        $company = Company::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$company) {
+            throw new CustomException('Empresa não encontrada.', 422);
+        }
+
+        $company->deleted = true;
+
+        $company->deleted_at = date('Y-m-d H:i:s');
+
+        $company->save();
     }
 
     /**
@@ -98,7 +198,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         
         for ($i = 1; true; $i++) {
 
-            $str = $slug . ' ' . $i;
+            $str = $slug . '-' . $i;
 
             $count = Company::where('slug', $str)->count();
 
@@ -115,6 +215,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      */
     private function signPlan($company_id, $plan_id): void
     {
+        PlanSubscription::where('company_id', $company_id)->update(['status' => false]);
+
         PlanSubscription::create(['company_id' => $company_id, 'plan_id' => $plan_id]);   
     }
 
@@ -125,6 +227,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      */
     private function insertPaymentMethods($company_id, array $payment_methods): void
     {
+        $this->deletePaymentMethodsByCompany($company_id);
+
         $company_payment_methods = [];
 
         foreach ($payment_methods as $payment_method_id) {
@@ -135,6 +239,15 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         }
 
         CompanyPaymentMethod::insert($company_payment_methods);
+    }
+
+    /**
+     * @param mixed $company_id
+     * @return void
+     */
+    private function deletePaymentMethodsByCompany($company_id): void
+    {
+        CompanyPaymentMethod::where('company_id', $company_id)->delete();
     }
 
     /**
@@ -185,8 +298,68 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                     }
                 }
             ],
-            'payment_methods.*.id' => [
+            'payment_methods.*' => [
                 'required', 'numeric', function ($attribute, $value, $fail) {
+                    if (PaymentMethod::where('id', $value)->count() == 0) {
+                        $fail('Método de pagamento não encontrado.');
+                    }
+                }
+            ]
+        ]);
+
+        $validator->validate();
+    }
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    private function validateUpdate(array $attributes)
+    {
+        $validator = Validator::make($attributes, [
+            'image' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
+            'banner' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
+            'name' => 'nullable|string|max:150',
+            'phone' => 'nullable|string|max:11',
+            'postal_code' => 'nullable|string|max:20',
+            'latitude' => 'nullable|string|max:40',
+            'longitude' => 'nullable|string|max:40',
+            'street_name' => 'nullable|string|max:255',
+            'street_number' => 'nullable|string|max:20',
+            'district' => 'nullable|string|max:100',
+            'uf' => 'nullable|string|max:2',
+            'city' => 'nullable|string|max:100',
+            'allow_payment_online' => 'nullable|boolean',
+            'allow_payment_delivery' => 'nullable|boolean',
+            'allow_withdrawal_local' => 'nullable|boolean',
+            'min_order_value' => 'nullable|numeric',
+            'waiting_time' => 'nullable|numeric',
+            'delivery_price' => 'nullable|numeric',
+            'radius' => 'nullable|numeric',
+            'payment_methods' => 'nullable|array',
+            'document_number' => [
+                'nullable', 'string', 'max:15', function ($attribute, $value, $fail) {
+                    if (validateDocumentNumber($value) == false) {
+                        $fail('Número de documento inválido.');
+                    }
+                }
+            ],
+            'category_id' => [
+                'nullable', 'numeric', function ($attribute, $value, $fail) {
+                    if (Category::where('id', $value)->count() == 0) {
+                        $fail('Categoria não encontrada.');
+                    }
+                }
+            ],
+            'plan_id' => [
+                'nullable', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
+                    if (Plan::where('id', $value)->where('category_id', $attributes['category_id'])->count() == 0) {
+                        $fail('Plano não encontrado.');
+                    }
+                }
+            ],
+            'payment_methods.*' => [
+                'nullable', 'numeric', function ($attribute, $value, $fail) {
                     if (PaymentMethod::where('id', $value)->count() == 0) {
                         $fail('Método de pagamento não encontrado.');
                     }

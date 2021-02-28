@@ -32,6 +32,23 @@ class Complement extends Model
      * @var array
      */
     protected $casts = [
-        'required' => 'boolean'
-    ];
+		'product_id' => 'integer',
+		'required' => 'boolean'
+	];
+
+    /**
+     * Get the product that owns the complement.
+     */
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product');
+	}
+
+    /**
+     * Get the subcomplements for the complement.
+     */
+    public function subcomplements()
+    {
+        return $this->hasMany('App\Models\Subcomplement');
+    }
 }

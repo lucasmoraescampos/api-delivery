@@ -37,11 +37,19 @@ Route::namespace('User')->prefix('user')->group(function () {
 
     Route::middleware(['auth:users'])->group(function () {
 
+        Route::get('auth', 'AuthController@auth');
+
         Route::post('logout', 'AuthController@logout');
 
+
         Route::post('card', 'CardController@store');
+
         
         Route::post('company', 'CompanyController@store');
+
+        Route::put('company/{id}', 'CompanyController@update');
+
+        Route::delete('company/{id}', 'CompanyController@delete');
 
     });
 
@@ -71,9 +79,18 @@ Route::namespace('Company')->prefix('company')->group(function () {
         Route::delete('{company_id}/product/{id}', 'ProductController@delete');
 
 
-        Route::post('{company_id}/product/{product_id}/complement', 'ComplementController@store');
+        Route::post('{company_id}/complement', 'ComplementController@store');
 
-        Route::post('{company_id}/product/{product_id}/complement/{id}', 'ComplementController@update');
+        Route::post('{company_id}/complement/{id}', 'ComplementController@update');
+
+        Route::delete('{company_id}/complement/{id}', 'ComplementController@delete');
+
+        
+        Route::post('{company_id}/subcomplement', 'SubcomplementController@store');
+
+        Route::post('{company_id}/subcomplement/{id}', 'SubcomplementController@update');
+
+        Route::delete('{company_id}/subcomplement/{id}', 'SubcomplementController@delete');
 
 
         Route::get('{company_id}/delivery-person', 'DeliveryPersonController@index');

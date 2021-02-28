@@ -7,6 +7,11 @@ use App\Models\User;
 interface UserRepositoryInterface
 {
     /**
+     * @return User
+     */
+    public function getAuth(): User;
+
+    /**
      * @param array $attributes
      * @return User
      */

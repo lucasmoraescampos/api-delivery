@@ -35,7 +35,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             throw new CustomException('Empresa não autorizada.', 422);
         }
 
-        return Product::with('segment')
+        return Product::with(['segment', 'complements.subcomplements'])
             ->where('company_id', $company_id)
             ->orderBy('id', 'desc')
             ->get();
@@ -49,14 +49,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         $this->validateCreate($attributes);
 
-        $data = Arr::only($attributes, [
+        $product = new Product(Arr::only($attributes, [
             'company_id',
             'segment_id',
             'name',
             'description',
-            'qty',
             'price',
-            'cost',
             'rebate',
             'has_sunday',
             'has_monday',
@@ -67,9 +65,15 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'has_saturday',
             'start_time',
             'end_time'
-        ]);
+        ]));
 
-        $product = new Product($data);
+        if ($product->start_time == null || $product->end_time == null) {
+
+            $product->start_time = '00:00';
+
+            $product->end_time = '00:00';
+
+        }
 
         $product->image = fileUpload($attributes['image'], 'products');
 
@@ -91,12 +95,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         $product = Product::find($id);
 
-        $data = Arr::only($attributes, [
+        $product->fill(Arr::only($attributes, [
             'segment_id',
             'name',
             'description',
-            'qty',
-            'cost',
             'price',
             'rebate',
             'has_sunday',
@@ -109,9 +111,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'start_time',
             'end_time',
             'status'
-        ]);
-
-        $product->fill($data);
+        ]));
 
         if (isset($attributes['image'])) {
 
@@ -158,8 +158,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'image' => 'required|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:200',
-            'qty' => 'nullable|numeric',
-            'cost' => 'nullable|numeric',
             'price' => 'required|numeric',
             'rebate' => 'nullable|numeric',
             'has_sunday' => 'required|boolean',
@@ -169,8 +167,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'has_thursday' => 'required|boolean',
             'has_friday' => 'required|boolean',
             'has_saturday' => 'required|boolean',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
+            'start_time' => 'required_with:end_time|date_format:H:i',
+            'end_time' => 'required_with:start_time|date_format:H:i',
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {
@@ -202,8 +200,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'image' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:200',
-            'qty' => 'nullable|numeric',
-            'cost' => 'nullable|numeric',
             'price' => 'nullable|numeric',
             'rebate' => 'nullable|numeric',
             'has_sunday' => 'nullable|boolean',
@@ -213,8 +209,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'has_thursday' => 'nullable|boolean',
             'has_friday' => 'nullable|boolean',
             'has_saturday' => 'nullable|boolean',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
+            'start_time' => 'required_with:end_time|date_format:H:i',
+            'end_time' => 'required_with:start_time|date_format:H:i',
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {

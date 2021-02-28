@@ -30,6 +30,16 @@ class Subcomplement extends Model
      * @var array
      */
     protected $casts = [
+        'complement_id' => 'integer',
         'price' => 'float'
     ];
+    
+
+	/**
+     * Get the complement that owns the subcomplement.
+     */
+    public function complement()
+    {
+        return $this->belongsTo('App\Models\Complement');
+	}
 }
