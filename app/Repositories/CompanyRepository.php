@@ -96,7 +96,21 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         $this->validateUpdate($attributes);
 
-        $company = Company::find($id);
+        $company = Company::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$company) {
+            throw new CustomException('Empresa não encontrada.', 422);
+        }
+
+        if ($company->status == Company::STATUS_INACTIVE) {
+            throw new CustomException('Empresa em análise.', 403);
+        }
+        
+        if ($company->status == Company::STATUS_SUSPENDED) {
+            throw new CustomException('Empresa suspensa.', 403);
+        }
 
         $company->fill(Arr::only($attributes, [
             'name',
@@ -119,7 +133,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'min_order_value',
             'waiting_time',
             'delivery_price',
-            'radius'
+            'radius',
+            'open'
         ]));
 
         if (isset($attributes['image'])) {
@@ -173,6 +188,14 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         if (!$company) {
             throw new CustomException('Empresa não encontrada.', 422);
+        }
+
+        if ($company->status == Company::STATUS_INACTIVE) {
+            throw new CustomException('Empresa em análise.', 403);
+        }
+        
+        if ($company->status == Company::STATUS_SUSPENDED) {
+            throw new CustomException('Empresa suspensa.', 403);
         }
 
         $company->deleted = true;
@@ -293,7 +316,13 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             ],
             'plan_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Plan::where('id', $value)->where('category_id', $attributes['category_id'])->count() == 0) {
+
+                    $count = Plan::where('id', $value)
+                        ->where('category_id', $attributes['category_id'])
+                        ->where('status', true)
+                        ->count();
+
+                    if ($count == 0) {
                         $fail('Plano não encontrado.');
                     }
                 }
@@ -336,6 +365,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'waiting_time' => 'nullable|numeric',
             'delivery_price' => 'nullable|numeric',
             'radius' => 'nullable|numeric',
+            'open' => 'nullable|boolean',
             'payment_methods' => 'nullable|array',
             'document_number' => [
                 'nullable', 'string', 'max:15', function ($attribute, $value, $fail) {

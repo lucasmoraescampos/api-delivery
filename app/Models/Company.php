@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 class Company extends Model
 {
+    /**
+     * Constants.
+     */
+    const STATUS_INACTIVE = 0;
+
+    const STATUS_ACTIVE = 1;
+
+    const STATUS_SUSPENDED = 2;
+
 	/**
 	 * The table associated with the model.
 	 *
@@ -45,7 +54,8 @@ class Company extends Model
         'postal_code',
         'country',
         'latitude',
-        'longitude'
+        'longitude',
+        'open'
 	];
 
     /**
@@ -56,6 +66,7 @@ class Company extends Model
     protected $attributes = [
         'balance' => 0.00,
         'open' => false,
+        'status' => self::STATUS_INACTIVE,
         'deleted' => false
     ];
 

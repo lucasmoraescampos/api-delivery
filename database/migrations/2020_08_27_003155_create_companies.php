@@ -43,6 +43,7 @@ class CreateCompanies extends Migration
             $table->string('country', 100)->nullable();
             $table->string('latitude', 40);
             $table->string('longitude', 40);
+            $table->unsignedTinyInteger('status');
             $table->boolean('open');
             $table->boolean('deleted');
             $table->timestamps();

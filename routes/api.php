@@ -59,7 +59,7 @@ Route::namespace('Company')->prefix('company')->group(function () {
 
     Route::middleware(['auth:users'])->group(function () {
 
-        Route::get('{company_id}/segment', 'SegmentController@index');
+        Route::get('{company_id}/segment', 'SegmentController@index')->middleware('check.company');
 
         Route::post('{company_id}/segment', 'SegmentController@store');
 
