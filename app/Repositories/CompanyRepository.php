@@ -60,7 +60,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         $company->user_id = Auth::id();
 
-        $company->slug = $this->createSlug($company->name);
+        $company->slug = $this->generateSlug($company->name);
 
         $company->image = fileUpload($attributes['image'], 'companies');
 
@@ -138,35 +138,29 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         ]));
 
         if (isset($attributes['image'])) {
-
             $company->image = fileUpload($attributes['image'], 'products');
-
         }
 
         if (isset($attributes['banner'])) {
-
             $company->banner = fileUpload($attributes['banner'], 'companies/banners');
+        }
 
+        if (isset($attributes['slug'])) {
+            $company->slug = strtolower($attributes['slug']);
         }
 
         $company->save();
 
         if (isset($attributes['plan_id'])) {
-
             $this->signPlan($company->id, $company->plan_id);
-
         }
 
         if (isset($attributes['payment_methods'])) {
-
             $this->insertPaymentMethods($company->id, $attributes['payment_methods']);
-            
         }
 
         if (isset($attributes['allow_payment_delivery']) && $attributes['allow_payment_delivery'] == false) {
-
             $this->deletePaymentMethodsByCompany($company->id);
-
         }
 
         $company->load('plan');
@@ -209,24 +203,24 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      * @param mixed $name
      * @return string
      */
-    private function createSlug($name)
+    private function generateSlug($name)
     {
         $slug = Str::slug($name);
 
-        $count = Company::where('slug', $slug)->count();
+        if (preg_match('/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/', $slug) == false) {
+            $slug = uniqid('mp-');
+        }
 
-        if ($count == 0) {
+        if (Company::where('slug', $slug)->count() == 0) {
             return $slug;
         }
         
         for ($i = 1; true; $i++) {
 
-            $str = $slug . '-' . $i;
+            $slug = uniqid('mp-');
 
-            $count = Company::where('slug', $str)->count();
-
-            if ($count == 0) {
-                return $str;
+            if (Company::where('slug', $slug)->count() == 0) {
+                return $slug;
             }
         }
     }
@@ -367,6 +361,13 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'radius' => 'nullable|numeric',
             'open' => 'nullable|boolean',
             'payment_methods' => 'nullable|array',
+            'slug' => [
+                'nullable', 'string', function ($attribute, $value, $fail) {
+                    if (preg_match('/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/', $value) == false) {
+                        $fail('Slug inválido.');
+                    }
+                }
+            ],
             'document_number' => [
                 'nullable', 'string', 'max:15', function ($attribute, $value, $fail) {
                     if (validateDocumentNumber($value) == false) {

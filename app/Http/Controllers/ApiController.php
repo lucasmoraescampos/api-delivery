@@ -51,7 +51,7 @@ class ApiController extends Controller
             throw new CustomException('Nenhuma empresa encontrada', 200);
         }
 
-        $menu = Segment::with('products:id,segment_id,name,description,price,rebate,image')
+        $menu = Segment::with(['products:id,segment_id,name,description,price,rebate,image', 'products.complements.subcomplements'])
             ->orderBy('position', 'asc')
             ->where('company_id', $company['id'])
             ->get();
@@ -79,8 +79,9 @@ class ApiController extends Controller
     public function checkDuplicity(Request $request)
     {
         $request->validate([
-            'email' => 'required_without_all:phone',
-            'phone' => 'required_without_all:email'
+            'email' => 'required_without_all:phone,slug',
+            'phone' => 'required_without_all:email,slug',
+            'slug' => 'required_without_all:email,phone',
         ]);
 
         if ($request->email) {
@@ -91,11 +92,25 @@ class ApiController extends Controller
 
         }
 
-        else {
+        elseif ($request->phone) {
 
             $success = User::where('phone', $request->phone)->count() == 0;
 
             $message = $success ? 'OK' : 'Este número de celular já está sendo usado.';
+            
+        }
+
+        elseif ($request->slug) {
+
+            $request->slug = strtolower($request->slug);
+
+            if (preg_match('/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/', $request->slug) == false) {
+                throw new CustomException('Slug inválido.', 422);
+            }
+
+            $success = Company::where('slug', $request->slug)->count() == 0;
+
+            $message = $success ? 'OK' : 'Este slug já está sendo usado.';
             
         }
 
