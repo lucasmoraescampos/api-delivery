@@ -20,7 +20,8 @@ class CategorySeeder extends Seeder
             ['name' => 'Padarias', 'icon' => $path . '/'],
             ['name' => 'Bebidas', 'icon' => $path . '/'],
             ['name' => 'Farmácias', 'icon' => $path . '/'],
-            ['name' => 'Água e gás', 'icon' => $path . '/']
+            ['name' => 'Água e gás', 'icon' => $path . '/'],
+            ['name' => 'Lojas', 'icon' => $path . '/'],
         ]);
     }
 }
