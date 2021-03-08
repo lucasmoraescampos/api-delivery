@@ -15,13 +15,13 @@ class CategorySeeder extends Seeder
         $path = env('APP_URL') . '/assets/images';
 
         DB::table('categories')->insert([
-            ['name' => 'Restaurantes', 'icon' => $path . '/'],
-            ['name' => 'Supermercados', 'icon' => $path . '/'],
-            ['name' => 'Padarias', 'icon' => $path . '/'],
-            ['name' => 'Bebidas', 'icon' => $path . '/'],
-            ['name' => 'Farmácias', 'icon' => $path . '/'],
-            ['name' => 'Água e gás', 'icon' => $path . '/'],
-            ['name' => 'Lojas', 'icon' => $path . '/'],
+            ['name' => 'Restaurantes', 'image' => $path . '/'],
+            ['name' => 'Supermercados', 'image' => $path . '/'],
+            ['name' => 'Padarias', 'image' => $path . '/'],
+            ['name' => 'Bebidas', 'image' => $path . '/'],
+            ['name' => 'Farmácias', 'image' => $path . '/'],
+            ['name' => 'Água e gás', 'image' => $path . '/'],
+            ['name' => 'Lojas', 'image' => $path . '/'],
         ]);
     }
 }
