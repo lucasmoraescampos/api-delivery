@@ -85,7 +85,7 @@ if (!function_exists('validateDocumentNumber')) {
 
         }
 
-        elseif (strlen($document_number) == 11) {
+        elseif (strlen($document_number) == 14) {
 
             if (preg_match('/(\d)\1{13}/', $document_number))
                 return false;

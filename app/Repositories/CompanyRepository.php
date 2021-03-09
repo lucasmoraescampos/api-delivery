@@ -295,7 +295,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'radius' => 'required|numeric',
             'payment_methods' => 'required_if:allow_payment_delivery,1|array',
             'document_number' => [
-                'required', 'string', 'max:15', function ($attribute, $value, $fail) {
+                'required', 'string', 'max:14', function ($attribute, $value, $fail) {
                     if (validateDocumentNumber($value) == false) {
                         $fail('Número de documento inválido.');
                     }
