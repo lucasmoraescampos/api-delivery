@@ -41,7 +41,7 @@ class ApiController extends Controller
 
     public function company($slug)
     {
-        $company = Company::where('slug', $slug)->first();
+        $company = Company::with(['payment_methods'])->where('slug', $slug)->first();
 
         $company = collect($company->toArray())->except([
             'document_number', 'balance', 'status', 'created_at', 'updated_at'

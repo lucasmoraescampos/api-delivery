@@ -35,7 +35,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         $user = User::where('id', Auth::id())->first();
 
-        $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+        $user->load(['cards', 'companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
             $query->where('deleted', false)->orderBy('id', 'desc');
         }]);
 
@@ -70,7 +70,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         $user->save();
 
-        $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+        $user->load(['cards', 'companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
             $query->where('deleted', false)->orderBy('id', 'desc');
         }]);
 
@@ -109,7 +109,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                     throw new CustomException('Código inválido', 200);
                 }
 
-                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                $user->load(['cards', 'companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
                     $query->where('deleted', false)->orderBy('id', 'desc');
                 }]);
 
@@ -155,7 +155,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                     throw new CustomException('Código inválido', 200);
                 }
 
-                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                $user->load(['cards', 'companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
                     $query->where('deleted', false)->orderBy('id', 'desc');
                 }]);
 
@@ -242,7 +242,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
             }
 
-            $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+            $user->load(['cards', 'companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
                 $query->where('deleted', false)->orderBy('id', 'desc');
             }]);
 
