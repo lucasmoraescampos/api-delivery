@@ -12,16 +12,18 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $path = env('APP_URL') . '/assets/images';
+        $image = env('IMAGES_URL') . '/categories';
 
         DB::table('categories')->insert([
-            ['name' => 'Restaurantes', 'image' => $path . '/'],
-            ['name' => 'Supermercados', 'image' => $path . '/'],
-            ['name' => 'Padarias', 'image' => $path . '/'],
-            ['name' => 'Bebidas', 'image' => $path . '/'],
-            ['name' => 'Farmácias', 'image' => $path . '/'],
-            ['name' => 'Água e gás', 'image' => $path . '/'],
-            ['name' => 'Lojas', 'image' => $path . '/'],
+            ['name' => 'Restaurantes',              'image' => $image],
+            ['name' => 'Supermercados',             'image' => $image],
+            ['name' => 'Padarias',                  'image' => $image],
+            ['name' => 'Bebidas',                   'image' => $image],
+            ['name' => 'Farmácias',                 'image' => $image],
+            ['name' => 'Água e gás',                'image' => $image],
+            ['name' => 'Modas',                     'image' => $image],
+            ['name' => 'Materiais de construção',   'image' => $image],
+            ['name' => 'Pets Shop',                 'image' => $image]
         ]);
     }
 }

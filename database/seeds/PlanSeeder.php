@@ -14,9 +14,93 @@ class PlanSeeder extends Seeder
     {
         DB::table('plans')->insert([
 
-            // Restaurantes
+            // // Restaurantes
+            // [
+            //     'category_id' => 1,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 8,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+            // [
+            //     'category_id' => 1,
+            //     'name' => 'Plano Entrega',
+            //     'fee' => 10,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => true,
+            //     'status' => true
+            // ],
+
+            // // Supermercados
+            // [
+            //     'category_id' => 2,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 6,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+
+            // // Padarias
+            // [
+            //     'category_id' => 3,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 8,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+            // [
+            //     'category_id' => 3,
+            //     'name' => 'Plano Entrega',
+            //     'fee' => 10,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => true,
+            //     'status' => true
+            // ],
+
+            // // Bebidas
+            // [
+            //     'category_id' => 4,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 6,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+
+            // // Farmácias
+            // [
+            //     'category_id' => 5,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 8,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+            // [
+            //     'category_id' => 5,
+            //     'name' => 'Plano Entrega',
+            //     'fee' => 10,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => true,
+            //     'status' => true
+            // ],
+
+            // // Água e gás
+            // [
+            //     'category_id' => 6,
+            //     'name' => 'Plano Básico',
+            //     'fee' => 8,
+            //     'online_payment_fee' => 4.5,
+            //     'delivery_person' => false,
+            //     'status' => true
+            // ],
+
+            // Modas
             [
-                'category_id' => 1,
+                'category_id' => 7,
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
@@ -24,7 +108,7 @@ class PlanSeeder extends Seeder
                 'status' => true
             ],
             [
-                'category_id' => 1,
+                'category_id' => 7,
                 'name' => 'Plano Entrega',
                 'fee' => 10,
                 'online_payment_fee' => 4.5,
@@ -32,71 +116,25 @@ class PlanSeeder extends Seeder
                 'status' => true
             ],
 
-            // Supermercados
+            // Materiais de construção
             [
-                'category_id' => 2,
-                'name' => 'Plano Básico',
-                'fee' => 6,
-                'online_payment_fee' => 4.5,
-                'delivery_person' => false,
-                'status' => true
-            ],
-
-            // Padarias
-            [
-                'category_id' => 3,
+                'category_id' => 8,
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
                 'delivery_person' => false,
                 'status' => true
             ],
-            [
-                'category_id' => 3,
-                'name' => 'Plano Entrega',
-                'fee' => 10,
-                'online_payment_fee' => 4.5,
-                'delivery_person' => true,
-                'status' => true
-            ],
 
-            // Bebidas
+            // Pets shop
             [
-                'category_id' => 4,
-                'name' => 'Plano Básico',
-                'fee' => 6,
-                'online_payment_fee' => 4.5,
-                'delivery_person' => false,
-                'status' => true
-            ],
-
-            // Farmácias
-            [
-                'category_id' => 5,
+                'category_id' => 9,
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
                 'delivery_person' => false,
                 'status' => true
             ],
-            [
-                'category_id' => 5,
-                'name' => 'Plano Entrega',
-                'fee' => 10,
-                'online_payment_fee' => 4.5,
-                'delivery_person' => true,
-                'status' => true
-            ],
-
-            // Água e gás
-            [
-                'category_id' => 6,
-                'name' => 'Plano Básico',
-                'fee' => 8,
-                'online_payment_fee' => 4.5,
-                'delivery_person' => false,
-                'status' => true
-            ]
 
         ]);
     }
