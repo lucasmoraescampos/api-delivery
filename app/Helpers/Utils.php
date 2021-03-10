@@ -19,7 +19,7 @@ if (!function_exists('fileUpload')) {
 
         $file->storeAs($folder, $full_name);
 
-        return env('APP_URL') . "/storage/$folder/$full_name";
+        return env('IMAGES_URL') . "/$folder/$full_name";
     }
 
 }

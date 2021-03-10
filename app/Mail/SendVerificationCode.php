@@ -33,9 +33,6 @@ class SendVerificationCode extends Mailable
         return $this->from('naoresponder@meupedido.org', 'naoresponder')
             ->subject('Meu Pedido - Código de acesso')
             ->view('mail.sendVerificationCode')
-            ->with([
-                'url' => env('APP_URL'),
-                'code' => $this->code
-            ]);
+            ->with(['code' => $this->code]);
     }
 }

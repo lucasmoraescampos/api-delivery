@@ -138,7 +138,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         ]));
 
         if (isset($attributes['image'])) {
-            $company->image = fileUpload($attributes['image'], 'products');
+            $company->image = fileUpload($attributes['image'], 'companies');
         }
 
         if (isset($attributes['banner'])) {

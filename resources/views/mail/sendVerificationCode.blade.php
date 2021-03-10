@@ -46,7 +46,7 @@
 
                     <a href="#" target="_blank">
 
-                        <img src="{{ $url }}/assets/images/logo.png" style="margin:0 auto" width="128px">
+                        <img src="{{ env('IMAGES_URL') }}/email/logo.png" style="margin:0 auto" width="128px">
 
                     </a>
 
@@ -180,7 +180,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e faça Download do app na Play Store" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/play-store.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/play-store.png" style="margin:0 auto">
 
                                     </a>
 
@@ -190,7 +190,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e faça Download do app na App Store" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/apple-store.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/apple-store.png" style="margin:0 auto">
 
                                     </a>
 
@@ -242,7 +242,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e conheça nossa página do Facebook" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/email-facebook-button.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/facebook-button.png" style="margin:0 auto">
 
                                     </a>
 
@@ -252,7 +252,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e conheça nosso Twitter" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/email-twitter-button.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/twitter-button.png" style="margin:0 auto">
 
                                     </a>
 
@@ -262,7 +262,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e conheça nosso canal do Youtube" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/email-youtube-button.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/youtube-button.png" style="margin:0 auto">
 
                                     </a>
 
@@ -272,7 +272,7 @@
 
                                     <a href="#" style="display:block" aria-label="Clique e conheça nosso perfil do Instagram" target="_blank">
 
-                                        <img src="{{ $url }}/assets/images/email-instagram-button.png" style="margin:0 auto">
+                                        <img src="{{ env('IMAGES_URL') }}/email/instagram-button.png" style="margin:0 auto">
 
                                     </a>
 
