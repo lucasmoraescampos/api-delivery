@@ -8,6 +8,7 @@ use App\Repositories\BaseRepository;
 use App\Exceptions\CustomException;
 use App\Models\Company;
 use App\Models\Segment;
+use App\Rules\DataUrlImageRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         }
 
-        $product->image = fileUpload($attributes['image'], 'products');
+        $product->image = dataUrlImageUpload($attributes['image'], 'products');
 
         $product->save();
 
@@ -115,7 +116,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         if (isset($attributes['image'])) {
 
-            $product->image = fileUpload($attributes['image'], 'products');
+            $product->image = dataUrlImageUpload($attributes['image'], 'products');
 
         }
 
@@ -155,7 +156,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     private function validateCreate(array $attributes): void
     {
         $validator = Validator::make($attributes, [
-            'image' => 'required|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:200',
             'price' => 'required|numeric',
@@ -169,6 +169,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'has_saturday' => 'required|boolean',
             'start_time' => 'required_with:end_time|date_format:H:i',
             'end_time' => 'required_with:start_time|date_format:H:i',
+            'image' => ['required', new DataUrlImageRule()],
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {
@@ -197,7 +198,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     private function validateUpdate(array $attributes): void
     {
         $validator = Validator::make($attributes, [
-            'image' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:200',
             'price' => 'nullable|numeric',
@@ -211,6 +211,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'has_saturday' => 'nullable|boolean',
             'start_time' => 'required_with:end_time|date_format:H:i',
             'end_time' => 'required_with:start_time|date_format:H:i',
+            'image' => ['nullable', new DataUrlImageRule()],
             'company_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) {

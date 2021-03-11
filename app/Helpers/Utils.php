@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('fileUpload')) {
 
@@ -20,6 +21,31 @@ if (!function_exists('fileUpload')) {
         $file->storeAs($folder, $full_name);
 
         return env('IMAGES_URL') . "/$folder/$full_name";
+    }
+
+}
+
+if (!function_exists('dataUrlImageUpload')) {
+
+    /**
+     * @param string $dataUrl
+     * @param string $folder
+     * @return string
+     */
+    function dataUrlImageUpload(string $dataUrl, string $folder): string
+    {
+        $ext = explode('/', $dataUrl);
+        $ext = explode(';', $ext[1])[0];
+        
+        $name = uniqid(date('HisYmd'));
+
+        $path = "{$folder}/{$name}.{$ext}";
+
+        $base64 = explode(',', $dataUrl)[1];
+
+        Storage::put($path, base64_decode($base64));
+
+        return env('IMAGES_URL') . "/$path";
     }
 
 }

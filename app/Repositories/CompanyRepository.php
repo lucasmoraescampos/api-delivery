@@ -9,6 +9,7 @@ use App\Models\CompanyPaymentMethod;
 use App\Models\PaymentMethod;
 use App\Models\Plan;
 use App\Models\PlanSubscription;
+use App\Rules\DataUrlImageRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -62,11 +63,11 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         $company->slug = $this->generateSlug($company->name);
 
-        $company->image = fileUpload($attributes['image'], 'companies');
+        $company->image = dataUrlImageUpload($attributes['image'], 'companies');
 
         if (isset($attributes['banner'])) {
             
-            $company->banner = fileUpload($attributes['banner'], 'companies/banners');
+            $company->banner = dataUrlImageUpload($attributes['banner'], 'companies/banners');
 
         }
 
@@ -138,11 +139,11 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         ]));
 
         if (isset($attributes['image'])) {
-            $company->image = fileUpload($attributes['image'], 'companies');
+            $company->image = dataUrlImageUpload($attributes['image'], 'companies');
         }
 
         if (isset($attributes['banner'])) {
-            $company->banner = fileUpload($attributes['banner'], 'companies/banners');
+            $company->banner = dataUrlImageUpload($attributes['banner'], 'companies/banners');
         }
 
         if (isset($attributes['slug'])) {
@@ -274,8 +275,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     private function validateCreate(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'image' => 'required|file|mimes:gif,png,jpeg,bmp,webp',
-            'banner' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'required|string|max:150',
             'phone' => 'required|string|max:11',
             'postal_code' => 'required|string|max:20',
@@ -294,6 +293,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'delivery_price' => 'required|numeric',
             'radius' => 'required|numeric',
             'payment_methods' => 'required_if:allow_payment_delivery,1|array',
+            'image' => ['required', new DataUrlImageRule()],
+            'banner' => ['nullable', new DataUrlImageRule()],
             'document_number' => [
                 'required', 'string', 'max:14', function ($attribute, $value, $fail) {
                     if (validateDocumentNumber($value) == false) {
@@ -340,8 +341,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     private function validateUpdate(array $attributes)
     {
         $validator = Validator::make($attributes, [
-            'image' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
-            'banner' => 'nullable|file|mimes:gif,png,jpeg,bmp,webp',
             'name' => 'nullable|string|max:150',
             'phone' => 'nullable|string|max:11',
             'postal_code' => 'nullable|string|max:20',
@@ -361,6 +360,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'radius' => 'nullable|numeric',
             'open' => 'nullable|boolean',
             'payment_methods' => 'nullable|array',
+            'image' => ['nullable', new DataUrlImageRule()],
+            'banner' => ['nullable', new DataUrlImageRule()],
             'slug' => [
                 'nullable', 'string', function ($attribute, $value, $fail) {
                     if (preg_match('/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/', $value) == false) {
