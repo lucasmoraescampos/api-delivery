@@ -42,6 +42,8 @@ Route::namespace('User')->prefix('user')->group(function () {
         Route::post('logout', 'AuthController@logout');
 
 
+        Route::get('card', 'CardController@index');
+
         Route::post('card', 'CardController@store');
 
         

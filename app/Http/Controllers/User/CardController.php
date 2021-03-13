@@ -15,6 +15,16 @@ class CardController extends Controller
         $this->cardRepository = $cardRepository;
     }
 
+    public function index()
+    {
+        $cards = $this->cardRepository->getByAuth();
+
+        return response()->json([
+            'success' => true,
+            'data' => $cards
+        ]);
+    }
+
     public function store(Request $request)
     {
         $card = $this->cardRepository->create($request->all());

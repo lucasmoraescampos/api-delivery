@@ -23,6 +23,7 @@ class CreateCards extends Migration
             $table->string('holder_name', 150);
             $table->string('document_type', 10);
             $table->string('document_number', 20);
+            $table->string('icon', 255)->nullable();
             $table->timestamps();
         });
     }
