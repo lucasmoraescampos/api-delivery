@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\CustomException;
 use App\Models\Card;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -21,11 +22,29 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
     }
 
     /**
+     * @param mixed $id
+     * @return Card
+     */
+    public function getById($id): Card
+    {
+        $card = Card::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$card) {
+            throw new CustomException('Cartão não encontrado.', 422);
+        }
+
+        return $card;
+    }
+
+    /**
      * @return Collection
      */
     public function getByAuth(): Collection
     {
-        return Card::where('user_id', Auth::id())
+        return Card::select('id', 'number', 'holder_name', 'icon')
+            ->where('user_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
     }

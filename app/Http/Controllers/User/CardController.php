@@ -25,6 +25,16 @@ class CardController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $card = $this->cardRepository->getById($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $card
+        ]);
+    }
+
     public function store(Request $request)
     {
         $card = $this->cardRepository->create($request->all());

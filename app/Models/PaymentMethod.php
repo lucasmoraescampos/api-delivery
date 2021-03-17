@@ -27,7 +27,8 @@ class PaymentMethod extends Model
 	 */
 	protected $fillable = [
 		'name',
-		'icon'
+		'icon',
+		'allow_change_money'
 	];
 
 	/**

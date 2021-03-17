@@ -31,17 +31,4 @@ class Card extends Model
   protected $casts = [
     'user_id' => 'integer'
   ];
-
-  /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [
-      'expiration_month',
-      'expiration_year',
-      'security_code',
-      'document_type',
-      'document_number',
-  ];
 }

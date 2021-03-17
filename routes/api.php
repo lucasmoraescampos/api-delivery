@@ -44,7 +44,18 @@ Route::namespace('User')->prefix('user')->group(function () {
 
         Route::get('card', 'CardController@index');
 
+        Route::get('card/{id}', 'CardController@show');
+
         Route::post('card', 'CardController@store');
+
+
+        Route::get('location', 'LocationController@index');
+
+        Route::post('location', 'LocationController@store');
+
+        Route::put('location/{id}', 'LocationController@update');
+
+        Route::delete('location/{id}', 'LocationController@delete');
 
         
         Route::post('company', 'CompanyController@store');

@@ -14,6 +14,8 @@ use App\Repositories\ComplementRepository;
 use App\Repositories\ComplementRepositoryInterface;
 use App\Repositories\DeliveryPersonRepository;
 use App\Repositories\DeliveryPersonRepositoryInterface;
+use App\Repositories\LocationRepository;
+use App\Repositories\LocationRepositoryInterface;
 use App\Repositories\OrderRepository;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\PlanRepository;
@@ -49,6 +51,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SegmentRepositoryInterface::class, SegmentRepository::class);
         $this->app->bind(ComplementRepositoryInterface::class, ComplementRepository::class);
         $this->app->bind(SubcomplementRepositoryInterface::class, SubcomplementRepository::class);
+        $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
     }
 
     /**

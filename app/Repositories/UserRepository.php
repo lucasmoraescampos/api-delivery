@@ -97,39 +97,23 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 throw new CustomException('Este e-mail não foi cadastrado', 200);
             }
 
-            if (isset($attributes['code'])) {
+            $verification = VerificationCode::where('email', $user->email)->orderBy('id', 'desc')->first();
 
-                $verification = VerificationCode::where('email', $user->email)->orderBy('id', 'desc')->first();
-
-                if (!$verification) {
-                    throw new CustomException('Nenhum código de verificação enviado para este e-mail', 200);
-                }
-
-                if ($verification->code != $attributes['code']) {
-                    throw new CustomException('Código inválido', 200);
-                }
-
-                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
-                    $query->where('deleted', false)->orderBy('id', 'desc');
-                }]);
-
-                VerificationCode::where('email', $attributes['email'])->delete();
-    
-                return $user;
-
+            if (!$verification) {
+                throw new CustomException('Nenhum código de verificação enviado para este e-mail', 200);
             }
-    
-            else {
-    
-                $code = generateCode();
 
-                VerificationCode::create(['email' => $user->email, 'code' => $code]);
-
-                Mail::to($user->email)->send(new SendVerificationCode($code));
-    
-                return null;
-    
+            if ($verification->code != $attributes['code']) {
+                throw new CustomException('Código inválido', 200);
             }
+
+            $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                $query->where('deleted', false)->orderBy('id', 'desc');
+            }]);
+
+            VerificationCode::where('email', $attributes['email'])->delete();
+
+            return $user;
 
         }
 
@@ -141,52 +125,28 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 throw new CustomException('Este número de telefone não foi cadastrado', 200);
             }
 
-            if (isset($attributes['code'])) {
+            $verification = VerificationCode::where('phone', $user->phone)
+                ->orderBy('id', 'desc')
+                ->first();
 
-                $verification = VerificationCode::where('phone', $user->phone)
-                    ->orderBy('id', 'desc')
-                    ->first();
-
-                if (!$verification) {
-                    throw new CustomException('Nenhum código de verificação enviado para este número de celular', 200);
-                }
-
-                if ($verification->code != $attributes['code']) {
-                    throw new CustomException('Código inválido', 200);
-                }
-
-                $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
-                    $query->where('deleted', false)->orderBy('id', 'desc');
-                }]);
-
-                VerificationCode::where('phone', $attributes['phone'])->delete();
-
-                return $user;
-    
+            if (!$verification) {
+                throw new CustomException('Nenhum código de verificação enviado para este número de celular', 200);
             }
-    
-            else {
 
-                $code = generateCode();
-
-                VerificationCode::create(['phone' => $user->phone, 'code' => $code]);
-
-                $httpClient = new HttpClientRepository();
-
-                $httpClient->setData([
-                    'key' => env('SMS_DEV_KEY'),
-                    'type' => 9,
-                    'number' => $user->phone,
-                    'msg' => "Seu codigo Meu Pedido: $code"
-                ]);
-
-                $httpClient->post('https://api.smsdev.com.br/v1/send');
-    
-                return null;
-    
+            if ($verification->code != $attributes['code']) {
+                throw new CustomException('Código inválido', 200);
             }
+
+            $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
+                $query->where('deleted', false)->orderBy('id', 'desc');
+            }]);
+
+            VerificationCode::where('phone', $attributes['phone'])->delete();
+
+            return $user;
 
         }
+
     }
 
     /**
@@ -351,7 +311,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $validator = Validator::make($attributes, [
             'email' => 'required_without:phone|string|email|max:255',
             'phone' => 'required_without:email|string|max:11',
-            'code' => 'nullable|string'
+            'code' => 'required|numeric'
         ]);
 
         $validator->validate();

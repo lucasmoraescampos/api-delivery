@@ -27,6 +27,7 @@ class CreateLocations extends Migration
             $table->string('latitude', 40);
             $table->string('longitude', 40);
             $table->unsignedTinyInteger('type')->nullable();
+            $table->timestamps();
         });
     }
 
