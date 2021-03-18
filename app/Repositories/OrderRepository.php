@@ -16,6 +16,11 @@ use App\Models\Product;
 use App\Table;
 use MercadoPago;
 use App\Exceptions\CustomException;
+use App\Models\Card;
+use App\Models\CompanyPaymentMethod;
+use App\Models\Complement;
+use App\Models\Location;
+use App\Models\Subcomplement;
 use Illuminate\Support\Facades\Validator;
 
 class OrderRepository extends BaseRepository implements OrderRepositoryInterface
@@ -62,60 +67,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      * @param array $attributes
      * @return Order
      */
-    public function createByCompany(array $attributes): Order
+    public function create(array $attributes): Order
     {
-        $this->validateCreateByCompany($attributes);
-
-        $company = Company::find($attributes['company_id']);
-
-        $order = new Order(Arr::only($attributes, [
-            'company_id',
-            'table_id',
-            'attendant_id',
-            'products',
-            'type'
-        ]));
-
-        $order->total_price = 0;
-
-        if ($order->type == Order::TYPE_DELIVERY) {
-
-            $order->payment_type = $attributes['payment_type'];
-
-            $order->delivery_location = json_encode(['address' => $attributes['address']]);
-
-            $order->additional_information = $attributes['additional_information'];
-
-            $order->delivery_price = $company->delivery_price;
-
-            $order->total_price += $order->delivery_price;
-
-        }
-
-        else {
-
-            $order->payment_type =  Order::PAYMENT_LOCAL;
-            
-        }
-
-        $order->products = $this->serializeProduct($attributes['products']);
-
-        $order->price = $this->calculatePrice($attributes['products']);
-
-        $order->total_price += $order->price;
-
-        $order->save();
-
-        return $order;
-    }
-
-    /**
-     * @param array $attributes
-     * @return Order
-     */
-    public function createByUser(array $attributes): Order
-    {
-        $this->validateCreateByUser($attributes);
+        $this->validateCreate($attributes);
 
         $user = Auth::user();
 
@@ -123,31 +77,28 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         $order = new Order();
 
-        $order->total_price = $order->price = $this->calculatePrice($attributes['products']);
+        $order->price = $this->calculatePrice($attributes['products']);
 
         if ($company->min_order_value > $order->price) {
 
-            throw new CustomException('Pedido mínimo não atingido', 200);
+            throw new CustomException('Pedido mínimo não atingido', 422);
 
         }
 
-        $order->customer_id = $user->customer->id;
+        $order->user_id = $user->id;
 
         $order->company_id = $company->id;
 
-        $order->total_price += $order->delivery_price = $company->delivery_price;
+        $order->delivery_price = $company->delivery_price;
+
+        $order->total_price = $order->price + $order->delivery_price;
 
         if ($attributes['payment_type'] == Order::PAYMENT_ONLINE) {
 
-            // $card = CustomerCard::select('number', 'holder_name')
-            //     ->where('id', $attributes['customer_card_id'])
-            //     ->first();
 
             // $order->payment_method = collect([
             //     'name' => $attributes['payment_method_id'],
-            //     'icon' => '',
-            //     'card_latest_numbers' => substr($card->number, -4),
-            //     'card_holder' => $card->holder_name
+            //     'icon' => ''
             // ])->toJson();
 
             $this->payWithMercadoPago([
@@ -190,77 +141,18 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     }
 
     /**
-     * @param mixed $attributes
-     * @return void
-     */
-    private function validateCreateByCompany(array $attributes): void
-    {
-        $validator = Validator::make($attributes, [
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ],
-            'table_id' => [
-                'nullable', 'numeric',
-                function ($attribute, $value, $fail) use ($attributes) {
-                    if (Table::where('id', $value)->where('company_id', $attributes['company_id'])->count() == 0) {
-                        $fail('Mesa não encontrada.');
-                    }
-                }
-            ],
-            'attendant_id' => [
-                'nullable', 'numeric',
-                function ($attribute, $value, $fail) use ($attributes) {
-                    if (Attendant::where('id', $value)->where('company_id', $attributes['company_id'])->count() == 0) {
-                        $fail('Atendente não encontrada.');
-                    }
-                }
-            ],
-            'products' => 'required|array',
-            'products.*.id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) use ($attributes) {
-                    if (Product::where('id', $value)->where('company_id', $attributes['company_id'])->count() == 0) {
-                        $fail('Produto não encontrado.');
-                    }
-                }
-            ],
-            'products.*.qty' => 'required|numeric|min:1',
-            'type' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if ($value !== Order::TYPE_LOCAL && $value !== Order::TYPE_DELIVERY) {
-                        $fail('Tipo inválido, informe 0 para local ou 1 para delivery.');
-                    }
-                }
-            ],
-            'payment_type' => [
-                'required_if:type,1', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if ($value !== Order::PAYMENT_LOCAL && $value !== Order::PAYMENT_DELIVERY) {
-                        $fail('Tipo inválido, informe 0 para local ou 2 para delivery.');
-                    }
-                }
-            ],
-            'address' => 'required_if:type,1|string|max:500',
-            'additional_information' => 'nullable|string|max:500'
-        ]);
-
-        $validator->validate();
-    }
-
-    /**
      * @param array $products
      * @return float
      */
     private function calculatePrice(array $products): float
     {
-        $items = Product::selectRaw('id, (price - IFNULL(rebate, 0)) as price')
+        $products_prices = Product::selectRaw('id, (price - rebate) as price')
             ->whereIn('id', Arr::pluck($products, 'id'))
+            ->get()
+            ->pluck('price', 'id');
+
+        $subcomplements_prices = Subcomplement::select('id', 'price')
+            ->whereIn('id', Arr::collapse(Arr::pluck($products, 'complements.*.subcomplements.*.id')))
             ->get()
             ->pluck('price', 'id');
 
@@ -268,9 +160,23 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         foreach ($products as $product) {
 
-            $index = $product['id'];
+            $subtotal = 0;
 
-            $total += ($items[$index] * $product['qty']);
+            if (isset($product['complements'])) {
+
+                foreach ($product['complements'] as $complement) {
+
+                    foreach ($complement['subcomplements'] as $subcomplement) {
+
+                        $subtotal += $subcomplements_prices[$subcomplement['id']] * $subcomplement['qty'];
+
+                    }
+
+                }
+
+            }
+
+            $total += ($products_prices[$product['id']] + $subtotal) * $product['qty'];
 
         }
 
@@ -311,13 +217,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      * @param mixed $attributes
      * @return void
      */
-    private function validateCreateByUser(array $attributes): void
+    private function validateCreate(array $attributes): void
     {
         $validator = Validator::make($attributes, [
-
-            'card_token' => 'required_if:payment_type,1|string',
-
-            'change_money' => 'nullable|numeric',
 
             'type' => [
 
@@ -325,9 +227,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                 function ($attribute, $value, $fail) {
 
-                    if ($value < 1 || $value > 2) {
+                    if ($value != Order::TYPE_DELIVERY && $value != Order::TYPE_WITHDRAWAL) {
 
-                        return $fail('Tipo inválido! Escolha 1 para DELIVERY ou 2 para RETIRADA.');
+                        $fail('Tipo inválido! Escolha 1 para ENTREGA ou 2 para RETIRADA.');
 
                     }
 
@@ -341,9 +243,29 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                 function ($attribute, $value, $fail) {
 
-                    if ($value < 0 || $value > 2) {
+                    if ($value != Order::PAYMENT_ONLINE && $value != Order::PAYMENT_DELIVERY) {
 
-                        return $fail('Tipo de pagamento invalido. Escolha 0 para PAGAMENTO LOCAL, 1 para PAGAMENTO ONLINE ou 2 para PAGAMENTO NA ENTREGA.');
+                        $fail('Tipo de pagamento invalido. Escolha 1 para PAGAMENTO ONLINE ou 2 para PAGAMENTO NA ENTREGA.');
+
+                    }
+
+                }
+
+            ],
+
+            'location_id' => [
+
+                'required_if:type,' . Order::TYPE_DELIVERY, 'numeric',
+
+                function ($attribute, $value, $fail) {
+
+                    $notFound = Location::where('id', $value)
+                        ->where('user_id', Auth::id())
+                        ->count() == 0;
+
+                    if ($notFound) {
+
+                        $fail('Localização não encontrada.');
 
                     }
 
@@ -357,25 +279,11 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                 function ($attribute, $value, $fail) {
 
-                    if (Company::where('id', $value)->count() == 0) {
+                    $notFound = Company::where('id', $value)->count() == 0;
 
-                        return $fail('Empresa não encontrada.');
+                    if ($notFound) {
 
-                    }
-
-                }
-
-            ],
-
-            'customer_card_id' => [
-
-                'required_if:payment_type,1', 'numeric',
-
-                function ($attribute, $value, $fail) {
-
-                    if (!$this->checkCustomerCard($value)) {
-
-                        return $fail('Esse cartão não foi cadastrado.');
+                        $fail('Empresa não encontrada.');
 
                     }
 
@@ -385,25 +293,29 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
             'payment_method_id' => [
 
-                'required_if:payment_type,1,2',
+                'required',
 
-                function ($attribute, $value, $fail) {
-
-                    $payment_type = $this->request->get('payment_type');
-
-                    $company_id = $this->request->get('company_id');
+                function ($attribute, $value, $fail) use ($attributes) {
 
                     $mercadopago = ['visa', 'master', 'hipercard', 'amex', 'elo'];
 
-                    if ($payment_type == Order::PAYMENT_ONLINE && !in_array($value, $mercadopago)) {
+                    if ($attributes['payment_type'] == Order::PAYMENT_ONLINE && !in_array($value, $mercadopago)) {
 
-                        return $fail('Método de pagamento inválido.');
+                        $fail('Método de pagamento desconhecido.');
 
                     }
 
-                    elseif ($payment_type == Order::PAYMENT_DELIVERY && !$this->checkPaymentMethod($value, $company_id)) {
+                    elseif ($attributes['payment_type'] == Order::PAYMENT_DELIVERY) {
 
-                        return $fail('Método de pagamento indisponível para esta empresa.');
+                        $notAvailable = CompanyPaymentMethod::where('id', $value)
+                            ->where('company_id', $attributes['company_id'])
+                            ->count() == 0;
+
+                        if ($notAvailable) {
+
+                            $fail('Método de pagamento indisponível para esta empresa.');
+
+                        }
 
                     }
 
@@ -411,20 +323,119 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
             ],
 
-            'customer_location_id' => [
+            'card_token' => 'required_if:payment_type,' . Order::PAYMENT_ONLINE . '|string',
 
-                'required_if:type,1', 'numeric',
+            'change_money' => 'nullable|numeric',
 
-                function ($attribute, $value, $fail) {
+            'products.*.id' => 'required|numeric',
 
-                    if (!$this->checkCustomerLocation($value)) {
+            'products.*.qty' => 'required|numeric|min:1',
 
-                        return $fail('Localização do usuário não encontrada.');
+            'products.*.complements' => 'nullable|array',
+
+            'products.*.complements.*.id' => 'required|numeric',
+
+            'products.*.complements.*.subcomplements' => 'required|array',
+
+            'products.*.complements.*.subcomplements.*.id' => 'required|numeric',
+
+            'products.*.complements.*.subcomplements.*.qty' => 'required|numeric|min:1',
+
+            'products' => [
+
+                'required', 'array',
+
+                function ($attribute, $value, $fail) use ($attributes) {
+
+                    $products = Arr::pluck($value, 'id');
+
+                    $notBelong = Product::select('id')
+                        ->whereIn('id', $products)
+                        ->where('company_id', '<>', $attributes['company_id'])
+                        ->get();
+
+                    if ($notBelong->count() > 0) {
+
+                        $ids = $notBelong->pluck('id')->implode(', ');
+
+                        return $fail("Os produtos id: {$ids} não pertencem a empresa id {$attributes['company_id']}.");
+
+                    }
+
+                    foreach ($value as $product) {
+
+                        $complements = [];
+
+                        if (isset($product['complements'])) {
+
+                            $complements = Arr::pluck($product['complements'], 'id');
+
+                            $notBelong = Complement::select('id')
+                                ->whereIn('id', $complements)
+                                ->where('product_id', '<>', $product['id'])
+                                ->get();
+
+                            if ($notBelong->count() > 0) {
+
+                                $ids = $notBelong->pluck('id')->implode(', ');
+        
+                                return $fail("Os complementos id: {$ids} não pertencem ao produto id {$product['id']}.");
+        
+                            }
+
+                            foreach ($product['complements'] as $complement) {
+
+                                $subcomplements = Arr::pluck($complement['subcomplements'], 'id');
+
+                                $notBelong = Subcomplement::select('id')
+                                    ->whereIn('id', $subcomplements)
+                                    ->where('complement_id', $complement['id'])
+                                    ->get();
+
+                                if ($notBelong->count() > 0) {
+
+                                    $ids = $notBelong->pluck('id')->implode(', ');
+            
+                                    return $fail("Os subcomplementos id: {$ids} não pertencem ao complemento id {$complement['id']}.");
+            
+                                }
+
+                                $qty = array_sum(Arr::pluck($complement['subcomplements'], 'qty'));
+
+                                $limit = Complement::find($complement['id'], ['qty_min', 'qty_max']);
+
+                                if ($qty > $limit->qty_max) {
+
+                                    return $fail("Qty total de subcomplementos é maior que o limite máximo permitido para o complemento id {$complement['id']}.");
+
+                                }
+
+                                if ($limit->qty_min !== null && $qty < $limit->qty_min) {
+
+                                    return $fail("Qty total de subcomplementos é menor que o limite mínimo permitido para o complemento id {$complement['id']}.");
+
+                                }
+
+                            }
+
+                        }
+
+                        $requiredComplements = Complement::select('id')
+                            ->where('product_id', $product['id'])
+                            ->where('required', true)
+                            ->get()
+                            ->pluck('id')
+                            ->diff($complements);
+
+                        if ($requiredComplements->count() > 0) {
+
+                            return $fail("Os complementos id: {$requiredComplements->implode(', ')} são obrigatórios para o produto id {$product['id']}.");
+
+                        }
 
                     }
 
                 }
-
             ]
 
         ]);

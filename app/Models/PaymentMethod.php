@@ -28,7 +28,8 @@ class PaymentMethod extends Model
 	protected $fillable = [
 		'name',
 		'icon',
-		'allow_change_money'
+		'allow_change_money',
+		'mercadopago_id'
 	];
 
 	/**

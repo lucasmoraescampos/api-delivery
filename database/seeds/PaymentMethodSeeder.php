@@ -15,19 +15,19 @@ class PaymentMethodSeeder extends Seeder
         $icon = env('IMAGES_URL') . '/payment-methods';
 
         DB::table('payment_methods')->insert([
-            ['name' => 'Dinheiro',                  'icon' => $icon . '/money.svg'],
-            ['name' => 'Crédito American Express',  'icon' => $icon . '/amex.svg'],
-            ['name' => 'Crédito Diners Club',       'icon' => $icon . '/diners.svg'],
-            ['name' => 'Crédito Elo',               'icon' => $icon . '/elo.svg'],
-            ['name' => 'Crédito Hipercard',         'icon' => $icon . '/hipercard.svg'],
-            ['name' => 'Crédito Mastercard',        'icon' => $icon . '/mastercard.svg'],
-            ['name' => 'Crédito Visa',              'icon' => $icon . '/visa.svg'],
-            ['name' => 'Débito American Express',   'icon' => $icon . '/amex.svg'],
-            ['name' => 'Débito Diners Club',        'icon' => $icon . '/diners.svg'],
-            ['name' => 'Débito Elo',                'icon' => $icon . '/elo.svg'],
-            ['name' => 'Débito Hipercard',          'icon' => $icon . '/hipercard.svg'],
-            ['name' => 'Débito Mastercard',         'icon' => $icon . '/mastercard.svg'],
-            ['name' => 'Débito Visa',               'icon' => $icon . '/visa.svg']
+            ['name' => 'Dinheiro',                  'icon' => $icon . '/money.svg',        'allow_change_money' => true,  'mercadopago_id' => null],
+            ['name' => 'Crédito American Express',  'icon' => $icon . '/amex.svg',         'allow_change_money' => false, 'mercadopago_id' => 'amex'],
+            ['name' => 'Crédito Diners Club',       'icon' => $icon . '/diners.svg',       'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Crédito Elo',               'icon' => $icon . '/elo.svg',          'allow_change_money' => false, 'mercadopago_id' => 'elo'],
+            ['name' => 'Crédito Hipercard',         'icon' => $icon . '/hipercard.svg',    'allow_change_money' => false, 'mercadopago_id' => 'hipercard'],
+            ['name' => 'Crédito Mastercard',        'icon' => $icon . '/mastercard.svg',   'allow_change_money' => false, 'mercadopago_id' => 'master'],
+            ['name' => 'Crédito Visa',              'icon' => $icon . '/visa.svg',         'allow_change_money' => false, 'mercadopago_id' => 'visa'],
+            ['name' => 'Débito American Express',   'icon' => $icon . '/amex.svg',         'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Débito Diners Club',        'icon' => $icon . '/diners.svg',       'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Débito Elo',                'icon' => $icon . '/elo.svg',          'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Débito Hipercard',          'icon' => $icon . '/hipercard.svg',    'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Débito Mastercard',         'icon' => $icon . '/mastercard.svg',   'allow_change_money' => false, 'mercadopago_id' => null],
+            ['name' => 'Débito Visa',               'icon' => $icon . '/visa.svg',         'allow_change_money' => false, 'mercadopago_id' => null]
         ]);
     }
 }

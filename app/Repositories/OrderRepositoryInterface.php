@@ -21,16 +21,4 @@ interface OrderRepositoryInterface
      * @return Collection
      */
     public function getByCompany($company_id): Collection;
-
-    /**
-     * @param array $attributes
-     * @return Order
-     */
-    public function createByCompany(array $attributes): Order;
-
-    /**
-     * @param array $attributes
-     * @return Order
-     */
-    public function createByUser(array $attributes): Order;
 }
