@@ -31,20 +31,18 @@ class Order extends Model
 	 */
 	protected $fillable = [
         'company_id',
-        'customer_id',
-        'table_id',
-        'attendant_id',
-        'delivery_person_id',
+        'user_id',
+        'mercadopago_id',
         'price',
         'total_price',
         'delivery_price',
         'change_money',
+        'type',
         'payment_type',
-        'products',
         'payment_method',
+        'products',
         'delivery_location',
-        'delivery_forecast',
-        'type'
+        'delivery_forecast'
     ];
 
     /**

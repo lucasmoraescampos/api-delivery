@@ -20,6 +20,7 @@ class Card extends Model
     'holder_name',
     'document_type',
     'document_number',
+    'provider',
     'icon'
   ];
 

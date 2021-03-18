@@ -93,32 +93,40 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         $order->total_price = $order->price + $order->delivery_price;
 
-        if ($attributes['payment_type'] == Order::PAYMENT_ONLINE) {
+        $order->type = $attributes['type'];
 
+        $order->payment_type = $attributes['payment_type'];
 
-            // $order->payment_method = collect([
-            //     'name' => $attributes['payment_method_id'],
-            //     'icon' => ''
-            // ])->toJson();
+        if ($order->type == Order::TYPE_DELIVERY) {
 
-            $this->payWithMercadoPago([
+            $columns = ['street_name', 'street_number', 'district', 'complement', 'city', 'uf', 'latitude', 'longitude'];
+
+            $order->delivery_location = Location::select($columns)
+                ->where('id', $attributes['location_id'])
+                ->first()
+                ->toJson();
+
+        }
+
+        if ($order->payment_type == Order::PAYMENT_ONLINE) {
+
+            $order->payment_method = Card::find($attributes['card_id'], ['provider', 'icon'])->toJson();
+
+            $order->mercadopago_id = $this->payWithMercadoPago([
                 'total_price' => $order->total_price,
                 'card_token' => $attributes['card_token'],
                 'company' => $company->name,
                 'payment_method_id' => $attributes['payment_method_id'],
-                'customer' => $user->name,
-                'email' => $user->email,
+                'customer_id' => $user->customer_id,
+                'email' => $user->email
             ]);
 
         }
 
-        elseif ($attributes['payment_type'] == Order::PAYMENT_DELIVERY) {
+        elseif ($order->payment_type == Order::PAYMENT_DELIVERY) {
 
-            $order->payment_method = PaymentMethod::select('name', 'icon')
-                ->where('id', $attributes['payment_method_id'])
-                ->first()
-                ->toJson();
-
+            $order->payment_method = PaymentMethod::find($attributes['payment_method_id'], ['name', 'icon'])->toJson();
+                
             if (isset($attributes['change_money'])) {
 
                 $order->change_money = $attributes['change_money'];
@@ -127,11 +135,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         }
 
-        $order->type = $attributes['type'];
-
-        $order->payment_type = $attributes['payment_type'];
-
-        $order->forecast = date('Y-m-d H:i:s', strtotime("+ {$company->waiting_time} minute"));
+        $order->delivery_forecast = date('Y-m-d H:i:s', strtotime("+ {$company->waiting_time} minute"));
 
         $order->products = $this->serializeProduct($attributes['products']);
 
@@ -184,29 +188,146 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     }
 
     /**
+     * @param array $attributes
+     * @return int
+     */
+    private function payWithMercadoPago(array $attributes): ?int
+    {
+        MercadoPago\SDK::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
+
+        $payment = new MercadoPago\Payment();
+
+        $payment->transaction_amount = $attributes['total_price'];
+
+        $payment->token = $attributes['card_token'];
+
+        $payment->description = $attributes['company'];
+
+        $payment->statement_descriptor = env('APP_NAME');
+
+        $payment->installments = 1;
+
+        $payment->payment_method_id = $attributes['payment_method_id'];
+
+        $payment->payer = [
+            'type' => 'customer',
+            'id' => $attributes['customer_id'],
+            'email' => $attributes['email']
+        ];
+
+        $payment->save();
+
+        if ($payment->status === 'approved') {
+            return $payment->id;
+        }
+
+        elseif ($payment->status === 'rejected') {
+
+            if ($payment->status_detail == 'cc_rejected_bad_filled_card_number') {
+                throw new CustomException('Revise o número do seu cartão.', 200);
+            }
+            
+            elseif ($payment->status_detail == 'cc_rejected_bad_filled_date') {
+                throw new CustomException('Revise a data de vencimento do seu cartão.', 200);
+            }
+
+            elseif ($payment->status_detail == 'cc_rejected_bad_filled_other') {
+                throw new CustomException('Revise os dados do seu cartão.', 200);
+            }
+
+            elseif ($payment->status_detail == 'cc_rejected_bad_filled_security_code') {
+                throw new CustomException('Revise o código de segurança do seu cartão.', 200);
+            }
+
+            elseif ($payment->status_detail == 'cc_rejected_call_for_authorize') {
+                throw new CustomException('Autorize a operadora do seu cartão a realizar este pagamento.', 200);
+            }
+
+            elseif ($payment->status_detail == 'cc_rejected_duplicated_payment') {
+                throw new CustomException('Você já efetuou um pagamento com esse valor. Caso precise pagar novamente, utilize outro cartão ou outra forma de pagamento.', 200);
+            }
+
+            elseif ($payment->status_detail == 'cc_rejected_insufficient_amount') {
+                throw new CustomException('Este cartão não possui saldo suficiente para realizar o pedido.', 200);
+            }
+
+        }
+
+        throw new CustomException('Pagamento recusado. Por favor, tente outro método de pagamento.', 200);    
+    }
+
+    /**
      * @param array $products
      * @return string
      */
     private function serializeProduct(array $products): string
     {
-        $items = Product::selectRaw('id, name, (price - IFNULL(rebate, 0)) as price')
+        $details['products'] = Product::selectRaw('id, name, price, rebate')
             ->whereIn('id', Arr::pluck($products, 'id'))
             ->get()
-            ->keyBy('id');
+            ->groupBy('id');
+
+        $details['complements'] = Complement::select('id', 'name')
+            ->whereIn('id', Arr::collapse(Arr::pluck($products, 'complements.*.id')))
+            ->get()
+            ->pluck('name', 'id');
+
+        $details['subcomplements'] = Subcomplement::select('id', 'name', 'price')
+            ->whereIn('id', Arr::collapse(Arr::pluck($products, 'complements.*.subcomplements.*.id')))
+            ->get()
+            ->groupBy('id');
 
         $data = new Collection();
 
         foreach ($products as $product) {
 
-            $index = $product['id'];
+            $detail = $details['products'][$product['id']][0];
 
-            $item = $items[$index];
-
-            $data->add([
-                'name' => $item->name,
+            $item = [
+                'id' => $product['id'],
                 'qty' => $product['qty'],
-                'price' => $item->price
-            ]);
+                'name' => $detail->name,
+                'price' => $detail->price,
+                'rebate' => $detail->rebate
+            ];
+
+            if (isset($product['note'])) {
+
+                $item['note'] = $product['note'];
+
+            }
+
+            if (isset($product['complements'])) {
+
+                foreach ($product['complements'] as $complement) {
+
+                    $detail = $details['complements'][$complement['id']];
+
+                    $item_complement = [
+                        'id' => $complement['id'],
+                        'name' => $detail
+                    ];
+
+                    foreach ($complement['subcomplements'] as $subcomplement) {
+
+                        $detail = $details['subcomplements'][$subcomplement['id']][0];
+
+                        $item_complement['subcomplements'][] = [
+                            'id' => $subcomplement['id'],
+                            'qty' => $subcomplement['qty'],
+                            'name' => $detail->name,
+                            'price' => $detail->price
+                        ];
+
+                    }
+
+                    $item['complements'][] = $item_complement;
+
+                }
+
+            }
+
+            $data->add($item);
 
         }
 
@@ -316,6 +437,26 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                             $fail('Método de pagamento indisponível para esta empresa.');
 
                         }
+
+                    }
+
+                }
+
+            ],
+
+            'card_id' => [
+
+                'required_if:payment_type,' . Order::PAYMENT_ONLINE, 'numeric',
+
+                function ($attribute, $value, $fail) {
+
+                    $notFound = Product::where('id', $value)
+                        ->where('user_id', Auth::id())
+                        ->count() == 0;
+
+                    if ($notFound) {
+
+                        return $fail('Id não encontrado.');
 
                     }
 
@@ -441,42 +582,5 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         ]);
 
         $validator->validate();
-    }
-
-    /**
-     * @param array $attributes
-     * @return void
-     */
-    private function payWithMercadoPago(array $attributes): void
-    {
-        MercadoPago\SDK::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
-
-        $payment = new MercadoPago\Payment();
-
-        $payment->transaction_amount = $attributes['total_price'];
-
-        $payment->token = $attributes['card_token'];
-
-        $payment->description = $attributes['company'];
-
-        $payment->statement_descriptor = env('APP_NAME');
-
-        $payment->installments = 1;
-
-        $payment->payment_method_id = $attributes['payment_method_id'];
-
-        $payment->payer = [
-            'first_name' => Str::beforeLast($attributes['customer'], ' '),
-            'last_name' => Str::afterLast($attributes['customer'], ' '),
-            'email' => $attributes['email']
-        ];
-
-        $payment->save();
-
-        if ($payment->status !== 'approved') {
-
-            throw new CustomException('Pagamento recusado. Tente outro método de pagamento!', 200);
-
-        }
     }
 }
