@@ -26,12 +26,11 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'uid',
-        'customer_id',
         'name',
         'email',
         'phone',
         'password',
-        'image'        
+        'image'
     ];
 
         /**
@@ -40,7 +39,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $attributes = [
-        'status' => self::STATUS_INACTIVE
+        'status' => self::STATUS_INACTIVE,
+        'is_admin' => false
     ];
 
     /**
@@ -49,7 +49,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
+        'is_admin'
     ];
 
     /**

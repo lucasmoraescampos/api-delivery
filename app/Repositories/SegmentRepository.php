@@ -29,10 +29,6 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
      */
     public function getByCompany($company_id): Collection
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não autorizada.', 422);
-        }
-
         return Segment::where('company_id', $company_id)
             ->orderBy('position', 'asc')
             ->get();
@@ -91,7 +87,7 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
             ->first();
 
         if (!$segment) {
-            throw new CustomException('Segmento não encontrado.', 422);
+            throw new CustomException('Segmento não encontrado.', 404);
         }
 
         $segment->name = $attributes['name'];
@@ -108,16 +104,12 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
      */
     public function delete($id, $company_id = null): void
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não autorizada.', 422);
-        }
-
         $segment = Segment::where('id', $id)
             ->where('company_id', $company_id)
             ->first();
 
         if (!$segment) {
-            throw new CustomException('Segmento não encontrado.', 422);
+            throw new CustomException('Segmento não encontrado.', 404);
         }
 
         if (Product::where('segment_id', $segment->id)->count() > 0) {
@@ -139,14 +131,7 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
     {
         $validator = Validator::make($attributes, [
             'name' => 'required|string|max:40',
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ]
+            'company_id' => 'required|numeric'
         ]);
 
         $validator->validate();
@@ -159,14 +144,7 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
     private function validateReorder(array $attributes): void
     {
         $validator = Validator::make($attributes, [
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ],
+            'company_id' => 'required|numeric',
             'segments.*.id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) use ($attributes) {
@@ -182,12 +160,12 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
             'segments' => [
                 'required', 'array',
                 function ($attribute, $value, $fail) use ($attributes) {
-                    $segments = Segment::where('company_id', $attributes['company_id'])
+                    $absent = Segment::where('company_id', $attributes['company_id'])
                         ->whereNotIn('id', Arr::pluck($value, 'id'))
                         ->get();
 
-                    if ($segments->count() > 0) {
-                        $fail("Segmentos ausentes: {$segments->implode('id', ',')}.");
+                    if ($absent->count() > 0) {
+                        $fail("Segmentos ausentes: {$absent->implode('id', ',')}.");
                     }
                 }
             ]            
@@ -204,14 +182,7 @@ class SegmentRepository extends BaseRepository implements SegmentRepositoryInter
     {
         $validator = Validator::make($attributes, [
             'name' => 'required|string|max:40',
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ]     
+            'company_id' => 'required|numeric'  
         ]);
 
         $validator->validate();

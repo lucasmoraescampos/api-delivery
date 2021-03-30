@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Events\CompanyEvent;
+use App\Listeners\CompanyStatusListener;
+use App\Models\Company;
+use App\Models\Order;
+use App\Observers\CompanyObserver;
+use App\Observers\OrderObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,10 +18,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-    ];
+        CompanyEvent::class => [
+            CompanyStatusListener::class
+        ]
+     ];
 
     /**
      * Register any events for your application.
@@ -27,8 +30,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        parent::boot();
-
-        //
+        Company::observe(CompanyObserver::class);
+        Order::observe(OrderObserver::class);
     }
 }

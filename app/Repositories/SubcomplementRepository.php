@@ -54,7 +54,7 @@ class SubcomplementRepository extends BaseRepository implements SubcomplementRep
             ->first();
 
         if (!$subcomplement) {
-            throw new CustomException('Subcomplemento não encontrado.', 422);
+            throw new CustomException('Subcomplemento não encontrado.', 404);
         }
 
         $subcomplement->fill(Arr::only($attributes, [
@@ -74,10 +74,6 @@ class SubcomplementRepository extends BaseRepository implements SubcomplementRep
      */
     public function delete($id, $company_id = null): void
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não autorizada.', 422);
-        }
-
         $subcomplement = Subcomplement::with(['complement' => function ($query) use ($company_id) {
 
                 $query->with(['product' => function ($query) use ($company_id) {
@@ -89,7 +85,7 @@ class SubcomplementRepository extends BaseRepository implements SubcomplementRep
             ->first();
 
         if (!$subcomplement) {
-            throw new CustomException('Subcomplemento não encontrado.', 422);
+            throw new CustomException('Subcomplemento não encontrado.', 404);
         }
 
         $subcomplement->delete();
@@ -102,15 +98,9 @@ class SubcomplementRepository extends BaseRepository implements SubcomplementRep
     private function validateCreate(array $attributes)
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'description' => 'required|string|max:100',
             'price' => 'nullable|numeric|min:0.01',
-            'company_id' => [
-                'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não encontrada.');
-                    }
-                }
-            ],
             'complement_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
 
@@ -141,15 +131,9 @@ class SubcomplementRepository extends BaseRepository implements SubcomplementRep
     private function validateUpdate(array $attributes)
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'description' => 'nullable|string|max:100',
             'price' => 'nullable|numeric|min:0.01',
-            'company_id' => [
-                'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não encontrada.');
-                    }
-                }
-            ],
             'complement_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
 

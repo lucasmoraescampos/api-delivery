@@ -56,18 +56,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             'phone' => $attributes['phone']
         ]);
 
-        try {
-
-            $customer = $this->createCustomer($attributes['email']);
-
-            $user->customer_id = $customer->id;
-
-        } catch (Exception $e) {
-
-            $user->customer_id = null;
-
-        }
-
         $user->save();
 
         $user->load(['companies.plan', 'companies.payment_methods', 'companies' => function ($query) {
@@ -178,18 +166,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                     'image' => $data->photoUrl
                 ]);
 
-                try {
-
-                    $customer = $this->createCustomer($data->email);
-
-                    $user->customer_id = $customer->id;
-
-                } catch(Exception $e) {
-
-                    $user->customer_id = null;
-                    
-                }
-
                 $user->save();
 
             }
@@ -252,31 +228,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         auth('users')->setToken($attributes['token'])->logout();
 
         AccessToken::where('token', $attributes['token'])->update(['status' => AccessToken::STATUS_INVALID]);
-    }
-
-    /**
-     * @param mixed $email
-     * @return MercadoPago\Customer
-     */
-    private function createCustomer($email): MercadoPago\Customer
-    {
-        MercadoPago\SDK::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
-
-        $customer = MercadoPago\Customer::search(['email' => $email]);
-
-        if ($customer->total > 0) {
-
-            return $customer[0];
-            
-        }
-
-        $customer = new MercadoPago\Customer();
-
-        $customer->email = $email;
-
-        $customer->save();
-
-        return $customer;
     }
 
     /**

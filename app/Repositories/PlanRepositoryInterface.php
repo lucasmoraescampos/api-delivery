@@ -11,10 +11,4 @@ interface PlanRepositoryInterface
      * @return PlanSubscription
      */
     public static function getCurrentPlanByUser($user_id): ?PlanSubscription;
-
-    /**
-     * @param array $attributes
-     * @return PlanSubscription
-     */
-    public function subscription(array $attributes): PlanSubscription;
 }

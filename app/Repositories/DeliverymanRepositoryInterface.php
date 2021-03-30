@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use Illuminate\Support\Collection;
 
-interface DeliveryPersonRepositoryInterface
+interface DeliverymanRepositoryInterface
 {
     /**
      * @param mixed $company_id

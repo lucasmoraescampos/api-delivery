@@ -64,15 +64,20 @@ Route::namespace('User')->prefix('user')->group(function () {
 
         Route::delete('company/{id}', 'CompanyController@delete');
 
+
+        Route::get('order', 'OrderController@index');
+
+        Route::post('order', 'OrderController@store');
+
     });
 
 });
 
 Route::namespace('Company')->prefix('company')->group(function () {
 
-    Route::middleware(['auth:users'])->group(function () {
+    Route::middleware(['auth:users', 'checkCompany'])->group(function () {
 
-        Route::get('{company_id}/segment', 'SegmentController@index')->middleware('check.company');
+        Route::get('{company_id}/segment', 'SegmentController@index');
 
         Route::post('{company_id}/segment', 'SegmentController@store');
 
@@ -106,19 +111,27 @@ Route::namespace('Company')->prefix('company')->group(function () {
         Route::delete('{company_id}/subcomplement/{id}', 'SubcomplementController@delete');
 
 
-        Route::get('{company_id}/delivery-person', 'DeliveryPersonController@index');
-
-        Route::post('{company_id}/delivery-person', 'DeliveryPersonController@store');
-
-        Route::put('{company_id}/delivery-person/{id}', 'DeliveryPersonController@update');
-
-        Route::delete('{company_id}/delivery-person/{id}', 'DeliveryPersonController@delete');
-
-
         Route::get('{company_id}/order', 'OrderController@index');
 
-        Route::post('{company_id}/order', 'OrderController@store');
+        Route::put('{company_id}/order/{id}', 'OrderController@update');
+
+
+        Route::get('{company_id}/deliveryman', 'DeliverymanController@index');
+
+        Route::post('{company_id}/deliveryman', 'DeliverymanController@store');
+
+        Route::delete('{company_id}/deliveryman/{id}', 'DeliverymanController@delete');
 
     });
     
+});
+
+Route::prefix('admin')->group(function () {
+
+    Route::middleware(['auth:users', 'checkAdmin'])->group(function () {
+
+        Route::put('company/{id}', 'Admin\CompanyController@update');
+
+    });
+
 });

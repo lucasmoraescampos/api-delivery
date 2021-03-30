@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepositoryInterface;
@@ -15,9 +15,9 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
     }
 
-    public function index($company_id)
+    public function index()
     {
-        $orders = $this->orderRepository->getByCompany($company_id);
+        $orders = $this->orderRepository->getByAuth();
 
         return response()->json([
             'success' => true,
@@ -25,15 +25,13 @@ class OrderController extends Controller
         ]);
     }
 
-    public function update(Request $request, $company_id, $id)
+    public function store(Request $request)
     {
-        $attributes = $request->all() + ['company_id' => $company_id];
-
-        $order = $this->orderRepository->update($id, $attributes);
+        $order = $this->orderRepository->create($request->all());
 
         return response()->json([
             'success' => true,
-            'message' => 'Pedido atualizado com sucesso',
+            'message' => 'Pedido realizado com sucesso',
             'data' => $order
         ]);
     }

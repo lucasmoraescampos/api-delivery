@@ -16,7 +16,7 @@ class Plan extends Model
         'name',
         'fee',
         'online_payment_fee',
-        'delivery_person',
+        'delivery_type',
         'status'
     ];
 
@@ -28,7 +28,7 @@ class Plan extends Model
     protected $casts = [
         'fee' => 'float',
         'online_payment_fee' => 'float',
-        'delivery_person' => 'boolean',
+        'delivery_type' => 'integer',
         'status' => 'boolean'
     ];
 }

@@ -60,7 +60,7 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
             ->first();
 
         if (!$complement) {
-            throw new CustomException('Complemento não encontrado.', 422);
+            throw new CustomException('Complemento não encontrado.', 404);
         }
 
         $complement->fill(Arr::only($attributes, [
@@ -85,10 +85,6 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
      */
     public function delete($id, $company_id = null): void
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não encontrada.', 422);
-        }
-
         $complement = Complement::with(['product' => function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             }])
@@ -96,7 +92,7 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
             ->first();
 
         if (!$complement) {
-            throw new CustomException('Complemento não encontrado.', 422);
+            throw new CustomException('Complemento não encontrado.', 404);
         }
 
         $complement->delete();
@@ -109,17 +105,11 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
     private function validateCreate(array $attributes)
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'title' => 'required|string|max:100',
             'qty_min' => 'required_if:required,1|numeric|min:1',
             'qty_max' => 'required|numeric|min:1',
             'required' => 'required|boolean',
-            'company_id' => [
-                'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não encontrada.');
-                    }
-                }
-            ],
             'product_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
                     if (Product::where('id', $value)->where('company_id', $attributes['company_id'])->count() == 0) {
@@ -139,17 +129,11 @@ class ComplementRepository extends BaseRepository implements ComplementRepositor
     private function validateUpdate(array $attributes)
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'title' => 'nullable|string|max:100',
             'qty_min' => 'required_if:required,1|numeric|min:1',
             'qty_max' => 'nullable|numeric|min:1',
             'required' => 'nullable|boolean',
-            'company_id' => [
-                'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não encontrada.');
-                    }
-                }
-            ],
             'product_id' => [
                 'required', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
                     if (Product::where('id', $value)->where('company_id', $attributes['company_id'])->count() == 0) {

@@ -20,34 +20,22 @@ class CheckCompany
     {
         $company = Company::find($request->route('company_id'));
 
-        if ($company) {
-
-            if ($company->user_id != Auth::id()) {
-
-                throw new CustomException('Empresa não autorizada.', 403);
-
-            }
-
-            if ($company->status == Company::STATUS_INACTIVE) {
-
-                throw new CustomException('Empresa em análise.', 403);
-
-            }
-            
-            if ($company->status == Company::STATUS_SUSPENDED) {
-
-                throw new CustomException('Empresa suspensa.', 403);
-
-            }
-
-            return $next($request);
-
-        }
-
-        else {
-
+        if ($company == null) {
             throw new CustomException('Empresa não encontrada.', 404);
-
         }
+
+        if ($company->user_id != Auth::id()) {
+            throw new CustomException('Usuário não autorizado.', 401);
+        }
+
+        if ($company->status == Company::STATUS_INACTIVE) {
+            throw new CustomException('Empresa em análise.', 403);
+        }
+
+        if ($company->status == Company::STATUS_SUSPENDED) {
+            throw new CustomException('Empresa suspensa.', 403);
+        }
+
+        return $next($request);
     }
 }

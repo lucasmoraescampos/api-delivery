@@ -32,10 +32,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
      */
     public function getByCompany($company_id): Collection
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não autorizada.', 422);
-        }
-
         return Product::with(['segment', 'complements.subcomplements'])
             ->where('company_id', $company_id)
             ->orderBy('id', 'desc')
@@ -96,6 +92,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         $product = Product::find($id);
 
+        if (!$product) {
+            throw new CustomException('Produto não encontrado.', 404);
+        }
+
         $product->fill(Arr::only($attributes, [
             'segment_id',
             'name',
@@ -134,16 +134,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
      */
     public function delete($id, $company_id = null): void
     {
-        if (Company::where('id', $company_id)->where('user_id', Auth::id())->count() == 0) {
-            throw new CustomException('Empresa não autorizada.', 422);
-        }
-
         $product = Product::where('id', $id)
             ->where('company_id', $company_id)
             ->first();
 
         if (!$product) {
-            throw new CustomException('Produto não encontrado.', 422);
+            throw new CustomException('Produto não encontrado.', 404);
         }
 
         $product->delete();
@@ -156,6 +152,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     private function validateCreate(array $attributes): void
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:200',
             'price' => 'required|numeric',
@@ -170,14 +167,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'start_time' => 'required_with:end_time|date_format:H:i',
             'end_time' => 'required_with:start_time|date_format:H:i',
             'image' => ['required', new DataUrlImageRule()],
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ],
             'segment_id' => [
                 'required', 'numeric',
                 function ($attribute, $value, $fail) use ($attributes) {
@@ -198,6 +187,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     private function validateUpdate(array $attributes): void
     {
         $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric',
             'name' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:200',
             'price' => 'nullable|numeric',
@@ -212,14 +202,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'start_time' => 'required_with:end_time|date_format:H:i',
             'end_time' => 'required_with:start_time|date_format:H:i',
             'image' => ['nullable', new DataUrlImageRule()],
-            'company_id' => [
-                'required', 'numeric',
-                function ($attribute, $value, $fail) {
-                    if (Company::where('id', $value)->where('user_id', Auth::id())->count() == 0) {
-                        $fail('Empresa não autorizada.');
-                    }
-                }
-            ],
             'segment_id' => [
                 'nullable', 'numeric',
                 function ($attribute, $value, $fail) use ($attributes) {

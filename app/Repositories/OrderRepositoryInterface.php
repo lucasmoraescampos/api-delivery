@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Order;
 use Illuminate\Support\Collection;
 
 interface OrderRepositoryInterface
@@ -15,6 +14,11 @@ interface OrderRepositoryInterface
      * @return float
      */
     public static function calculateDistance($adminLat, $adminLng, $userLat, $userLng): float;
+
+    /**
+     * @return Collection
+     */
+    public function getByAuth(): Collection;
 
     /**
      * @param mixed $company_id

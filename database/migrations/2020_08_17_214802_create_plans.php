@@ -19,7 +19,7 @@ class CreatePlans extends Migration
             $table->string('name', 60);
             $table->unsignedDecimal('fee', 5, 1);
             $table->unsignedDecimal('online_payment_fee', 5, 1);
-            $table->boolean('delivery_person');
+            $table->unsignedTinyInteger('delivery_type')->comment('COMPANY = 1, OUTSOURCED = 2');
             $table->boolean('status');
             $table->timestamps();
         });

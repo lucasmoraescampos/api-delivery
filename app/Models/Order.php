@@ -10,19 +10,31 @@ class Order extends Model
     /**
      * Constants.
      */
-    const PAYMENT_LOCAL = 0;
-
     const PAYMENT_ONLINE = 1;
 
     const PAYMENT_DELIVERY = 2;
 
-    const STATUS_WAITING = 0;
+    const STATUS_WAITING_CONFIRMATION = 0;
+
+    const STATUS_PREPARING = 1;
+
+    const STATUS_WAITING_DELIVERY = 2;
+
+    const STATUS_DELIVIRING = 3;
+
+    const STATUS_FINISHED = 4;
+
+    const STATUS_CANCELED = 5;
 
     const TYPE_LOCAL = 0;
 
     const TYPE_DELIVERY = 1;
 
     const TYPE_WITHDRAWAL = 2;
+
+    const DELIVERY_TYPE_COMPANY = 1;
+
+    const DELIVERY_TYPE_OUTSOURCED = 2;
 
     /**
 	 * The attributes that are mass assignable.
@@ -32,17 +44,23 @@ class Order extends Model
 	protected $fillable = [
         'company_id',
         'user_id',
+        'company_deliveryman_id',
         'mercadopago_id',
+        'number',
         'price',
         'total_price',
         'delivery_price',
-        'change_money',
+        'fee',
+        'online_payment_fee',
         'type',
         'payment_type',
+        'change_money',
         'payment_method',
         'products',
         'delivery_location',
-        'delivery_forecast'
+        'delivery_forecast',
+        'delivery_type',
+        'status'
     ];
 
     /**
@@ -51,7 +69,7 @@ class Order extends Model
 	 * @var array
 	 */
 	protected $attributes = [
-        'status' =>  self::STATUS_WAITING
+        'status' =>  self::STATUS_WAITING_CONFIRMATION
     ];
 
     /**
@@ -67,6 +85,7 @@ class Order extends Model
         'products' => Json::class,
         'payment_method' => Json::class,
         'delivery_location' => Json::class,
+        'delivery_forecast' => 'datetime',
         'evaluation' => 'integer',
         'type' => 'integer',
         'status' => 'integer',
@@ -79,6 +98,14 @@ class Order extends Model
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
+    }
+
+    /**
+     * Get the company that owns the order.
+     */
+    public function company_deliveryman()
+    {
+        return $this->belongsTo('App\Models\CompanyDeliveryman');
     }
 
     /**

@@ -2,9 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Attendant;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\OrderRepositoryInterface;
@@ -13,10 +11,10 @@ use App\Models\Company;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
-use App\Table;
 use MercadoPago;
 use App\Exceptions\CustomException;
 use App\Models\Card;
+use App\Models\CompanyDeliveryman;
 use App\Models\CompanyPaymentMethod;
 use App\Models\Complement;
 use App\Models\Location;
@@ -53,14 +51,27 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     }
 
     /**
+     * @return Collection
+     */
+    public function getByAuth(): Collection
+    {
+        return Order::select('id', 'number', 'company_id', 'price', 'delivery_price', 'total_price', 'products', 'type', 'payment_type', 'payment_method', 'delivery_location', 'delivery_forecast', 'status', 'created_at')
+            ->with(['company:id,name,street_name,street_number,district,complement,city,uf'])
+            ->where('user_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    /**
      * @param mixed $company_id
      * @return Collection
      */
     public function getByCompany($company_id): Collection
     {
-        $company = Company::slug($company_id);
-
-        return Order::where('company_id', $company->id)->get();
+        return Order::with(['user:id,name', 'company_deliveryman'])
+            ->where('company_id', $company_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     /**
@@ -73,13 +84,15 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         $user = Auth::user();
 
-        $company = Company::find($attributes['company_id']);
+        $company = Company::with('plan')
+            ->where('id', $attributes['company_id'])
+            ->first();
 
         $order = new Order();
 
         $order->price = $this->calculatePrice($attributes['products']);
 
-        if ($company->min_order_value > $order->price) {
+        if ($order->price < $company->min_order_value) {
 
             throw new CustomException('Pedido mínimo não atingido', 422);
 
@@ -97,35 +110,41 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         $order->payment_type = $attributes['payment_type'];
 
+        $order->fee = $company->plan->fee;
+
+        $order->delivery_type = $company->plan->delivery_type;
+
         if ($order->type == Order::TYPE_DELIVERY) {
 
             $columns = ['street_name', 'street_number', 'district', 'complement', 'city', 'uf', 'latitude', 'longitude'];
 
             $order->delivery_location = Location::select($columns)
                 ->where('id', $attributes['location_id'])
-                ->first()
-                ->toJson();
+                ->first();
 
         }
 
         if ($order->payment_type == Order::PAYMENT_ONLINE) {
 
-            $order->payment_method = Card::find($attributes['card_id'], ['provider', 'icon'])->toJson();
+            $order->online_payment_fee = $company->plan->online_payment_fee;
 
-            $order->mercadopago_id = $this->payWithMercadoPago([
+            $order->payment_method = Card::find($attributes['card_id'], ['provider as name', 'icon']);
+
+            $order->mercadopago_id = $this->reservePayment([
                 'total_price' => $order->total_price,
                 'card_token' => $attributes['card_token'],
                 'company' => $company->name,
                 'payment_method_id' => $attributes['payment_method_id'],
-                'customer_id' => $user->customer_id,
                 'email' => $user->email
             ]);
 
         }
 
-        elseif ($order->payment_type == Order::PAYMENT_DELIVERY) {
+        if ($order->payment_type == Order::PAYMENT_DELIVERY) {
 
-            $order->payment_method = PaymentMethod::find($attributes['payment_method_id'], ['name', 'icon'])->toJson();
+            $order->online_payment_fee = 0;
+
+            $order->payment_method = PaymentMethod::find($attributes['payment_method_id'], ['name', 'icon']);
                 
             if (isset($attributes['change_money'])) {
 
@@ -139,7 +158,69 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         $order->products = $this->serializeProduct($attributes['products']);
 
+        $order->number = $this->getOrderNumber();
+
         $order->save();
+
+        return $order;
+    }
+
+    /**
+     * @param array $attributes
+     * @param mixed $id
+     * @return Order
+     */
+    public function update($id, array $attributes): Order
+    {
+        $this->validateUpdate($attributes);
+
+        $order = Order::where('id', $id)
+            ->where('company_id', $attributes['company_id'])
+            ->first();
+
+        if (!$order) {
+            throw new CustomException('Order not found.', 404);
+        }
+
+        if (isset($attributes['status'])) {
+            
+            if ($order->status > $attributes['status']) {
+                throw new CustomException('Status cannot be regressed.', 400);
+            }
+
+            if ($attributes['status'] == Order::STATUS_WAITING_DELIVERY) {
+
+                $deliveryman = CompanyDeliveryman::where('id', $attributes['company_deliveryman_id'])
+                    ->where('company_id', $attributes['company_id'])
+                    ->count();
+
+                if (!$deliveryman) {
+                    throw new CustomException('Deliveryman not found.', 404);
+                }
+
+            }
+
+            if ($attributes['status'] == Order::STATUS_FINISHED && $order->payment_type == Order::PAYMENT_ONLINE) {
+
+                MercadoPago\SDK::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
+                
+                $payment = MercadoPago\Payment::find_by_id($order->mercadopago_id);
+
+                $payment->capture = true;
+
+                $payment->update();
+
+            }
+
+        }
+
+        $order->fill($attributes);
+
+        $order->save();
+
+        $order->load('user:id,name');
+
+        $order->load('company_deliveryman');
 
         return $order;
     }
@@ -150,7 +231,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      */
     private function calculatePrice(array $products): float
     {
-        $products_prices = Product::selectRaw('id, (price - rebate) as price')
+        $products_prices = Product::selectRaw('id, (price - IFNULL(rebate, 0)) as price')
             ->whereIn('id', Arr::pluck($products, 'id'))
             ->get()
             ->pluck('price', 'id');
@@ -191,7 +272,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      * @param array $attributes
      * @return int
      */
-    private function payWithMercadoPago(array $attributes): ?int
+    private function reservePayment(array $attributes): ?int
     {
         MercadoPago\SDK::setAccessToken(env('MERCADOPAGO_ACCESS_TOKEN'));
 
@@ -210,14 +291,14 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $payment->payment_method_id = $attributes['payment_method_id'];
 
         $payment->payer = [
-            'type' => 'customer',
-            'id' => $attributes['customer_id'],
-            'email' => $attributes['email']
+            'email' =>  $attributes['email']
         ];
+
+        $payment->capture = false;
 
         $payment->save();
 
-        if ($payment->status === 'approved') {
+        if ($payment->status === 'authorized') {
             return $payment->id;
         }
 
@@ -258,21 +339,21 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     /**
      * @param array $products
-     * @return string
+     * @return Collection
      */
-    private function serializeProduct(array $products): string
+    private function serializeProduct(array $products): Collection
     {
         $details['products'] = Product::selectRaw('id, name, price, rebate')
             ->whereIn('id', Arr::pluck($products, 'id'))
             ->get()
             ->groupBy('id');
 
-        $details['complements'] = Complement::select('id', 'name')
+        $details['complements'] = Complement::select('id', 'title')
             ->whereIn('id', Arr::collapse(Arr::pluck($products, 'complements.*.id')))
             ->get()
-            ->pluck('name', 'id');
+            ->pluck('title', 'id');
 
-        $details['subcomplements'] = Subcomplement::select('id', 'name', 'price')
+        $details['subcomplements'] = Subcomplement::select('id', 'description', 'price')
             ->whereIn('id', Arr::collapse(Arr::pluck($products, 'complements.*.subcomplements.*.id')))
             ->get()
             ->groupBy('id');
@@ -305,7 +386,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                     $item_complement = [
                         'id' => $complement['id'],
-                        'name' => $detail
+                        'title' => $detail
                     ];
 
                     foreach ($complement['subcomplements'] as $subcomplement) {
@@ -315,7 +396,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                         $item_complement['subcomplements'][] = [
                             'id' => $subcomplement['id'],
                             'qty' => $subcomplement['qty'],
-                            'name' => $detail->name,
+                            'description' => $detail->description,
                             'price' => $detail->price
                         ];
 
@@ -331,7 +412,33 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         }
 
-        return $data->toJson();
+        return $data;
+    }
+
+    /**
+     * @return int
+     */
+    private function getOrderNumber(): string
+    {
+        $number = Order::whereDate('created_at', Date('Y-m-d'))->count() + 1;
+
+        if ($number < 10) {
+            return '0000' . $number;
+        }
+
+        if ($number < 100) {
+            return '00' . $number;
+        }
+
+        if ($number < 1000) {
+            return '000' . $number;
+        }
+
+        if ($number < 10000) {
+            return '0' . $number;
+        }
+
+        return $number;
     }
 
     /**
@@ -428,7 +535,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                     elseif ($attributes['payment_type'] == Order::PAYMENT_DELIVERY) {
 
-                        $notAvailable = CompanyPaymentMethod::where('id', $value)
+                        $notAvailable = CompanyPaymentMethod::where('payment_method_id', $value)
                             ->where('company_id', $attributes['company_id'])
                             ->count() == 0;
 
@@ -450,7 +557,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                 function ($attribute, $value, $fail) {
 
-                    $notFound = Product::where('id', $value)
+                    $notFound = Card::where('id', $value)
                         ->where('user_id', Auth::id())
                         ->count() == 0;
 
@@ -530,7 +637,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
                                 $notBelong = Subcomplement::select('id')
                                     ->whereIn('id', $subcomplements)
-                                    ->where('complement_id', $complement['id'])
+                                    ->where('complement_id', '<>', $complement['id'])
                                     ->get();
 
                                 if ($notBelong->count() > 0) {
@@ -579,6 +686,26 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 }
             ]
 
+        ]);
+
+        $validator->validate();
+    }
+
+    /**
+     * @param mixed $attributes
+     * @return void
+     */
+    private function validateUpdate(array $attributes): void
+    {
+        $validator = Validator::make($attributes, [
+            'status' => [
+                'required', 'numeric', function ($attribute, $value, $fail) {
+                    if (!in_array($value, [1, 2, 3, 4, 5])) {
+                        $fail('Status inválid.');
+                    }
+                }
+            ],
+            'company_deliveryman_id' => 'required_if:status,2|numeric'
         ]);
 
         $validator->validate();

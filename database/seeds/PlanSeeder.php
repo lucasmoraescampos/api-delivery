@@ -14,89 +14,89 @@ class PlanSeeder extends Seeder
     {
         DB::table('plans')->insert([
 
-            // // Restaurantes
-            // [
-            //     'category_id' => 1,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 8,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
-            // [
-            //     'category_id' => 1,
-            //     'name' => 'Plano Entrega',
-            //     'fee' => 10,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => true,
-            //     'status' => true
-            // ],
+            // Restaurantes
+            [
+                'category_id' => 1,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 2,
+                'status' => true
+            ],
 
-            // // Supermercados
-            // [
-            //     'category_id' => 2,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 6,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
+            // Supermercados
+            [
+                'category_id' => 2,
+                'name' => 'Plano Básico',
+                'fee' => 6,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
 
-            // // Padarias
-            // [
-            //     'category_id' => 3,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 8,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
-            // [
-            //     'category_id' => 3,
-            //     'name' => 'Plano Entrega',
-            //     'fee' => 10,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => true,
-            //     'status' => true
-            // ],
+            // Padarias
+            [
+                'category_id' => 3,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
+            [
+                'category_id' => 3,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 2,
+                'status' => true
+            ],
 
-            // // Bebidas
-            // [
-            //     'category_id' => 4,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 6,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
+            // Bebidas
+            [
+                'category_id' => 4,
+                'name' => 'Plano Básico',
+                'fee' => 6,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
 
-            // // Farmácias
-            // [
-            //     'category_id' => 5,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 8,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
-            // [
-            //     'category_id' => 5,
-            //     'name' => 'Plano Entrega',
-            //     'fee' => 10,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => true,
-            //     'status' => true
-            // ],
+            // Farmácias
+            [
+                'category_id' => 5,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
+            [
+                'category_id' => 5,
+                'name' => 'Plano Entrega',
+                'fee' => 10,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 2,
+                'status' => true
+            ],
 
-            // // Água e gás
-            // [
-            //     'category_id' => 6,
-            //     'name' => 'Plano Básico',
-            //     'fee' => 8,
-            //     'online_payment_fee' => 4.5,
-            //     'delivery_person' => false,
-            //     'status' => true
-            // ],
+            // Água e gás
+            [
+                'category_id' => 6,
+                'name' => 'Plano Básico',
+                'fee' => 8,
+                'online_payment_fee' => 4.5,
+                'delivery_type' => 1,
+                'status' => true
+            ],
 
             // Modas
             [
@@ -104,7 +104,7 @@ class PlanSeeder extends Seeder
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
-                'delivery_person' => false,
+                'delivery_type' => 1,
                 'status' => true
             ],
             [
@@ -112,7 +112,7 @@ class PlanSeeder extends Seeder
                 'name' => 'Plano Entrega',
                 'fee' => 10,
                 'online_payment_fee' => 4.5,
-                'delivery_person' => true,
+                'delivery_type' => 2,
                 'status' => true
             ],
 
@@ -122,7 +122,7 @@ class PlanSeeder extends Seeder
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
-                'delivery_person' => false,
+                'delivery_type' => 1,
                 'status' => true
             ],
 
@@ -132,7 +132,7 @@ class PlanSeeder extends Seeder
                 'name' => 'Plano Básico',
                 'fee' => 8,
                 'online_payment_fee' => 4.5,
-                'delivery_person' => false,
+                'delivery_type' => 1,
                 'status' => true
             ],
 

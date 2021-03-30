@@ -55,7 +55,8 @@ class Company extends Model
         'country',
         'latitude',
         'longitude',
-        'open'
+        'open',
+        'status'
 	];
 
     /**
@@ -106,18 +107,5 @@ class Company extends Model
     public function payment_methods()
     {
         return $this->belongsToMany('App\Models\PaymentMethod', 'companies_payment_methods', 'company_id', 'payment_method_id');
-    }
-
-    /**
-     * @param string $slug
-     * @return Company
-     */
-    public static function slug(string $slug): Company
-    {
-        return Company::select('companies.*')
-            ->leftJoin('users_companies', 'users_companies.company_id', 'companies.id')
-            ->where('users_companies.user_id', Auth::id())
-            ->where('companies.slug', $slug)
-            ->firstOrFail();
     }
 }

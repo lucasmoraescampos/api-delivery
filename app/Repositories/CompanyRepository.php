@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Events\CompanyEvent;
 use App\Exceptions\CustomException;
 use App\Models\Category;
 use App\Models\Company;
@@ -97,20 +98,32 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         $this->validateUpdate($attributes);
 
-        $company = Company::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->first();
+        $company = Company::find($id);
 
-        if (!$company) {
-            throw new CustomException('Empresa não encontrada.', 422);
+        if ($company == null) {
+            throw new CustomException('Empresa não existe.', 404);
         }
 
-        if ($company->status == Company::STATUS_INACTIVE) {
-            throw new CustomException('Empresa em análise.', 403);
+        if (Auth::user()->is_admin == false) {
+
+            if ($company->user_id != Auth::id()) {
+                throw new CustomException('Empresa não autorizada.', 401);
+            }
+
+            if ($company->status == Company::STATUS_INACTIVE) {
+                throw new CustomException('Empresa em análise.', 403);
+            }
+            
+            if ($company->status == Company::STATUS_SUSPENDED) {
+                throw new CustomException('Empresa suspensa.', 403);
+            }
+
         }
-        
-        if ($company->status == Company::STATUS_SUSPENDED) {
-            throw new CustomException('Empresa suspensa.', 403);
+
+        else {
+
+            $company->fill(Arr::only($attributes, ['status']));
+            
         }
 
         $company->fill(Arr::only($attributes, [
@@ -362,6 +375,13 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'payment_methods' => 'nullable|array',
             'image' => ['nullable', new DataUrlImageRule()],
             'banner' => ['nullable', new DataUrlImageRule()],
+            'status' => [
+                'nullable', 'numeric', function ($attribute, $value, $fail) {
+                    if (!in_array($value, [Company::STATUS_INACTIVE, Company::STATUS_ACTIVE, Company::STATUS_SUSPENDED])) {
+                        $fail('status inválido.');
+                    }
+                }
+            ],
             'slug' => [
                 'nullable', 'string', function ($attribute, $value, $fail) {
                     if (preg_match('/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/', $value) == false) {
