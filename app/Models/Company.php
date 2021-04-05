@@ -87,7 +87,7 @@ class Company extends Model
         'waiting_time' => 'integer',
         'delivery_price' => 'float',
         'min_order_value' => 'float',
-        'radius' => 'integer',
+        'radius' => 'float',
         'allow_payment_delivery' => 'boolean',
         'allow_payment_online' => 'boolean',
         'allow_withdrawal_local' => 'boolean'

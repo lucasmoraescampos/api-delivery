@@ -20,7 +20,7 @@ class Order extends Model
 
     const STATUS_WAITING_DELIVERY = 2;
 
-    const STATUS_DELIVIRING = 3;
+    const STATUS_DELIVERING = 3;
 
     const STATUS_FINISHED = 4;
 

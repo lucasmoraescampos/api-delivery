@@ -405,7 +405,10 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             ],
             'plan_id' => [
                 'nullable', 'numeric', function ($attribute, $value, $fail) use ($attributes) {
-                    if (Plan::where('id', $value)->where('category_id', $attributes['category_id'])->count() == 0) {
+                    if (!isset($attributes['category_id'])) {
+                        $fail('Categoria é obrigatória na alteração do plano.');
+                    }
+                    else if (Plan::where('id', $value)->where('category_id', $attributes['category_id'])->count() == 0) {
                         $fail('Plano não encontrado.');
                     }
                 }

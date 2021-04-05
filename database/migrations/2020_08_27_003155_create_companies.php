@@ -27,7 +27,7 @@ class CreateCompanies extends Migration
             $table->unsignedSmallInteger('waiting_time');
             $table->unsignedDecimal('delivery_price', 15, 2);
             $table->unsignedDecimal('min_order_value', 15, 2);
-            $table->unsignedTinyInteger('radius');
+            $table->unsignedDecimal('radius', 5, 1);
             $table->boolean('allow_payment_delivery');
             $table->boolean('allow_payment_online');
             $table->boolean('allow_withdrawal_local');
