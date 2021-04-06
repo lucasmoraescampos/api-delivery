@@ -4,10 +4,6 @@ namespace App\Providers;
 
 use App\Events\CompanyEvent;
 use App\Listeners\CompanyStatusListener;
-use App\Models\Company;
-use App\Models\Order;
-use App\Observers\CompanyObserver;
-use App\Observers\OrderObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -30,7 +26,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Company::observe(CompanyObserver::class);
-        Order::observe(OrderObserver::class);
+        parent::boot();
     }
 }

@@ -120,12 +120,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         }
 
-        else {
-
-            $company->fill(Arr::only($attributes, ['status']));
-            
-        }
-
         $company->fill(Arr::only($attributes, [
             'name',
             'category_id',
@@ -161,6 +155,14 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
         if (isset($attributes['slug'])) {
             $company->slug = strtolower($attributes['slug']);
+        }
+
+        if (Auth::user()->is_admin && isset($attributes['status'])) {
+
+            $company->status = $attributes['status'];
+
+            CompanyEvent::dispatch($company);
+
         }
 
         $company->save();

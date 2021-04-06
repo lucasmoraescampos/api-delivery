@@ -35,11 +35,15 @@ Route::namespace('User')->prefix('user')->group(function () {
 
     Route::post('authenticate-with-provider', 'AuthController@authenticateWithProvider');
 
+    Route::post('check-in-fcm-token-without-auth', 'AuthController@checkInfcmToken');
+
     Route::middleware(['auth:users'])->group(function () {
 
         Route::get('auth', 'AuthController@auth');
 
         Route::post('logout', 'AuthController@logout');
+
+        Route::post('check-in-fcm-token-with-auth', 'AuthController@checkInfcmToken');
 
 
         Route::get('card', 'CardController@index');

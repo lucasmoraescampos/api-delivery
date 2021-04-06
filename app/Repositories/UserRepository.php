@@ -5,15 +5,12 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Models\AccessToken;
 use App\Exceptions\CustomException;
-use App\Mail\SendVerificationCode;
+use App\Models\FcmToken;
 use App\Models\VerificationCode;
-use Exception;
-use MercadoPago;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
@@ -215,6 +212,37 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         ]);
 
         return $token;
+    }
+
+    /**
+     * @param array $attributes
+     * @return FcmToken
+     */
+    public function checkInfcmToken(array $attributes): FcmToken
+    {
+        Validator::make($attributes, ['token' => 'required|string'])->validate();
+
+        $fcmToken = FcmToken::where('token', $attributes['token'])->first();
+
+        $user_id = Auth::id();
+
+        if (!$fcmToken) {
+
+            $fcmToken = new FcmToken([
+                'token' => $attributes['token']
+            ]);
+
+        }
+
+        if ($user_id) {
+
+            $fcmToken->user_id = $user_id;
+
+        }
+
+        $fcmToken->save();
+
+        return $fcmToken;
     }
 
     /**

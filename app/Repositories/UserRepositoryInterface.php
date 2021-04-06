@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\FcmToken;
 use App\Models\User;
 
 interface UserRepositoryInterface
@@ -28,6 +29,12 @@ interface UserRepositoryInterface
      * @return string
      */
     public function createAccessToken(User $user): string;
+
+    /**
+     * @param array $attributes
+     * @return FcmToken
+     */
+    public function checkInfcmToken(array $attributes): FcmToken;
 
     /**
      * @param array $attributes

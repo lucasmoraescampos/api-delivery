@@ -67,6 +67,17 @@ class AuthController extends Controller
         ]);
     }
 
+    public function checkInfcmToken(Request $request)
+    {
+        $fcmToken = $this->userRepository->checkInfcmToken($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sucessful',
+            'data' => $fcmToken
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $this->userRepository->invalidAccessToken($request->all());
