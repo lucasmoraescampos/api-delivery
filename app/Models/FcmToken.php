@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class FcmToken extends Model
 {
 	/**
+     * Constants.
+     */
+    const PLATFORM_WEB = 'web';
+
+    const PLATFORM_ANDROID = 'android';
+
+    const PLATFORM_IOS = 'ios';
+
+	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
@@ -15,6 +24,6 @@ class FcmToken extends Model
         'user_id',
         'company_deliveryman_id',
 		'token',
-        'type'
+		'platform'
 	];
 }

@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\CompanyEvent;
-use App\Listeners\CompanyStatusListener;
+use App\Events\CompanyStatus;
+use App\Listeners\SendCompanyNotification;
+use App\Listeners\SendCompanySocket;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -14,8 +15,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        CompanyEvent::class => [
-            CompanyStatusListener::class
+        CompanyStatus::class => [
+            SendCompanyNotification::class,
+            SendCompanySocket::class
         ]
      ];
 

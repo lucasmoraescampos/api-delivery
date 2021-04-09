@@ -66,6 +66,61 @@ class ApiController extends Controller
 
     }
 
+    public function companiesByAllCategories(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
+        ]);
+
+        $companies = Category::with(['companies' => function ($query) use ($request) {
+
+            $query = $query->select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+                ->distance($request->latitude, $request->longitude)
+                ->where('status', Company::STATUS_ACTIVE)
+                ->where('open', true)
+                ->inRandomOrder()
+                ->limit(10);           
+
+        }])->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $companies
+        ]);
+    }
+
+    public function companiesByCategory(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'category_id' => 'required|numeric',
+            'limit' => 'nullable|numeric|min:1',
+            'offset' => 'nullable|numeric|min:1'
+        ]);
+
+        $query = Company::select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+            ->distance($request->latitude, $request->longitude)
+            ->where('status', Company::STATUS_ACTIVE)
+            ->where('category_id', $request->category_id);
+
+        if ($request->limit) {
+            $query = $query->limit($request->limit);
+        }
+
+        if ($request->offset) {
+            $query = $query->offset($request->limit);
+        }
+
+        $companies = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $companies
+        ]);
+    }
+
     public function paymentMethods()
     {
         $data = PaymentMethod::all();

@@ -15,9 +15,9 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
     }
 
-    public function index($company_id)
+    public function index(Request $request, $company_id)
     {
-        $orders = $this->orderRepository->getByCompany($company_id);
+        $orders = $this->orderRepository->getByCompany($company_id, $request->limit);
 
         return response()->json([
             'success' => true,

@@ -220,7 +220,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function checkInfcmToken(array $attributes): FcmToken
     {
-        Validator::make($attributes, ['token' => 'required|string'])->validate();
+        $validator = Validator::make($attributes, [
+            'token' => 'required|string',
+            'platform' => 'required|string|max:10'
+        ]);
+        
+        $validator->validate();
 
         $fcmToken = FcmToken::where('token', $attributes['token'])->first();
 
@@ -229,14 +234,18 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         if (!$fcmToken) {
 
             $fcmToken = new FcmToken([
-                'token' => $attributes['token']
+                'token' => $attributes['token'],
+                'platform' => $attributes['platform']
             ]);
 
         }
 
         if ($user_id) {
 
-            $fcmToken->user_id = $user_id;
+            $fcmToken->fill([
+                'user_id' => $user_id,
+                'platform' => $attributes['platform']
+            ]);
 
         }
 

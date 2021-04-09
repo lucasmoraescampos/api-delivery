@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Events\CompanyEvent;
+use App\Events\CompanyStatus;
 use App\Exceptions\CustomException;
 use App\Models\Category;
 use App\Models\Company;
@@ -161,7 +161,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
             $company->status = $attributes['status'];
 
-            CompanyEvent::dispatch($company);
+            CompanyStatus::dispatch($company);
 
         }
 

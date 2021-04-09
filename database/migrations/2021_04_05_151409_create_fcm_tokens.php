@@ -18,6 +18,7 @@ class CreateFcmTokens extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('company_deliveryman_id')->nullable()->constrained('companies_deliverymen')->onUpdate('cascade')->onDelete('cascade');
             $table->string('token', 255);
+            $table->string('platform', 10);
             $table->timestamps();
         });
     }

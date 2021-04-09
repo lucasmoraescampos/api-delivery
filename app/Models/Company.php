@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -107,5 +108,25 @@ class Company extends Model
     public function payment_methods()
     {
         return $this->belongsToMany('App\Models\PaymentMethod', 'companies_payment_methods', 'company_id', 'payment_method_id');
+    }
+
+    /**
+     * calculates user distance when obtaining the list of administrators.
+     */
+    public static function scopeDistance($query, $latitude, $longitude)
+    {
+        $select = "111.045
+            * DEGREES(ACOS(LEAST(1.0, COS(RADIANS($latitude))
+            * COS(RADIANS(latitude))
+            * COS(RADIANS($longitude) - RADIANS(longitude))
+            + SIN(RADIANS($latitude))
+            * SIN(RADIANS(latitude))))) AS distance";
+
+        $where = "latitude BETWEEN $latitude - (radius / 111.045)
+            AND $latitude + (radius / 111.045)
+            AND longitude BETWEEN $longitude - (radius / (111.045 * COS(RADIANS($latitude))))
+            AND $longitude + (radius / (111.045 * COS(RADIANS($latitude))))";
+
+        return $query->addSelect(DB::raw($select))->whereRaw($where);
     }
 }

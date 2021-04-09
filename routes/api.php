@@ -17,6 +17,10 @@ Route::get('categories', 'ApiController@categories');
 
 Route::get('category/{category_id}/plans', 'ApiController@plans');
 
+Route::get('companies-by-all-categories', 'ApiController@companiesByAllCategories');
+
+Route::get('companies-by-category', 'ApiController@companies');
+
 Route::get('company/{slug}', 'ApiController@company');
 
 Route::get('payment-methods', 'ApiController@paymentMethods');

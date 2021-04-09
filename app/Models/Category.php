@@ -29,4 +29,12 @@ class Category extends Model
         'name',
 		'image'
 	];
+
+	/**
+     * Get the companies for the category.
+     */
+    public function companies()
+    {
+        return $this->hasMany('App\Models\Company');
+    }
 }

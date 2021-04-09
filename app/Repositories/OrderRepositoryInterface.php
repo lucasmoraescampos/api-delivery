@@ -24,5 +24,5 @@ interface OrderRepositoryInterface
      * @param mixed $company_id
      * @return Collection
      */
-    public function getByCompany($company_id): Collection;
+    public function getByCompany($company_id, $limit = null): Collection;
 }

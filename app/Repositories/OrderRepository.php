@@ -66,10 +66,22 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      * @param mixed $company_id
      * @return Collection
      */
-    public function getByCompany($company_id): Collection
+    public function getByCompany($company_id, $limit = null): Collection
     {
+        if ($limit) {
+
+            return Order::with(['user:id,name', 'company_deliveryman'])
+                ->where('company_id', $company_id)
+                ->orderBy('created_at', 'desc')
+                ->where('status', '<>', Order::STATUS_CANCELED)
+                ->limit($limit)
+                ->get();
+
+        }
+
         return Order::with(['user:id,name', 'company_deliveryman'])
             ->where('company_id', $company_id)
+            ->where('status', '<>', Order::STATUS_CANCELED)
             ->orderBy('created_at', 'desc')
             ->get();
     }
