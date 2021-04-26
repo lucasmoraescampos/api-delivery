@@ -17,6 +17,7 @@ class CreateCategories extends Migration
             $table->id();
             $table->string('name', 40);
             $table->string('image', 100);
+            $table->string('slug', 40);
         });
     }
 

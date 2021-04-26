@@ -8,6 +8,7 @@ use App\Mail\SendVerificationCode;
 use App\Models\Category;
 use App\Models\PaymentMethod;
 use App\Models\Plan;
+use App\Models\Product;
 use App\Models\Segment;
 use App\Repositories\HttpClientRepository;
 use App\Models\User;
@@ -66,6 +67,23 @@ class ApiController extends Controller
 
     }
 
+    public function product($id)
+    {
+        $product = Product::select('id', 'segment_id', 'name', 'description', 'price', 'rebate', 'image')
+            ->with(['complements.subcomplements'])
+            ->where('id', $id)
+            ->first();
+
+        if (!$product) {
+            throw new CustomException('Nenhum produto encontrado', 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $product
+        ]);
+    }
+
     public function companiesByAllCategories(Request $request)
     {
         $request->validate([
@@ -80,6 +98,7 @@ class ApiController extends Controller
                 ->where('status', Company::STATUS_ACTIVE)
                 ->where('open', true)
                 ->inRandomOrder()
+                ->orderBy('distance', 'asc')
                 ->limit(10);           
 
         }])->get();
@@ -95,15 +114,23 @@ class ApiController extends Controller
         $request->validate([
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'category_id' => 'required|numeric',
+            'category_slug' => 'required|string',
             'limit' => 'nullable|numeric|min:1',
             'offset' => 'nullable|numeric|min:1'
         ]);
 
+        $category = Category::where('slug', $request->category_slug)->first();
+
+        if (!$category) {
+            throw new CustomException('Category not found', 404);
+        }
+
         $query = Company::select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
             ->where('status', Company::STATUS_ACTIVE)
-            ->where('category_id', $request->category_id);
+            ->where('category_id', $category->id)
+            ->orderBy('open', 'desc')
+            ->orderBy('distance', 'asc');
 
         if ($request->limit) {
             $query = $query->limit($request->limit);
@@ -117,7 +144,10 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $companies
+            'data' => [
+                'category' => $category,
+                'companies' => $companies
+            ]
         ]);
     }
 
