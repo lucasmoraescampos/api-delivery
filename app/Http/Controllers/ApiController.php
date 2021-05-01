@@ -91,7 +91,7 @@ class ApiController extends Controller
             'longitude' => 'required|numeric'
         ]);
 
-        $companies = Category::with(['companies' => function ($query) use ($request) {
+        $categories = Category::with(['companies' => function ($query) use ($request) {
 
             $query = $query->select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
                 ->distance($request->latitude, $request->longitude)
@@ -103,9 +103,15 @@ class ApiController extends Controller
 
         }])->get();
 
+        $categories = $categories->map(function ($category) {
+            if ($category->companies->count() > 0) {
+                return $category;
+            }
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $companies
+            'data' => $categories
         ]);
     }
 
