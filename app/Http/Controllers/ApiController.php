@@ -103,15 +103,17 @@ class ApiController extends Controller
 
         }])->get();
 
-        $categories = $categories->map(function ($category) {
+        $data = [];
+
+        foreach ($categories as $category) {
             if ($category->companies->count() > 0) {
-                return $category;
+                $data[] = $category;
             }
-        });
+        }
 
         return response()->json([
             'success' => true,
-            'data' => $categories
+            'data' => $data
         ]);
     }
 
