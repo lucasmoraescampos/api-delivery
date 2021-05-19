@@ -14,6 +14,7 @@ use App\Repositories\HttpClientRepository;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ApiController extends Controller
@@ -95,6 +96,7 @@ class ApiController extends Controller
 
             $query = $query->select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
                 ->distance($request->latitude, $request->longitude)
+                ->where('deleted', false)
                 ->where('status', Company::STATUS_ACTIVE)
                 ->where('open', true)
                 ->inRandomOrder()
@@ -124,7 +126,7 @@ class ApiController extends Controller
             'longitude' => 'required|numeric',
             'category_slug' => 'required|string',
             'limit' => 'nullable|numeric|min:1',
-            'offset' => 'nullable|numeric|min:1'
+            'offset' => 'nullable|numeric|min:0'
         ]);
 
         $category = Category::where('slug', $request->category_slug)->first();
@@ -135,6 +137,7 @@ class ApiController extends Controller
 
         $query = Company::select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
+            ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
             ->where('category_id', $category->id)
             ->orderBy('open', 'desc')
@@ -145,7 +148,7 @@ class ApiController extends Controller
         }
 
         if ($request->offset) {
-            $query = $query->offset($request->limit);
+            $query = $query->offset($request->offset);
         }
 
         $companies = $query->get();
@@ -155,6 +158,79 @@ class ApiController extends Controller
             'data' => [
                 'category' => $category,
                 'companies' => $companies
+            ]
+        ]);
+    }
+
+    public function searchCompanies(Request $request)
+    {
+        $request->validate([
+            'search'        => 'required|string',
+            'latitude'      => 'required|numeric',
+            'longitude'     => 'required|numeric',
+            'page'          => 'required|numeric|min:1'
+        ]);
+
+        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+            ->distance($request->latitude, $request->longitude)
+            ->where('deleted', false)
+            ->where('status', Company::STATUS_ACTIVE)
+            ->get();
+        
+        $products = Product::select('company_id')
+            ->whereIn('company_id', $companies->pluck('id'))
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('description', 'like', "%{$request->search}%");
+            })
+            ->distinct()
+            ->paginate(30);
+
+        $total = $products->total();
+
+        $companies = $companies->whereIn('id', $products->pluck('company_id'))->values();
+            
+        return response()->json([
+            'success'   => true,
+            'data'      => [
+                'total'     => $total,
+                'companies' => $companies
+            ]
+        ]);
+    }
+
+    public function searchProducts(Request $request)
+    {
+        $request->validate([
+            'search'        => 'required|string',
+            'latitude'      => 'required|numeric',
+            'longitude'     => 'required|numeric',
+            'page'          => 'required|numeric|min:1'
+        ]);
+
+        $companies = Company::select('id')
+            ->distance($request->latitude, $request->longitude)
+            ->where('deleted', false)
+            ->where('status', Company::STATUS_ACTIVE)
+            ->get();
+
+        $products = Product::select('id', 'company_id', 'segment_id', 'name', 'description', 'price', 'rebate', 'image')
+            ->whereIn('company_id', $companies->pluck('id'))
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('description', 'like', "%{$request->search}%");
+            })
+            ->paginate(30);
+
+        $total = $products->total();
+
+        $products = $products->values();
+            
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'total'     => $total,
+                'products'  => $products
             ]
         ]);
     }

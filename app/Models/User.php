@@ -33,14 +33,14 @@ class User extends Authenticatable implements JWTSubject
         'image'
     ];
 
-        /**
+    /**
      * The model's default values for attributes.
      *
      * @var array
      */
     protected $attributes = [
-        'status' => self::STATUS_INACTIVE,
-        'is_admin' => false
+        'status'    => self::STATUS_INACTIVE,
+        'is_admin'  => false
     ];
 
     /**
