@@ -186,16 +186,11 @@ class ApiController extends Controller
             ->distinct()
             ->paginate(30);
 
-        $total = $products->total();
-
         $companies = $companies->whereIn('id', $products->pluck('company_id'))->values();
             
         return response()->json([
             'success'   => true,
-            'data'      => [
-                'total'     => $total,
-                'companies' => $companies
-            ]
+            'data'      => $companies
         ]);
     }
 
