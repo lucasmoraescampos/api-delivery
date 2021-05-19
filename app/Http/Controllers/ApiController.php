@@ -191,6 +191,8 @@ class ApiController extends Controller
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
+            ->orderBy('open', 'desc')
+            ->orderBy('distance', 'asc')
             ->get();
         
         $products = Product::select('company_id')
