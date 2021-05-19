@@ -70,7 +70,7 @@ class ApiController extends Controller
             throw new CustomException('Nenhuma empresa encontrada', 404);
         }
 
-        $menu = Segment::with(['products:id,segment_id,name,description,price,rebate,image', 'products.complements.subcomplements'])
+        $menu = Segment::with(['products:id,company_id,segment_id,name,description,price,rebate,image', 'products.complements.subcomplements'])
             ->orderBy('position', 'asc')
             ->where('company_id', $company['id'])
             ->get();
