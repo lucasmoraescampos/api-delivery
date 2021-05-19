@@ -40,7 +40,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function companyById($id)
+    public function company($id)
     {
         $company = Company::with(['payment_methods'])->where('id', $id)->first();
 

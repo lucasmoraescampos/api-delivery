@@ -25,7 +25,7 @@ Route::get('search-companies', 'ApiController@searchCompanies');
 
 Route::get('search-products', 'ApiController@searchProducts');
 
-Route::get('company/{id}', 'ApiController@companyById');
+Route::get('company/{id}', 'ApiController@company');
 
 Route::get('company/slug/{slug}', 'ApiController@companyBySlug');
 
