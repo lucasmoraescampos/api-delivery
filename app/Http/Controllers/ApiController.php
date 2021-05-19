@@ -14,7 +14,6 @@ use App\Repositories\HttpClientRepository;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ApiController extends Controller
@@ -41,7 +40,25 @@ class ApiController extends Controller
         ]);
     }
 
-    public function company($slug)
+    public function companyById($id)
+    {
+        $company = Company::with(['payment_methods'])->where('id', $id)->first();
+
+        $company = collect($company->toArray())->except([
+            'document_number', 'balance', 'status', 'created_at', 'updated_at'
+        ]);
+
+        if (!$company) {
+            throw new CustomException('Nenhuma empresa encontrada', 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => $company
+        ]);
+    }
+
+    public function companyBySlug($slug)
     {
         $company = Company::with(['payment_methods'])->where('slug', $slug)->first();
 
@@ -50,7 +67,7 @@ class ApiController extends Controller
         ]);
 
         if (!$company) {
-            throw new CustomException('Nenhuma empresa encontrada', 200);
+            throw new CustomException('Nenhuma empresa encontrada', 404);
         }
 
         $menu = Segment::with(['products:id,segment_id,name,description,price,rebate,image', 'products.complements.subcomplements'])
@@ -65,7 +82,6 @@ class ApiController extends Controller
                 'menu' => $menu
             ]
         ]);
-
     }
 
     public function product($id)
