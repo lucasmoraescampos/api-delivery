@@ -225,7 +225,7 @@ class ApiController extends Controller
             ->where('status', Company::STATUS_ACTIVE)
             ->get();
 
-        $products = Product::select('id', 'company_id', 'segment_id', 'name', 'description', 'price', 'rebate', 'image', 'complements')
+        $products = Product::select('id', 'company_id', 'segment_id', 'name', 'description', 'price', 'rebate', 'image')
             ->with('complements.subcomplements')
             ->whereIn('company_id', $companies->pluck('id'))
             ->where(function ($query) use ($request) {
