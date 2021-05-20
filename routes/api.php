@@ -76,11 +76,13 @@ Route::namespace('User')->prefix('user')->group(function () {
         
         Route::post('company', 'CompanyController@store');
 
-        Route::post('company/favorite', 'CompanyController@favorite');
+        Route::post('company/favorite', 'CompanyController@storeFavorite');
 
         Route::put('company/{id}', 'CompanyController@update');
 
         Route::delete('company/{id}', 'CompanyController@delete');
+
+        Route::delete('company/favorite/{company_id}', 'CompanyController@deleteFavorite');
 
 
         Route::get('order', 'OrderController@index');

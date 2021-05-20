@@ -220,7 +220,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      * @param array $attributes
      * @return Favorite
      */
-    public function favorite(array $attributes): Favorite
+    public function createFavorite(array $attributes): Favorite
     {
         $this->validateFavorite($attributes);
 
@@ -230,16 +230,25 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             throw new CustomException('Company id not found.', 404);
         }
 
-        if (Favorite::where('user_id', $user_id)
+        $favorite = Favorite::where('user_id', $user_id)
             ->where('company_id', $attributes['company_id'])
-            ->count() > 0) {
-                throw new CustomException('Company is already a favorite.', 400);
-            }
+            ->first();
 
-        return Favorite::create([
+        return $favorite ?? Favorite::create([
             'user_id'    => $user_id,
             'company_id' => $attributes['company_id']
         ]);
+    }
+
+    /**
+     * @param mixed $company_id
+     * @return void
+     */
+    public function deleteFavorite($company_id): void
+    {
+        Favorite::where('user_id', Auth::id())
+            ->where('company_id', $company_id)
+            ->delete();
     }
 
     /**

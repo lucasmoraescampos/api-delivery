@@ -47,14 +47,24 @@ class CompanyController extends Controller
         ]);
     }
 
-    public function favorite(Request $request)
+    public function storeFavorite(Request $request)
     {
-        $favorite = $this->companyRepository->favorite($request->all());
+        $favorite = $this->companyRepository->createFavorite($request->all());
 
         return response()->json([
             'success' => true,
             'message' => 'Empresa favoritada com sucesso',
             'data'    => $favorite
+        ]);
+    }
+
+    public function deleteFavorite($company_id)
+    {
+        $this->companyRepository->deleteFavorite($company_id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Empresa desfavoritada com sucesso'
         ]);
     }
 }
