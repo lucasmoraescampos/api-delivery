@@ -110,7 +110,7 @@ class ApiController extends Controller
 
         $categories = Category::with(['companies' => function ($query) use ($request) {
 
-            $query = $query->select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+            $query = $query->select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
                 ->distance($request->latitude, $request->longitude)
                 ->where('deleted', false)
                 ->where('status', Company::STATUS_ACTIVE)
@@ -151,7 +151,7 @@ class ApiController extends Controller
             throw new CustomException('Category not found', 404);
         }
 
-        $query = Company::select('category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+        $query = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)

@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use Illuminate\Support\Collection;
+use App\Models\Favorite;
 
 interface CompanyRepositoryInterface
 {
     /**
      * @param array $attributes
-     * @return void
+     * @return Favorite
      */
-    public function favorite(array $attributes): void;
+    public function favorite(array $attributes): Favorite;
 }

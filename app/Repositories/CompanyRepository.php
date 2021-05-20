@@ -218,9 +218,9 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     /**
      * @param array $attributes
-     * @return void
+     * @return Favorite
      */
-    public function favorite(array $attributes): void
+    public function favorite(array $attributes): Favorite
     {
         $this->validateFavorite($attributes);
 
@@ -236,7 +236,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                 throw new CustomException('Company is already a favorite.', 400);
             }
 
-        Favorite::create([
+        return Favorite::create([
             'user_id'    => $user_id,
             'company_id' => $attributes['company_id']
         ]);
