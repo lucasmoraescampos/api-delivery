@@ -85,6 +85,9 @@ Route::namespace('User')->prefix('user')->group(function () {
 
         Route::post('order', 'OrderController@store');
 
+
+        Route::post('favorite', 'FavoriteController@store');
+
     });
 
 });
