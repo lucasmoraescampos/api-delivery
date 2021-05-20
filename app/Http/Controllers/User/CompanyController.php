@@ -46,4 +46,14 @@ class CompanyController extends Controller
             'message' => 'Empresa excluída com sucesso'
         ]);
     }
+
+    public function favorite(Request $request)
+    {
+        $this->companyRepository->favorite($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Empresa favoritada com sucesso'
+        ]);
+    }
 }

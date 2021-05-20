@@ -76,6 +76,8 @@ Route::namespace('User')->prefix('user')->group(function () {
         
         Route::post('company', 'CompanyController@store');
 
+        Route::post('company/favorite', 'CompanyController@favorite');
+
         Route::put('company/{id}', 'CompanyController@update');
 
         Route::delete('company/{id}', 'CompanyController@delete');
@@ -86,7 +88,7 @@ Route::namespace('User')->prefix('user')->group(function () {
         Route::post('order', 'OrderController@store');
 
 
-        Route::post('favorite', 'FavoriteController@store');
+        
 
     });
 

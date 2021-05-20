@@ -7,6 +7,7 @@ use App\Exceptions\CustomException;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\CompanyPaymentMethod;
+use App\Models\Favorite;
 use App\Models\PaymentMethod;
 use App\Models\Plan;
 use App\Models\PlanSubscription;
@@ -216,6 +217,32 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     }
 
     /**
+     * @param array $attributes
+     * @return void
+     */
+    public function favorite(array $attributes): void
+    {
+        $this->validateFavorite($attributes);
+
+        $user_id = Auth::id();
+
+        if (Company::where('id', $attributes['company_id'])->count() == 0) {
+            throw new CustomException('Company id not found.', 404);
+        }
+
+        if (Favorite::where('user_id', $user_id)
+            ->where('company_id', $attributes['company_id'])
+            ->count() > 0) {
+                throw new CustomException('Company is already a favorite.', 400);
+            }
+
+        Favorite::create([
+            'user_id'    => $user_id,
+            'company_id' => $attributes['company_id']
+        ]);
+    }
+
+    /**
      * @param mixed $name
      * @return string
      */
@@ -422,6 +449,19 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                     }
                 }
             ]
+        ]);
+
+        $validator->validate();
+    }
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    private function validateFavorite(array $attributes): void 
+    {
+        $validator = Validator::make($attributes, [
+            'company_id' => 'required|numeric'
         ]);
 
         $validator->validate();
