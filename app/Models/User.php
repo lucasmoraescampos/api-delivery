@@ -88,4 +88,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Models\Card');
     }
+
+    /**
+     * Get the favorites for the user.
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }
