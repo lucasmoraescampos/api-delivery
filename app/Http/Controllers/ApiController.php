@@ -143,8 +143,8 @@ class ApiController extends Controller
             'category_slug' => 'required|string',
             'page'          => 'required|numeric|min:1',
             'order'         => 'nullable|string',
-            'allow_takeout'       => 'nullable|bool',
-            'free_delivery' => 'nullable|bool'
+            'allow_takeout' => 'nullable|boolean',
+            'free_delivery' => 'nullable|boolean'
         ]);
 
         $category = Category::where('slug', $request->category_slug)->first();
