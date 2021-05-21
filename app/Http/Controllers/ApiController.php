@@ -143,7 +143,7 @@ class ApiController extends Controller
             'category_slug' => 'required|string',
             'page'          => 'required|numeric|min:1',
             'order'         => 'nullable|string',
-            'allow_takeout' => 'nullable|boolean',
+            'takeout' => 'nullable|boolean',
             'free_delivery' => 'nullable|boolean'
         ]);
 
@@ -159,7 +159,7 @@ class ApiController extends Controller
             ->where('status', Company::STATUS_ACTIVE)
             ->where('category_id', $category->id);            
 
-        if ($request->allow_takeout) {
+        if ($request->takeout) {
             $companies = $companies->where('allow_takeout', true);
         }
 
