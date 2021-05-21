@@ -37,13 +37,13 @@ class Company extends Model
         'phone',
         'document_number',
         'slug',
-        'waiting_time',
+        'delivery_time',
         'delivery_price',
         'min_order_value',
         'radius',
         'allow_payment_delivery',
         'allow_payment_online',
-        'allow_withdrawal_local',
+        'allow_takeout',
         'image',
         'banner',
         'street_name',
@@ -85,13 +85,13 @@ class Company extends Model
         'open' => 'boolean',
         'status' => 'integer',
         'evaluation' => 'float',
-        'waiting_time' => 'integer',
+        'delivery_time' => 'integer',
         'delivery_price' => 'float',
         'min_order_value' => 'float',
         'radius' => 'float',
         'allow_payment_delivery' => 'boolean',
         'allow_payment_online' => 'boolean',
-        'allow_withdrawal_local' => 'boolean'
+        'allow_takeout' => 'boolean'
     ];
 
     /**

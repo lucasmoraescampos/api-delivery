@@ -166,7 +166,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         }
 
-        $order->delivery_forecast = date('Y-m-d H:i:s', strtotime("+ {$company->waiting_time} minute"));
+        $order->delivery_forecast = date('Y-m-d H:i:s', strtotime("+ {$company->delivery_time} minute"));
 
         $order->products = $this->serializeProduct($attributes['products']);
 

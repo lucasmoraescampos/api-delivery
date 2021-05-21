@@ -24,13 +24,13 @@ class CreateCompanies extends Migration
             $table->unsignedDecimal('balance', 15, 2);
             $table->string('slug', 255)->unique();
             $table->unsignedDecimal('evaluation', 2, 1)->nullable();
-            $table->unsignedSmallInteger('waiting_time');
+            $table->unsignedSmallInteger('delivery_time');
             $table->unsignedDecimal('delivery_price', 15, 2);
             $table->unsignedDecimal('min_order_value', 15, 2);
             $table->unsignedDecimal('radius', 5, 1);
             $table->boolean('allow_payment_delivery');
             $table->boolean('allow_payment_online');
-            $table->boolean('allow_withdrawal_local');
+            $table->boolean('allow_takeout');
             $table->string('image', 255);
             $table->string('banner', 255)->nullable();
             $table->string('street_name', 255);

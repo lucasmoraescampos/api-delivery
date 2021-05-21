@@ -110,7 +110,7 @@ class ApiController extends Controller
 
         $categories = Category::with(['companies' => function ($query) use ($request) {
 
-            $query = $query->select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+            $query = $query->select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'delivery_time', 'delivery_price', 'open')
                 ->distance($request->latitude, $request->longitude)
                 ->where('deleted', false)
                 ->where('status', Company::STATUS_ACTIVE)
@@ -141,7 +141,10 @@ class ApiController extends Controller
             'latitude'      => 'required|numeric',
             'longitude'     => 'required|numeric',
             'category_slug' => 'required|string',
-            'page'          => 'required|numeric|min:1'
+            'page'          => 'required|numeric|min:1',
+            'order'         => 'nullable|string',
+            'allow_takeout'       => 'nullable|bool',
+            'free_delivery' => 'nullable|bool'
         ]);
 
         $category = Category::where('slug', $request->category_slug)->first();
@@ -150,15 +153,45 @@ class ApiController extends Controller
             throw new CustomException('Category not found', 404);
         }
 
-        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'delivery_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
-            ->where('category_id', $category->id)
-            ->orderBy('open', 'desc')
-            ->orderBy('distance', 'asc')
-            ->paginate(30)
-            ->values();
+            ->where('category_id', $category->id);
+
+        if ($request->order) {
+
+            if ($request->order == 'min_order_value') {
+                $companies = $companies->order('min_order_value', 'asc');
+            }
+
+            if ($request->order == 'evaluation') {
+                $companies = $companies->order('evaluation', 'asc');
+            }
+
+            if ($request->order == 'delivery_time') {
+                $companies = $companies->order('delivery_time', 'asc');
+            }
+
+            if ($request->order == 'delivery_price') {
+                $companies = $companies->order('delivery_price', 'asc');
+            }
+            
+            if ($request->order == 'distance') {
+                $companies = $companies->order('distance', 'asc');
+            }
+
+        }
+
+        if ($request->allow_takeout) {
+            $companies = $companies->where('allow_takeout', true);
+        }
+
+        if ($request->free_delivery) {
+            $companies = $companies->where('delivery_price', 0.00);
+        }
+
+        $companies = $companies->orderBy('open', 'desc')->paginate(30)->values();
 
         return response()->json([
             'success' => true,
@@ -178,7 +211,7 @@ class ApiController extends Controller
             'page'          => 'required|numeric|min:1'
         ]);
 
-        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'delivery_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
