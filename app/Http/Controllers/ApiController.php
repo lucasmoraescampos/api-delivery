@@ -138,11 +138,10 @@ class ApiController extends Controller
     public function companiesByCategory(Request $request)
     {
         $request->validate([
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'latitude'      => 'required|numeric',
+            'longitude'     => 'required|numeric',
             'category_slug' => 'required|string',
-            'limit' => 'nullable|numeric|min:1',
-            'offset' => 'nullable|numeric|min:0'
+            'page'          => 'required|numeric|min:1'
         ]);
 
         $category = Category::where('slug', $request->category_slug)->first();
@@ -151,23 +150,15 @@ class ApiController extends Controller
             throw new CustomException('Category not found', 404);
         }
 
-        $query = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
+        $companies = Company::select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'waiting_time', 'delivery_price', 'open')
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
             ->where('category_id', $category->id)
             ->orderBy('open', 'desc')
-            ->orderBy('distance', 'asc');
-
-        if ($request->limit) {
-            $query = $query->limit($request->limit);
-        }
-
-        if ($request->offset) {
-            $query = $query->offset($request->offset);
-        }
-
-        $companies = $query->get();
+            ->orderBy('distance', 'asc')
+            ->paginate(30)
+            ->values();
 
         return response()->json([
             'success' => true,
