@@ -162,23 +162,23 @@ class ApiController extends Controller
         if ($request->order) {
 
             if ($request->order == 'min_order_value') {
-                $companies = $companies->order('min_order_value', 'asc');
+                $companies = $companies->orderBy('min_order_value', 'asc');
             }
 
             if ($request->order == 'evaluation') {
-                $companies = $companies->order('evaluation', 'asc');
+                $companies = $companies->orderBy('evaluation', 'asc');
             }
 
             if ($request->order == 'delivery_time') {
-                $companies = $companies->order('delivery_time', 'asc');
+                $companies = $companies->orderBy('delivery_time', 'asc');
             }
 
             if ($request->order == 'delivery_price') {
-                $companies = $companies->order('delivery_price', 'asc');
+                $companies = $companies->orderBy('delivery_price', 'asc');
             }
             
             if ($request->order == 'distance') {
-                $companies = $companies->order('distance', 'asc');
+                $companies = $companies->orderBy('distance', 'asc');
             }
 
         }
