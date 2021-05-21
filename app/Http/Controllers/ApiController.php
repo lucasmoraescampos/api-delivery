@@ -157,7 +157,17 @@ class ApiController extends Controller
             ->distance($request->latitude, $request->longitude)
             ->where('deleted', false)
             ->where('status', Company::STATUS_ACTIVE)
-            ->where('category_id', $category->id);
+            ->where('category_id', $category->id);            
+
+        if ($request->allow_takeout) {
+            $companies = $companies->where('allow_takeout', true);
+        }
+
+        if ($request->free_delivery) {
+            $companies = $companies->where('delivery_price', 0.00);
+        }
+
+        $companies = $companies->orderBy('open', 'desc');
 
         if ($request->order) {
 
@@ -183,15 +193,7 @@ class ApiController extends Controller
 
         }
 
-        if ($request->allow_takeout) {
-            $companies = $companies->where('allow_takeout', true);
-        }
-
-        if ($request->free_delivery) {
-            $companies = $companies->where('delivery_price', 0.00);
-        }
-
-        $companies = $companies->orderBy('open', 'desc')->paginate(30)->values();
+        $companies = $companies->paginate(30)->values();
 
         return response()->json([
             'success' => true,
