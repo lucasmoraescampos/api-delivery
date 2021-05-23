@@ -114,10 +114,10 @@ class LocationRepository implements LocationRepositoryInterface
             'street_number' => 'required|string|max:20',
             'complement' => 'nullable|string|max:255',
             'district' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
-            'uf' => 'required|string|max:2',
+            'city' => 'nullable|string|max:100',
+            'uf' => 'nullable|string|max:2',
             'postal_code' => 'nullable|string|max:20',
-            'country' => 'required|string|max:100',
+            'country' => 'nullable|string|max:100',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'type' => ['nullable', 'numeric', function ($attribute, $value, $fail) {
