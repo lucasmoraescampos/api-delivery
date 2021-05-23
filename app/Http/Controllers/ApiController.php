@@ -143,7 +143,7 @@ class ApiController extends Controller
             'category_slug' => 'required|string',
             'page'          => 'required|numeric|min:1',
             'order'         => 'nullable|string',
-            'takeout' => 'nullable|boolean',
+            'takeout'       => 'nullable|boolean',
             'free_delivery' => 'nullable|boolean'
         ]);
 

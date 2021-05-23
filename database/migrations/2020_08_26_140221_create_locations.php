@@ -22,7 +22,7 @@ class CreateLocations extends Migration
             $table->string('district', 100);
             $table->string('city', 100);
             $table->char('uf', 2);
-            $table->string('postal_code', 20);
+            $table->string('postal_code', 20)->nullable();
             $table->string('country', 100);
             $table->string('latitude', 40);
             $table->string('longitude', 40);

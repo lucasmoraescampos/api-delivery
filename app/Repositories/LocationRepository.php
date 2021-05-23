@@ -116,7 +116,7 @@ class LocationRepository implements LocationRepositoryInterface
             'district' => 'required|string|max:100',
             'city' => 'required|string|max:100',
             'uf' => 'required|string|max:2',
-            'postal_code' => 'required|string|max:20',
+            'postal_code' => 'nullable|string|max:20',
             'country' => 'required|string|max:100',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
