@@ -344,7 +344,7 @@
 
                     <span style="text-align:center;font-size:14px;color:#a6a29f;line-height:18px">
 
-                        <p style="margin:0"> © {{ date('Y') }} Meu Pedido - Todos os direitos reservados. </p>
+                        <p style="margin:0"> © {{ date('Y') }} {{ env('APP_NAME') }} - Todos os direitos reservados. </p>
 
                     </span>
 

@@ -17,7 +17,6 @@ class CreateOrders extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreignId('company_deliveryman_id')->nullable()->constrained('companies_deliverymen')->onUpdate('cascade')->onDelete('set null');
             $table->unsignedBigInteger('mercadopago_id')->nullable();
             $table->string('number', 20);
             $table->unsignedDecimal('price', 15, 2);

@@ -360,7 +360,7 @@ class ApiController extends Controller
                 'key' => env('SMS_DEV_KEY'),
                 'type' => 9,
                 'number' => $request->phone,
-                'msg' => "Seu codigo Meu Pedido: $code"
+                'msg' => 'Seu codigo ' . env('APP_NAME') . ': ' . $code
             ]);
 
             $httpClient->post('https://api.smsdev.com.br/v1/send');
