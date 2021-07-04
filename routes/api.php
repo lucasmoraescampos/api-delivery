@@ -1,9 +1,5 @@
 <?php
 
-use App\Models\Category;
-use App\Models\Company;
-use App\Models\PaymentMethod;
-use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,80 +12,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('teste', function () {
-
-    $url = env('IMAGES_URL');
-
-    $categories = Category::all();
-    
-    foreach ($categories as $category) {
-
-        $parts = explode('/', $category->image);
-
-        $image = end($parts);
-
-        $category->image = $url . '/' . $image;
-
-        $category->save();
-
-    }
-
-    $companies = Company::all();
-    
-    foreach ($companies as $company) {
-
-        $parts = explode('/', $company->image);
-
-        $image = end($parts);
-
-        $company->image = $url . '/' . $image;
-
-        if ($company->banner) {
-
-            $parts = explode('/', $company->banner);
-
-            $banner = end($parts);
-
-            $company->banner = $url . '/' . $banner;
-
-        }
-
-        $company->save();
-
-    }
-
-    $payment_methods = PaymentMethod::all();
-    
-    foreach ($payment_methods as $payment_method) {
-
-        $parts = explode('/', $payment_method->icon);
-
-        $icon = end($parts);
-
-        $payment_method->icon = $url . '/' . $icon;
-
-        $payment_method->save();
-
-    }
-
-    $products = Product::all();
-    
-    foreach ($products as $product) {
-
-        $parts = explode('/', $product->image);
-
-        $image = end($parts);
-
-        $product->image = $url . '/' . $image;
-
-        $product->save();
-
-    }
-
-});
-
-Route::domain(env('IMAGES_URL'))->get('/{image}', 'ImageController@show');
 
 Route::domain(env('APP_URL'))->group(function () {
 
@@ -144,6 +66,8 @@ Route::domain(env('APP_URL'))->group(function () {
 
             Route::post('card', 'CardController@store');
 
+            Route::delete('card/{id}', 'CardController@delete');
+
 
             Route::get('location', 'LocationController@index');
 
@@ -154,6 +78,8 @@ Route::domain(env('APP_URL'))->group(function () {
             Route::delete('location/{id}', 'LocationController@delete');
 
             
+            Route::get('company/favorites', 'CompanyController@favorites');
+
             Route::post('company', 'CompanyController@store');
 
             Route::post('company/favorite', 'CompanyController@storeFavorite');

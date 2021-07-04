@@ -113,7 +113,7 @@ class Company extends Model
     /**
      * calculates user distance when obtaining the list of administrators.
      */
-    public static function scopeDistance($query, $latitude, $longitude)
+    public static function scopeDistance($query, $latitude, $longitude, $radius = true)
     {
         $select = "111.045
             * DEGREES(ACOS(LEAST(1.0, COS(RADIANS($latitude))
@@ -122,11 +122,17 @@ class Company extends Model
             + SIN(RADIANS($latitude))
             * SIN(RADIANS(latitude))))) AS distance";
 
-        $where = "latitude BETWEEN $latitude - (radius / 111.045)
-            AND $latitude + (radius / 111.045)
-            AND longitude BETWEEN $longitude - (radius / (111.045 * COS(RADIANS($latitude))))
-            AND $longitude + (radius / (111.045 * COS(RADIANS($latitude))))";
+        if ($radius) {
 
-        return $query->addSelect(DB::raw($select))->whereRaw($where);
+            $where = "latitude BETWEEN $latitude - (radius / 111.045)
+                AND $latitude + (radius / 111.045)
+                AND longitude BETWEEN $longitude - (radius / (111.045 * COS(RADIANS($latitude))))
+                AND $longitude + (radius / (111.045 * COS(RADIANS($latitude))))";
+
+            return $query->addSelect(DB::raw($select))->whereRaw($where);
+
+        }
+
+        return $query->addSelect(DB::raw($select));
     }
 }

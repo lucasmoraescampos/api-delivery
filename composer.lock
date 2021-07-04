@@ -3081,16 +3081,16 @@
         },
         {
             "name": "mercadopago/dx-php",
-            "version": "2.2.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mercadopago/dx-php.git",
-                "reference": "2ea4d51f6b29d568b3a06d430114467fc2ab6b90"
+                "url": "https://github.com/mercadopago/sdk-php.git",
+                "reference": "8f71ba1515105b8a5acd167f7546edadf9e0c531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mercadopago/dx-php/zipball/2ea4d51f6b29d568b3a06d430114467fc2ab6b90",
-                "reference": "2ea4d51f6b29d568b3a06d430114467fc2ab6b90",
+                "url": "https://api.github.com/repos/mercadopago/sdk-php/zipball/8f71ba1515105b8a5acd167f7546edadf9e0c531",
+                "reference": "8f71ba1515105b8a5acd167f7546edadf9e0c531",
                 "shasum": ""
             },
             "require": {
@@ -3124,24 +3124,12 @@
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "imasson",
-                    "homepage": "https://github.com/imasson",
-                    "role": "Developer"
-                },
-                {
-                    "name": "joelibaceta",
-                    "homepage": "https://github.com/joelibaceta",
-                    "role": "Developer"
-                }
-            ],
             "description": "Mercado Pago PHP SDK",
-            "homepage": "https://github.com/mercadopago/dx-php",
+            "homepage": "https://github.com/mercadopago/sdk-php",
             "support": {
-                "source": "https://github.com/mercadopago/dx-php/tree/2.2.1"
+                "source": "https://github.com/mercadopago/sdk-php/tree/2.3.0"
             },
-            "time": "2020-11-13T21:50:52+00:00"
+            "time": "2021-05-19T21:01:47+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",

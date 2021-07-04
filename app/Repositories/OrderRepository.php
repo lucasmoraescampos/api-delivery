@@ -56,7 +56,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     public function getByAuth(): Collection
     {
         return Order::select('id', 'number', 'company_id', 'price', 'delivery_price', 'total_price', 'products', 'type', 'payment_type', 'payment_method', 'delivery_location', 'delivery_forecast', 'status', 'created_at')
-            ->with(['company:id,name,street_name,street_number,district,complement,city,uf'])
+            ->with(['company:id,name,image,slug,street_name,street_number,district,complement,city,uf'])
             ->where('user_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();

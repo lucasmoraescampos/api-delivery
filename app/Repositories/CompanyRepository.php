@@ -13,6 +13,7 @@ use App\Models\Plan;
 use App\Models\PlanSubscription;
 use App\Rules\DataUrlImageRule;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -27,6 +28,23 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     public function __construct(Company $model)
     {
         parent::__construct($model);
+    }
+
+    /**
+     * @param array $attributes
+     * @return Collection
+     */
+    public function getFavorites(array $attributes): Collection
+    {
+        $this->validateGetFavorites($attributes);
+
+        $user = Auth::user();
+
+        return $user->favorites()
+            ->select('id', 'category_id', 'slug', 'image', 'name', 'evaluation', 'delivery_time', 'delivery_price', 'open')
+            ->distance($attributes['latitude'], $attributes['longitude'], false)
+            ->orderBy('open', 'desc')
+            ->get();
     }
 
     /**
@@ -222,7 +240,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      */
     public function createFavorite(array $attributes): Favorite
     {
-        $this->validateFavorite($attributes);
+        $this->validateCreateFavorite($attributes);
 
         $user_id = Auth::id();
 
@@ -467,7 +485,21 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
      * @param array $attributes
      * @return void
      */
-    private function validateFavorite(array $attributes): void 
+    private function validateGetFavorites(array $attributes): void 
+    {
+        $validator = Validator::make($attributes, [
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
+        ]);
+
+        $validator->validate();
+    }
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    private function validateCreateFavorite(array $attributes): void 
     {
         $validator = Validator::make($attributes, [
             'company_id' => 'required|numeric'

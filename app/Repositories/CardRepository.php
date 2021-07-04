@@ -81,6 +81,23 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
     }
 
     /**
+     * @param mixed $id
+     * @return void
+     */
+    public function delete($id): void
+    {
+        $card = Card::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$card) {
+            throw new CustomException('Card não encontrado.', 404);
+        }
+
+        $card->delete();
+    }
+
+    /**
      * @param array $attributes
      * @return void
      */
@@ -131,7 +148,7 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
      */
     private function getIcon($payment_method_id): ?string
     {
-        $path = env('IMAGES_URL') . '/payment-methods';
+        $path = env('IMAGES_URL');
 
         if ($payment_method_id == 'visa') {
             return $path . '/visa.png';

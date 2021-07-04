@@ -47,6 +47,16 @@ class CompanyController extends Controller
         ]);
     }
 
+    public function favorites(Request $request)
+    {
+        $companies = $this->companyRepository->getFavorites($request->all());
+
+        return response()->json([
+            'success' => true,
+            'data' => $companies
+        ]);
+    }
+
     public function storeFavorite(Request $request)
     {
         $favorite = $this->companyRepository->createFavorite($request->all());

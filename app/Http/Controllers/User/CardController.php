@@ -45,4 +45,14 @@ class CardController extends Controller
             'data' => $card
         ]);
     }
+
+    public function delete($id)
+    {
+        $this->cardRepository->delete($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cartão excluído com sucesso'
+        ]);
+    }
 }
