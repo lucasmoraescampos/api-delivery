@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Image;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,6 +53,16 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'is_admin'
     ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'user_id'   => 'integer',
+        'image'     => Image::class
+	];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

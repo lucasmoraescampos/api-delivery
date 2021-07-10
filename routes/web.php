@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::domain(env('IMAGES_URL'))->get('/{image}', 'ImageController@show');
+Route::domain(env('APP_IMAGES_URL'))->get('/{image}', 'ImageController@show');

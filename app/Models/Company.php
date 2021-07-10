@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -66,10 +67,10 @@ class Company extends Model
      * @var array
      */
     protected $attributes = [
-        'balance' => 0.00,
-        'open' => false,
-        'status' => self::STATUS_INACTIVE,
-        'deleted' => false
+        'balance'   => 0.00,
+        'open'      => false,
+        'status'    => self::STATUS_INACTIVE,
+        'deleted'   => false
     ];
 
     /**
@@ -78,20 +79,22 @@ class Company extends Model
      * @var array
      */
     protected $casts = [
-        'user_id' => 'integer',
-        'category_id' => 'integer',
-        'plan_id' => 'integer',
-        'balance' => 'float',
-        'open' => 'boolean',
-        'status' => 'integer',
-        'evaluation' => 'float',
-        'delivery_time' => 'integer',
-        'delivery_price' => 'float',
-        'min_order_value' => 'float',
-        'radius' => 'float',
-        'allow_payment_delivery' => 'boolean',
-        'allow_payment_online' => 'boolean',
-        'allow_takeout' => 'boolean'
+        'user_id'                   => 'integer',
+        'category_id'               => 'integer',
+        'plan_id'                   => 'integer',
+        'balance'                   => 'float',
+        'open'                      => 'boolean',
+        'status'                    => 'integer',
+        'evaluation'                => 'float',
+        'delivery_time'             => 'integer',
+        'delivery_price'            => 'float',
+        'min_order_value'           => 'float',
+        'radius'                    => 'float',
+        'allow_payment_delivery'    => 'boolean',
+        'allow_payment_online'      => 'boolean',
+        'allow_takeout'             => 'boolean',
+        'banner'                    => Image::class,
+        'image'                     => Image::class
     ];
 
     /**

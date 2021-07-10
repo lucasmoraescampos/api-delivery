@@ -17,7 +17,7 @@ class CreatePaymentMethods extends Migration
             $table->id();
             $table->string('name', 40);
             $table->string('icon', 100);
-            $table->boolean('allow_change_money')->nullable();
+            $table->boolean('allow_change_money');
         });
     }
 

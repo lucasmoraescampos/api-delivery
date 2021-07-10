@@ -31,7 +31,7 @@ class SendCompanyNotification
      */
     public function handle(CompanyStatus $event)
     {
-        $company_url = env('SOCKET_URL');
+        $company_url = env('APP_SOCKET_URL');
 
         $messaging = app('firebase.messaging');
 

@@ -16,11 +16,9 @@ if (!function_exists('fileUpload')) {
 
         $ext = $file->extension();
 
-        $full_name = "{$name}.{$ext}";
+        $file->storeAs('images', "{$name}.{$ext}");
 
-        $file->storeAs($folder, $full_name);
-
-        return env('IMAGES_URL') . "/$folder/$full_name";
+        return "{$name}.{$ext}";
     }
 
 }
@@ -39,13 +37,11 @@ if (!function_exists('dataUrlImageUpload')) {
         
         $name = uniqid(date('HisYmd'));
 
-        $path = "{$folder}/{$name}.{$ext}";
-
         $base64 = explode(',', $dataUrl)[1];
 
-        Storage::put($path, base64_decode($base64));
+        Storage::put("images/{$name}.{$ext}", base64_decode($base64));
 
-        return env('IMAGES_URL') . "/$path";
+        return "{$name}.{$ext}";
     }
 
 }

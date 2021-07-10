@@ -22,7 +22,7 @@ class CompanyObserver
      */
     public function updated(Company $company)
     {
-        $base_url = env('SOCKET_URL');
+        $base_url = env('APP_SOCKET_URL');
 
         Http::post("{$base_url}/user/publish", [
             'room' => 'mp-room-user-' . $company->user_id,

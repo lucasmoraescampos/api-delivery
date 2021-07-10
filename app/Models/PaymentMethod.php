@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Image;
 use Illuminate\Database\Eloquent\Model;
 
 class PaymentMethod extends Model
@@ -29,6 +30,16 @@ class PaymentMethod extends Model
 		'name',
 		'icon',
 		'allow_change_money'
+	];
+
+	/**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+		'user_id' 	=> 'integer',
+		'icon'		=> Image::class
 	];
 
 	/**

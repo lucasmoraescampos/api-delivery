@@ -12,18 +12,16 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $image = env('IMAGES_URL') . '/categories';
-
         DB::table('categories')->insert([
-            ['name' => 'Restaurantes',              'image' => $image],
-            ['name' => 'Supermercados',             'image' => $image],
-            ['name' => 'Padarias',                  'image' => $image],
-            ['name' => 'Bebidas',                   'image' => $image],
-            ['name' => 'Farmácias',                 'image' => $image],
-            ['name' => 'Água e gás',                'image' => $image],
-            ['name' => 'Modas',                     'image' => $image],
-            ['name' => 'Materiais de construção',   'image' => $image],
-            ['name' => 'Pets Shop',                 'image' => $image]
+            ['name' => 'Restaurante',               'image' => 'restaurants.png',   'slug' =>  'restaurants'    ],
+            ['name' => 'Supermercado',              'image' => 'supermarkets.png',  'slug' =>  'supermarkets'   ],
+            ['name' => 'Padaria',                   'image' => 'bakeries.png',      'slug' =>  'bakeries'       ],
+            ['name' => 'Bebidas',                   'image' => 'drinks.png',        'slug' =>  'drinks'         ],
+            ['name' => 'Farmácia',                  'image' => 'pharmacies.png',    'slug' =>  'pharmacies'     ],
+            ['name' => 'Água e gás',                'image' => 'others.png',        'slug' =>  'water-and-gas'  ],
+            ['name' => 'Modas',                     'image' => 'fashions.png',      'slug' =>  'fashions'       ],
+            ['name' => 'Materiais de construção',   'image' => 'construction.png',  'slug' =>  'construction'   ],
+            ['name' => 'Pet Shop',                  'image' => 'petshops.png',      'slug' =>  'petshops'       ]
         ]);
     }
 }

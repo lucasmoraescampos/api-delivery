@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Image;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -46,18 +47,19 @@ class Product extends Model
 	 * @var array
 	 */
 	protected $casts = [
-		'company_id' => 'integer',
-		'segment_id' => 'integer',
-		'has_sunday' => 'boolean',
-		'has_monday' => 'boolean',
-		'has_tuesday' => 'boolean',
+		'company_id' 	=> 'integer',
+		'segment_id' 	=> 'integer',
+		'has_sunday' 	=> 'boolean',
+		'has_monday' 	=> 'boolean',
+		'has_tuesday' 	=> 'boolean',
 		'has_wednesday' => 'boolean',
-		'has_thursday' => 'boolean',
-		'has_friday' => 'boolean',
-		'has_saturday' => 'boolean',
-		'price' => 'float',
-		'rebate' => 'float',
-		'status' => 'boolean'
+		'has_thursday' 	=> 'boolean',
+		'has_friday' 	=> 'boolean',
+		'has_saturday' 	=> 'boolean',
+		'price' 		=> 'float',
+		'rebate' 		=> 'float',
+		'status' 		=> 'boolean',
+		'image'			=> Image::class
 	];
 
 	/**

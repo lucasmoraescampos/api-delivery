@@ -148,7 +148,7 @@ class CardRepository extends BaseRepository implements CardRepositoryInterface
      */
     private function getIcon($payment_method_id): ?string
     {
-        $path = env('IMAGES_URL');
+        $path = env('APP_IMAGES_URL');
 
         if ($payment_method_id == 'visa') {
             return $path . '/visa.png';

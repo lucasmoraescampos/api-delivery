@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Image;
 use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
@@ -30,6 +31,7 @@ class Card extends Model
    * @var array
    */
   protected $casts = [
-    'user_id' => 'integer'
+    'user_id' => 'integer',
+    'icon'    => Image::class
   ];
 }

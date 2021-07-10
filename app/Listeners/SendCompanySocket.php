@@ -27,7 +27,7 @@ class SendCompanySocket
      */
     public function handle(CompanyStatus $event)
     {
-        $base_url = env('SOCKET_URL');
+        $base_url = env('APP_SOCKET_URL');
 
         Http::withHeaders(['authorization' => $_SERVER['HTTP_AUTHORIZATION']])
             ->post("{$base_url}/user/publish", [
